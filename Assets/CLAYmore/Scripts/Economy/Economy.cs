@@ -5,14 +5,14 @@ using CLAYmore.ECS;
 namespace CLAYmore
 {
     /// <summary>
-    /// MonoBehaviour facade over EconomySystem + CoinComponent.
-    /// Bootstraps the entity/component, then delegates all logic to EconomySystem.
+    /// MonoBehaviour facade: создаёт CoinComponent-сущность и регистрирует её в World.
+    /// Вся логика делегируется EconomySystem, которая сама находит сущность через Query.
     /// </summary>
     public class Economy : MonoBehaviour
     {
         [Min(0)] public int startingCoins = 0;
 
-        public int Coins => _entity.Get<CoinComponent>().Coins;
+        public int Coins => _system?.GetCoinCount() ?? 0;
 
         public event Action<int> OnChanged;
 
@@ -27,14 +27,18 @@ namespace CLAYmore
 
         private void Start()
         {
-            // World is created in GameManager.Awake() — safe to access here.
+            World.Current?.RegisterEntity(_entity);
             _system = World.Current?.GetSystem<EconomySystem>();
             if (_system != null)
                 _system.OnChanged += coins => OnChanged?.Invoke(coins);
         }
 
-        public void Add(int amount) => _system?.Add(_entity, amount);
+        private void OnDestroy()
+        {
+            World.Current?.UnregisterEntity(_entity);
+        }
 
-        public bool TrySpend(int amount) => _system != null && _system.TrySpend(_entity, amount);
+        public void Add(int amount)      => _system?.Add(amount);
+        public bool TrySpend(int amount) => _system?.TrySpend(amount) ?? false;
     }
 }

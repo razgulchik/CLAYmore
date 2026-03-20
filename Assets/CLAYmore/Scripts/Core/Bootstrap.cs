@@ -25,6 +25,11 @@ namespace CLAYmore
         [Header("Pools")]
         public PrefabPool potPool;
         public PrefabPool shadowPool;
+        public PrefabPool chestPool;
+
+        [Header("Chest / Modifiers")]
+        public ModifierConfig[] modifierPool;
+        public ModifierChoiceUI modifierChoiceUI;
 
         public bool IsGameOver { get; private set; }
 
@@ -40,6 +45,9 @@ namespace CLAYmore
             _world.RegisterSystem(new EconomySystem());
             _world.RegisterSystem(new SpawnerSystem());
             _world.RegisterSystem(new MovementSystem(islandGenerator));
+            _world.RegisterSystem(new ChestSystem(islandGenerator));
+            _world.RegisterSystem(new ModifierSystem());
+            _world.RegisterSystem(new AbilitySystem(islandGenerator));
         }
 
         private void Start()
@@ -65,7 +73,11 @@ namespace CLAYmore
             // Register player entity with the world so systems can query it.
             var playerEntity = playerGO.GetComponent<Entity>();
             if (playerEntity != null)
+            {
                 _world.RegisterEntity(playerEntity);
+                playerEntity.Add(new CLAYmore.ECS.PlayerStatsComponent());
+                playerEntity.Add(new CLAYmore.ECS.PlayerModifiersComponent());
+            }
 
             // ── Apply config ───────────────────────────────────────────────
             if (config != null)
@@ -83,6 +95,13 @@ namespace CLAYmore
                     potSpawner.intervalDecreasePerSecond = config.spawnIntervalDecreasePerSecond;
                     potSpawner.targetedSpawnEvery        = config.targetedSpawnEvery;
                 }
+
+                var chestSpawner = GetComponentInChildren<ChestSpawner>(true);
+                if (chestSpawner != null)
+                {
+                    chestSpawner.initialInterval = config.chestSpawnInitialInterval;
+                    chestSpawner.minInterval     = config.chestSpawnMinInterval;
+                }
             }
 
             // ── Wire scene references ──────────────────────────────────────
@@ -98,6 +117,9 @@ namespace CLAYmore
 
             if (hud != null)
                 hud.Setup(playerHealth);
+
+            if (modifierChoiceUI != null && modifierPool != null)
+                modifierChoiceUI.modifierPool = modifierPool;
 
             if (playerHealth != null)
             {

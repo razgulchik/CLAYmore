@@ -21,5 +21,9 @@ namespace CLAYmore
         [Header("Pot Spawner — Targeted")]
         [Tooltip("Every Nth spawn falls directly on the player's tile")]
         public int targetedSpawnEvery = 5;
+
+        [Header("Chest Spawner")]
+        public float chestSpawnInitialInterval = 30f;
+        public float chestSpawnMinInterval     = 20f;
     }
 }

@@ -38,7 +38,12 @@ namespace CLAYmore
         /// </summary>
         public bool PlayerHitPot(Entity potEntity)
         {
-            _healthSystem.TakeDamage(potEntity, 1);
+            int dmg = 1;
+            Entity player = GetPlayerEntity();
+            if (player != null && player.Has<PlayerStatsComponent>())
+                dmg += player.Get<PlayerStatsComponent>().DamageBonus;
+
+            _healthSystem.TakeDamage(potEntity, dmg);
             return potEntity.Get<HealthComponent>().Hp <= 0;
         }
 
@@ -51,7 +56,7 @@ namespace CLAYmore
 
             // Player is on the landing cell — deal damage and force-break the pot
             Entity playerEntity = GetPlayerEntity();
-            if (playerEntity != null)
+            if (playerEntity != null && !TryAbsorbWithShield(playerEntity))
                 _healthSystem.TakeDamage(playerEntity, 1);
 
             // Drain remaining HP to trigger EntityDiedEvent → Pot.BreakVisual
@@ -69,13 +74,27 @@ namespace CLAYmore
 
                 // Pot was already on the cell when player arrived — damage player, force-break pot
                 Entity playerEntity = GetPlayerEntity();
-                if (playerEntity != null)
+                if (playerEntity != null && !TryAbsorbWithShield(playerEntity))
                     _healthSystem.TakeDamage(playerEntity, 1);
 
                 var h = entity.Get<HealthComponent>();
                 _healthSystem.TakeDamage(entity, h.Hp);
                 return;
             }
+        }
+
+        private bool TryAbsorbWithShield(Entity playerEntity)
+        {
+            if (!playerEntity.Has<PlayerStatsComponent>()) return false;
+            var stats = playerEntity.Get<PlayerStatsComponent>();
+            if (stats.ShieldCurrent <= 0 || stats.ShieldCooldown > 0f) return false;
+
+            stats.ShieldCurrent--;
+            if (stats.ShieldCurrent <= 0)
+                stats.ShieldCooldown = stats.ShieldCooldownMax;
+
+            _world.Events.Publish(new ShieldAbsorbedEvent());
+            return true;
         }
 
         private Entity GetPlayerEntity()

@@ -8,12 +8,18 @@ namespace CLAYmore
     /// Reads player input (PlayerMoveInputEvent), validates the move
     /// against the island grid and landed pots, then publishes
     /// PlayerMoveResultEvent for the View (PlayerMovement) to animate.
+    ///
+    /// Abilities handled here:
+    ///   - Dash: keep moving in direction until hitting a wall or pot
+    ///   - AoeStrike: also hit the two side cells when attacking a pot
+    ///   - GamePaused: ignore input while paused (e.g. modifier choice screen)
     /// </summary>
     public class MovementSystem : ISystem
     {
         private readonly IslandGenerator _island;
         private World _world;
         private DamageSystem _damageSystem;
+        private bool _isPaused;
 
         public MovementSystem(IslandGenerator island)
         {
@@ -22,14 +28,20 @@ namespace CLAYmore
 
         public void Initialize(World world)
         {
-            _world = world;
+            _world        = world;
             _damageSystem = world.GetSystem<DamageSystem>();
             world.Events.Subscribe<PlayerMoveInputEvent>(OnMoveInput);
+            world.Events.Subscribe<GamePausedEvent>(OnGamePaused);
         }
 
         public void Tick(float deltaTime) { }
 
         // ── Private ───────────────────────────────────────────────────────────
+
+        private void OnGamePaused(GamePausedEvent evt)
+        {
+            _isPaused = evt.IsPaused;
+        }
 
         private void OnMoveInput(PlayerMoveInputEvent evt)
         {
@@ -37,10 +49,14 @@ namespace CLAYmore
             if (playerEntity == null) return;
 
             var movement = playerEntity.Get<MovementComponent>();
-            if (movement.IsMoving) return;
+            if (_isPaused || movement.IsMoving) return;
 
             Vector2Int direction  = evt.Direction;
             movement.FacingDirection = direction;
+
+            var stats = playerEntity.Has<PlayerStatsComponent>()
+                ? playerEntity.Get<PlayerStatsComponent>()
+                : null;
 
             Vector3Int currentCell = _island.GetPlayerCell();
             Vector3Int targetCell  = currentCell + new Vector3Int(direction.x, direction.y, 0);
@@ -51,6 +67,18 @@ namespace CLAYmore
             if (potEntity != null)
             {
                 movement.IsMoving = true;
+
+                // AoeStrike: also hit the two perpendicular side cells
+                if (stats != null && stats.HasAoeStrike)
+                {
+                    foreach (Vector3Int sideCell in GetSideCells(targetCell, direction))
+                    {
+                        Entity sidePot = GetLandedPotAt(sideCell);
+                        if (sidePot != null)
+                            _damageSystem.PlayerHitPot(sidePot);
+                    }
+                }
+
                 bool potDied = _damageSystem.PlayerHitPot(potEntity);
                 _world.Events.Publish(new PlayerMoveResultEvent
                 {
@@ -74,6 +102,26 @@ namespace CLAYmore
                     MoveType  = MoveType.Blocked,
                 });
                 return;
+            }
+
+            // ── Dash: slide until hitting a wall, water, or pot ───────────────
+            if (stats != null && stats.HasDash)
+            {
+                Vector3Int dashCell = currentCell + new Vector3Int(direction.x, direction.y, 0);
+                Vector3Int nextCell;
+                while (true)
+                {
+                    nextCell = dashCell + new Vector3Int(direction.x, direction.y, 0);
+                    Vector3 dashWorld = _island.GetCellCenter(dashCell);
+                    Vector3 nextWorld = _island.TryMove(dashWorld, direction);
+
+                    // Blocked by wall/water, or next cell has a pot — stop here
+                    if (Vector3.Distance(nextWorld, dashWorld) < 0.01f) break;
+                    if (GetLandedPotAt(nextCell) != null) break;
+
+                    dashCell = nextCell;
+                }
+                validTarget = _island.GetCellCenter(dashCell);
             }
 
             // ── Valid move ────────────────────────────────────────────────────
@@ -102,6 +150,18 @@ namespace CLAYmore
                     return entity;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Returns the two cells perpendicular to the movement direction,
+        /// adjacent to the target cell (for AoeStrike).
+        /// </summary>
+        private static Vector3Int[] GetSideCells(Vector3Int target, Vector2Int dir)
+        {
+            Vector3Int perp = dir.x != 0
+                ? new Vector3Int(0, 1, 0)
+                : new Vector3Int(1, 0, 0);
+            return new[] { target + perp, target - perp };
         }
     }
 }

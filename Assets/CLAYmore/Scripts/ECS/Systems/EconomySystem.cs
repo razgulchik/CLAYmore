@@ -16,23 +16,35 @@ namespace CLAYmore
 
         public void Tick(float deltaTime) { }
 
-        public void Add(Entity entity, int amount)
+        public void Add(int amount)
         {
             if (amount <= 0) return;
-            var c = entity.Get<CoinComponent>();
+            var c = GetCoins();
+            if (c == null) return;
             c.Coins += amount;
             OnChanged?.Invoke(c.Coins);
         }
 
-        public bool TrySpend(Entity entity, int amount)
+        public bool TrySpend(int amount)
         {
-            var c = entity.Get<CoinComponent>();
-            if (c.Coins < amount) return false;
+            var c = GetCoins();
+            if (c == null || c.Coins < amount) return false;
             c.Coins -= amount;
             OnChanged?.Invoke(c.Coins);
             return true;
         }
 
-        public int GetCoins(Entity entity) => entity.Get<CoinComponent>().Coins;
+        public int GetCoinCount()
+        {
+            var c = GetCoins();
+            return c?.Coins ?? 0;
+        }
+
+        private CoinComponent GetCoins()
+        {
+            foreach (Entity e in _world.Query<CoinComponent>())
+                return e.Get<CoinComponent>();
+            return null;
+        }
     }
 }
