@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86a44f7425f5f3e44927dacaa2a19803, type: 3}
+  m_Name: PotConfig 1
+  m_EditorClassIdentifier: 
+  maxHp: 2
+  coinDropMin: 1
+  coinDropMax: 2
+  fallDuration: 1
+  fallEase: 5
+  spawnHeight: 5
+  sprite: {fileID: -3101179406812733988, guid: 4ace2d7fa58ab9a4881d3c49cfe0e82e, type: 3}
+  spawnWeight: 2

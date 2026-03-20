@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9865a2182291cfa4eba2a1e3bb09c129, type: 3}
+  m_Name: IslandTileSet
+  m_EditorClassIdentifier: 
+  leftBotLight: {fileID: 11400000, guid: 82f2698815d4cff46bc0ddb2a9eb7bf9, type: 2}
+  leftMidLight: {fileID: 11400000, guid: f250c7652309fb64ba6e636b4fdc783f, type: 2}
+  leftTopLight: {fileID: 11400000, guid: 9cc7cab38169c7443a97af14946a26df, type: 2}
+  botLeftLight: {fileID: 11400000, guid: e6d3fa0f39a7def4ba83526b6b68741a, type: 2}
+  botCenterLight: {fileID: 11400000, guid: 14539c1d316d4a443911d9c9044a020f, type: 2}
+  botRightLight: {fileID: 11400000, guid: 0483d27fe46a8e3428ac3d8ce6742e7d, type: 2}
+  rightBotLight: {fileID: 11400000, guid: c475a1e4a4b14e64fb5c07d75017e248, type: 2}
+  rightMidLight: {fileID: 11400000, guid: d510225c28876ad4b8702d39f70b3789, type: 2}
+  rightTopLight: {fileID: 11400000, guid: 6ac070a46743cfb48a391753e710723d, type: 2}
+  interiorBotLeftCornerLight: {fileID: 11400000, guid: 263881d8d21d318409f75a9e306f94cf, type: 2}
+  interiorBotCenterLight: {fileID: 11400000, guid: 021075124281422478cbd41d1df3d228, type: 2}
+  interiorBotRightCornerLight: {fileID: 11400000, guid: 8e243c6e348efc74ab1adc431171083a, type: 2}
+  centerInnerLight: {fileID: 11400000, guid: 446c5fa341140794e8b88ea338938ed0, type: 2}
+  interiorTopLeftCornerLight: {fileID: 11400000, guid: 111ad08a0d844bf4db3e9ea6feec0adb, type: 2}
+  interiorTopCenterLight: {fileID: 11400000, guid: 9fe52426ad1145b49b392a47ef6f523d, type: 2}
+  interiorTopRightCornerLight: {fileID: 11400000, guid: 55c3211d3a6af3347a88f81d4767aff4, type: 2}
+  leftBotDark: {fileID: 11400000, guid: 6466927924978ec49984dc7fb92cf227, type: 2}
+  leftMidDark: {fileID: 11400000, guid: 9f3c7d8587eeb704d82ace5705ff69d3, type: 2}
+  leftTopDark: {fileID: 11400000, guid: ff8514532026f17439f3b2820f918b39, type: 2}
+  botLeftDark: {fileID: 11400000, guid: c13ef963a57dec74c842146179e6aac8, type: 2}
+  botCenterDark: {fileID: 11400000, guid: 1d6285a9fe700ed40b161fad00d7a56b, type: 2}
+  botRightDark: {fileID: 11400000, guid: 4db6d70a298cd5e4f9b0e04e90100597, type: 2}
+  rightBotDark: {fileID: 11400000, guid: 44010c261d0378149bbde4e08c5f2056, type: 2}
+  rightMidDark: {fileID: 11400000, guid: da343be06592c5f45b5dc51c0739a36e, type: 2}
+  rightTopDark: {fileID: 11400000, guid: fc36889ccf229474b9dc94f753fa726c, type: 2}
+  interiorBotLeftCornerDark: {fileID: 11400000, guid: 10fd2eed652407b49957ddca1dd8700a, type: 2}
+  interiorBotCenterDark: {fileID: 11400000, guid: 44b799b21b69b574796117ab1771f12b, type: 2}
+  interiorBotRightCornerDark: {fileID: 11400000, guid: c9badc031d99cff47adfc830de0ce1e1, type: 2}
+  centerInnerDark: {fileID: 11400000, guid: 197f4499257c01846a45a8e1fd82927b, type: 2}
+  interiorTopLeftCornerDark: {fileID: 11400000, guid: db4bf60cee0bc184ead4146cb0315e31, type: 2}
+  interiorTopCenterDark: {fileID: 11400000, guid: fcdfb860bc420964c85044d4b4a7fb2f, type: 2}
+  interiorTopRightCornerDark: {fileID: 11400000, guid: bd9f7a7d2ea1a5c49a48a0792aadc3b5, type: 2}
