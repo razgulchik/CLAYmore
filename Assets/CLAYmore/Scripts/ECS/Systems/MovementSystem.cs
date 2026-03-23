@@ -107,21 +107,52 @@ namespace CLAYmore
             // ── Dash: slide until hitting a wall, water, or pot ───────────────
             if (stats != null && stats.HasDash)
             {
-                Vector3Int dashCell = currentCell + new Vector3Int(direction.x, direction.y, 0);
-                Vector3Int nextCell;
+                Vector3Int dashCell   = currentCell + new Vector3Int(direction.x, direction.y, 0);
+                Entity     dashHitPot = null;
+
                 while (true)
                 {
-                    nextCell = dashCell + new Vector3Int(direction.x, direction.y, 0);
                     Vector3 dashWorld = _island.GetCellCenter(dashCell);
-                    Vector3 nextWorld = _island.TryMove(dashWorld, direction);
 
-                    // Blocked by wall/water, or next cell has a pot — stop here
-                    if (Vector3.Distance(nextWorld, dashWorld) < 0.01f) break;
-                    if (GetLandedPotAt(nextCell) != null) break;
+                    // Island edge (water/outside) — stop here, no expansion
+                    if (_island.IsBlockedByEdge(dashWorld, direction)) break;
+
+                    Vector3Int nextCell = dashCell + new Vector3Int(direction.x, direction.y, 0);
+
+                    // Next cell has a pot — stop and hit it
+                    dashHitPot = GetLandedPotAt(nextCell);
+                    if (dashHitPot != null) break;
 
                     dashCell = nextCell;
                 }
+
                 validTarget = _island.GetCellCenter(dashCell);
+
+                // Dash ended on a pot — deal damage and return
+                if (dashHitPot != null)
+                {
+                    Vector3Int potCell = dashCell + new Vector3Int(direction.x, direction.y, 0);
+
+                    if (stats.HasAoeStrike)
+                    {
+                        foreach (Vector3Int sideCell in GetSideCells(potCell, direction))
+                        {
+                            Entity sidePot = GetLandedPotAt(sideCell);
+                            if (sidePot != null)
+                                _damageSystem.PlayerHitPot(sidePot);
+                        }
+                    }
+
+                    movement.IsMoving = true;
+                    bool potDied = _damageSystem.PlayerHitPot(dashHitPot);
+                    _world.Events.Publish(new PlayerMoveResultEvent
+                    {
+                        Direction = direction,
+                        Target    = _island.GetCellCenter(potCell),
+                        MoveType  = potDied ? MoveType.Walk : MoveType.Bounce,
+                    });
+                    return;
+                }
             }
 
             // ── Valid move ────────────────────────────────────────────────────

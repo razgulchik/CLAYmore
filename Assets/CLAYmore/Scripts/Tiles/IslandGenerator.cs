@@ -176,6 +176,24 @@ namespace CLAYmore
             return tile?.State ?? CellState.Empty;
         }
 
+        /// <summary>
+        /// Returns true if moving from worldPos in direction would hit water or the island boundary.
+        /// Does NOT trigger island expansion — use for dash/slide checks.
+        /// </summary>
+        public bool IsBlockedByEdge(Vector3 worldPos, Vector2Int direction)
+        {
+            Vector3Int currentCell = tilemap.WorldToCell(worldPos);
+            Vector3Int targetCell  = currentCell + new Vector3Int(direction.x, direction.y, 0);
+
+            int relX = targetCell.x - _originCell.x;
+            int relY = targetCell.y - _originCell.y;
+
+            bool isOutside = relX < 0 || relX >= _width || relY < 0 || relY >= _height;
+            bool isWater   = !isOutside && (relX == 0 || relX == _width - 1 || relY == 0);
+
+            return isWater || isOutside;
+        }
+
         // ── Private ──────────────────────────────────────────────────────
 
         private Vector2Int ToAbsKey(Vector3 worldPos)
