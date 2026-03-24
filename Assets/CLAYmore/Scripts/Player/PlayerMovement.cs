@@ -78,12 +78,15 @@ namespace CLAYmore
 
                 case MoveType.Bounce:
                     ShowWeapon();
-                    Vector3 origin = transform.position;
+                    Vector3 bounceReturn = evt.SlideTarget != Vector3.zero ? evt.SlideTarget : transform.position;
+                    bounceReturn.z = transform.position.z;
                     transform.DOMove(target, bounceTime)
                         .OnComplete(() =>
-                            transform.DOMove(origin, bounceTime)
+                            transform.DOMove(bounceReturn, bounceTime)
                                 .OnComplete(() =>
                                 {
+                                    if (islandGenerator != null)
+                                        islandGenerator.SetPlayerTileFromWorldPos(transform.position);
                                     HideWeapon();
                                     _movement.IsMoving = false;
                                 }));

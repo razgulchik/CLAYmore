@@ -7,6 +7,7 @@ namespace CLAYmore
         Empty,
         PotInFlight,  // reserved — pot spawned but not yet landed
         HasPot,       // pot has landed and is sitting on the cell
+        HasChest,     // chest is standing on the cell
     }
 
     public class TileData

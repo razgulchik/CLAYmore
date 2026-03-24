@@ -1,4 +1,5 @@
 using CLAYmore.ECS;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,8 +17,12 @@ namespace CLAYmore
 
         [Header("References")]
         public IslandGenerator islandGenerator;
-        public PotSpawner potSpawner;
-        public HUD hud;
+        public PotSpawner      potSpawner;
+        public ChestSpawner    chestSpawner;
+        public HUD             hud;
+
+        [Header("Camera")]
+        public CinemachineCamera virtualCamera;
 
         [Header("Player")]
         public GameObject playerPrefab;
@@ -67,6 +72,9 @@ namespace CLAYmore
             GameObject playerGO = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
             islandGenerator.SetPlayerTileFromWorldPos(spawnPos);
 
+            if (virtualCamera != null)
+                virtualCamera.Follow = playerGO.transform;
+
             var playerMovement = playerGO.GetComponent<PlayerMovement>();
             var playerHealth   = playerGO.GetComponent<PlayerHealth>();
 
@@ -96,7 +104,6 @@ namespace CLAYmore
                     potSpawner.targetedSpawnEvery        = config.targetedSpawnEvery;
                 }
 
-                var chestSpawner = GetComponentInChildren<ChestSpawner>(true);
                 if (chestSpawner != null)
                 {
                     chestSpawner.initialInterval = config.chestSpawnInitialInterval;
@@ -113,6 +120,13 @@ namespace CLAYmore
                 potSpawner.playerMovement = playerMovement;
                 potSpawner.potPool        = potPool;
                 potSpawner.shadowPool     = shadowPool;
+            }
+
+            if (chestSpawner != null)
+            {
+                chestSpawner.islandGenerator = islandGenerator;
+                chestSpawner.bootstrap       = this;
+                chestSpawner.chestPool       = chestPool;
             }
 
             if (hud != null)

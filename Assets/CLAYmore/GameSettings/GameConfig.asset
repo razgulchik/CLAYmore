@@ -15,7 +15,9 @@ MonoBehaviour:
   playerMaxHp: 5
   moveTime: 0.2
   bounceTime: 0.1
-  spawnInitialInterval: 1
+  spawnInitialInterval: 2
   spawnMinInterval: 0.5
   spawnIntervalDecreasePerSecond: 0.02
   targetedSpawnEvery: 5
+  chestSpawnInitialInterval: 2
+  chestSpawnMinInterval: 5

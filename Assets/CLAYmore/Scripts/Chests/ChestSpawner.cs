@@ -9,12 +9,11 @@ namespace CLAYmore
     /// </summary>
     public class ChestSpawner : MonoBehaviour
     {
-        [Header("References")]
-        public IslandGenerator islandGenerator;
-        public Bootstrap       bootstrap;
+        [HideInInspector] public IslandGenerator islandGenerator;  // set by Bootstrap
+        [HideInInspector] public Bootstrap       bootstrap;         // set by Bootstrap
 
         [Header("Pool")]
-        public PrefabPool chestPool;
+        [HideInInspector] public PrefabPool chestPool;              // set by Bootstrap
 
         [Header("Config")]
         public ChestConfig chestConfig;
@@ -60,17 +59,19 @@ namespace CLAYmore
 
         private void SpawnChest()
         {
-            if (!islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 landPos)) return;
+            if (!islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 landPos, avoidPlayerNeighbours: true)) return;
+            if (!islandGenerator.TryMarkChestLanded(landPos)) return;
 
             GameObject chestGO = chestPool.Get(landPos);
             if (!chestGO.TryGetComponent<Chest>(out Chest chest))
             {
                 Debug.LogWarning("ChestSpawner: chest prefab is missing a Chest component.");
+                islandGenerator.ClearChest(landPos);
                 chestPool.Return(chestGO);
                 return;
             }
 
-            chest.Initialize(chestConfig, landPos, islandGenerator.tilemap, chestPool);
+            chest.Initialize(chestConfig, landPos, islandGenerator.tilemap, chestPool, islandGenerator);
         }
     }
 }

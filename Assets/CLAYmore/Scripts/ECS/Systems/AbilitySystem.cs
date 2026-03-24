@@ -99,10 +99,11 @@ namespace CLAYmore
 
             if (candidates.Count == 0) return;
 
-            Entity target = candidates[Random.Range(0, candidates.Count)];
+            Entity  target   = candidates[Random.Range(0, candidates.Count)];
+            Vector3 worldPos = _island.GetCellCenter(target.Get<PotComponent>().LandCell);
             var h = target.Get<HealthComponent>();
             _healthSystem.TakeDamage(target, h.Hp);
-            _world.Events.Publish(new LightningStrikeEvent { Target = target });
+            _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
         }
 
         private Entity GetPlayerEntity()

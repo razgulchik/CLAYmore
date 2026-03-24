@@ -112,6 +112,9 @@ namespace CLAYmore
 
                 while (true)
                 {
+                    // Current cell has a chest — stop on it
+                    if (GetActiveChestAt(dashCell) != null) break;
+
                     Vector3 dashWorld = _island.GetCellCenter(dashCell);
 
                     // Island edge (water/outside) — stop here, no expansion
@@ -147,9 +150,10 @@ namespace CLAYmore
                     bool potDied = _damageSystem.PlayerHitPot(dashHitPot);
                     _world.Events.Publish(new PlayerMoveResultEvent
                     {
-                        Direction = direction,
-                        Target    = _island.GetCellCenter(potCell),
-                        MoveType  = potDied ? MoveType.Walk : MoveType.Bounce,
+                        Direction   = direction,
+                        Target      = _island.GetCellCenter(potCell),
+                        SlideTarget = potDied ? Vector3.zero : validTarget, // отскок назад на 1 клетку (dashCell)
+                        MoveType    = potDied ? MoveType.Walk : MoveType.Bounce,
                     });
                     return;
                 }
@@ -178,6 +182,17 @@ namespace CLAYmore
             {
                 var pot = entity.Get<PotComponent>();
                 if (pot.State == PotState.Landed && pot.LandCell == cell)
+                    return entity;
+            }
+            return null;
+        }
+
+        private Entity GetActiveChestAt(Vector3Int cell)
+        {
+            foreach (Entity entity in _world.Query<ChestComponent>())
+            {
+                var chest = entity.Get<ChestComponent>();
+                if (chest.State == ChestState.Active && chest.LandCell == cell)
                     return entity;
             }
             return null;

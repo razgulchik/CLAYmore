@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Damage Bonus Modifier
   m_EditorClassIdentifier: 
   displayName: Damage +1
-  description: "\u041F\u0440\u0438\u0431\u0430\u0432\u043B\u044F\u0435\u0442 +1 \u043A
-    \u0443\u0440\u043E\u043D\u0443"
-  icon: {fileID: 6244959564850977582, guid: e04f40cfccef53b438db0ad5480182ff, type: 3}
-  maxLevel: 1
+  description: Add 1 damage
+  icon: {fileID: -6779685724067936626, guid: 244ad0f0331939d488d0721d50f10e4e, type: 3}
+  maxLevel: 3
   spawnWeight: 1
+  price: 10
   damagePerLevel: 1

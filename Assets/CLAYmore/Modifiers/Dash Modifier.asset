@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Dash Modifier
   m_EditorClassIdentifier: 
   displayName: Dash
-  description: "\u041B\u0435\u0442\u0438\u0442 \u0434\u043E \u0443\u043F\u043E\u0440\u0430"
-  icon: {fileID: 6244959564850977582, guid: e04f40cfccef53b438db0ad5480182ff, type: 3}
+  description: Dash until wall
+  icon: {fileID: 3691463601059337291, guid: 50b46f42c1d7aa644bb971537179586e, type: 3}
   maxLevel: 1
-  spawnWeight: 1
+  spawnWeight: 2
+  price: 10

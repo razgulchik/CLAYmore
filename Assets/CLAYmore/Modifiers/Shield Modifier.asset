@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Shield
   description: Defend from 1 damage
-  icon: {fileID: 6244959564850977582, guid: e04f40cfccef53b438db0ad5480182ff, type: 3}
+  icon: {fileID: 7675826601332790545, guid: 3588dcbffa7757d4aba87bf14b7c9ad0, type: 3}
   maxLevel: 1
   spawnWeight: 1
+  price: 10
   cooldownSeconds: 10

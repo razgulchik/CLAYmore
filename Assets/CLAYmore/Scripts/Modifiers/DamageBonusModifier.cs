@@ -15,6 +15,6 @@ namespace CLAYmore
         }
 
         public override string GetDescription(int level)
-            => $"+{level * damagePerLevel} урон за удар";
+            => $"+{damagePerLevel} per level";
     }
 }

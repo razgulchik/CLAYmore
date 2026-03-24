@@ -15,9 +15,10 @@ namespace CLAYmore
         public TextMeshProUGUI  nameLabel;
         public TextMeshProUGUI  descriptionLabel;
         public TextMeshProUGUI  levelLabel;
+        public TextMeshProUGUI  priceLabel;
         public Button           button;
 
-        public void Setup(ModifierConfig modifier, int newLevel, Action<ModifierConfig> onChosen)
+        public void Setup(ModifierConfig modifier, int newLevel, int price, bool canAfford, Action<ModifierConfig> onChosen)
         {
             if (iconImage        != null) iconImage.sprite = modifier.icon;
             if (nameLabel        != null) nameLabel.text   = modifier.displayName;
@@ -25,9 +26,12 @@ namespace CLAYmore
             if (levelLabel       != null)
             {
                 levelLabel.gameObject.SetActive(modifier.maxLevel > 1);
-                levelLabel.text = $"Ур. {newLevel}/{modifier.maxLevel}";
+                levelLabel.text = $"Lv. {newLevel}/{modifier.maxLevel}";
             }
+            if (priceLabel != null)
+                priceLabel.text = price > 0 ? $"{price}" : "Free";
 
+            button.interactable = canAfford;
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onChosen(modifier));
         }

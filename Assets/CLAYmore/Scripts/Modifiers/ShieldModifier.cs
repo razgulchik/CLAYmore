@@ -17,6 +17,6 @@ namespace CLAYmore
         }
 
         public override string GetDescription(int level)
-            => $"Щит {level} заряд(а). Поглощает удар, затем перезарядка {cooldownSeconds}с";
+            => $"Absorb {level} damage, then cooldown {cooldownSeconds}s";
     }
 }

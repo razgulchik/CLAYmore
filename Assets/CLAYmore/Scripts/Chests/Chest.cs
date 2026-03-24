@@ -16,15 +16,17 @@ namespace CLAYmore
         private Entity _entity;
         private SpriteRenderer _renderer;
         private PrefabPool _chestPool;
+        private IslandGenerator _islandGenerator;
 
         // ── Init ─────────────────────────────────────────────────────────────
 
         /// <summary>
         /// Called by ChestSpawner on every spawn (including re-use from pool).
         /// </summary>
-        public void Initialize(ChestConfig config, Vector3 worldPos, Tilemap tilemap, PrefabPool chestPool)
+        public void Initialize(ChestConfig config, Vector3 worldPos, Tilemap tilemap, PrefabPool chestPool, IslandGenerator islandGenerator)
         {
-            _chestPool = chestPool;
+            _chestPool        = chestPool;
+            _islandGenerator  = islandGenerator;
 
             _entity = GetComponent<Entity>();
 
@@ -39,6 +41,7 @@ namespace CLAYmore
             _chest.LandCell = tilemap.WorldToCell(worldPos);
 
             _renderer = GetComponent<SpriteRenderer>();
+            _renderer.enabled = true;
             if (config.sprite != null)
                 _renderer.sprite = config.sprite;
 
@@ -54,6 +57,8 @@ namespace CLAYmore
 
             World.Current?.Events.Unsubscribe<ChestActivatedEvent>(OnChestActivated);
             World.Current?.UnregisterEntity(_entity);
+
+            _islandGenerator?.ClearChest(_chest.LandPos);
 
             // Simple open: hide sprite, return to pool after a short delay
             _renderer.enabled = false;

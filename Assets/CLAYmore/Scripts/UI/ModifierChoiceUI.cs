@@ -19,8 +19,8 @@ namespace CLAYmore
         public Button skipButton;
         public TextMeshProUGUI skipCoinsLabel;
 
-        [Header("Modifier Pool")]
-        public ModifierConfig[] modifierPool;  // all available modifiers assigned in inspector
+        [HideInInspector]
+        public ModifierConfig[] modifierPool;  // set by Bootstrap
 
         private ChestConfig _chestConfig;
         private List<ModifierConfig> _offered = new();
@@ -66,6 +66,7 @@ namespace CLAYmore
             World.Current?.Events.Publish(new GamePausedEvent { IsPaused = true });
 
             // Populate cards
+            int currentCoins = World.Current?.GetSystem<EconomySystem>()?.GetCoinCount() ?? 0;
             for (int i = 0; i < cards.Length; i++)
             {
                 if (i < _offered.Count)
@@ -73,7 +74,7 @@ namespace CLAYmore
                     var mod = _offered[i];
                     _modifiers.Levels.TryGetValue(mod.name, out int currentLevel);
                     cards[i].gameObject.SetActive(true);
-                    cards[i].Setup(mod, currentLevel + 1, OnCardChosen);
+                    cards[i].Setup(mod, currentLevel + 1, mod.price, currentCoins >= mod.price, OnCardChosen);
                 }
                 else
                 {
@@ -84,7 +85,7 @@ namespace CLAYmore
             // Skip button
             int coinsOnSkip = _chestConfig != null ? _chestConfig.coinsOnSkip : 0;
             if (skipCoinsLabel != null)
-                skipCoinsLabel.text = coinsOnSkip > 0 ? $"+{coinsOnSkip}" : "Пропустить";
+                skipCoinsLabel.text = coinsOnSkip > 0 ? $"+{coinsOnSkip}" : "Skip";
             skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(() => OnSkip(coinsOnSkip));
 
@@ -93,6 +94,10 @@ namespace CLAYmore
 
         private void OnCardChosen(ModifierConfig modifier)
         {
+            var economy = World.Current?.GetSystem<EconomySystem>();
+            if (modifier.price > 0 && (economy == null || !economy.TrySpend(modifier.price)))
+                return;
+
             _modifiers.Levels.TryGetValue(modifier.name, out int currentLevel);
             World.Current?.Events.Publish(new ModifierChosenEvent
             {

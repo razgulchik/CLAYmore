@@ -84,14 +84,17 @@ namespace CLAYmore
         }
 
         /// <summary>Returns the world center of a random empty walkable cell with no player.
+        /// If avoidPlayerNeighbours is true, also excludes the 4 orthogonal neighbours of the player.
         /// Returns false if no free cell exists.</summary>
-        public bool TryGetRandomWalkableCellCenter(out Vector3 worldPos)
+        public bool TryGetRandomWalkableCellCenter(out Vector3 worldPos, bool avoidPlayerNeighbours = false)
         {
             _freeCellsBuffer.Clear();
             foreach (var key in _walkableCells)
             {
                 if (_tiles.TryGetValue(key, out TileData tile)
-                    && tile.State == CellState.Empty)
+                    && tile.State == CellState.Empty
+                    && !tile.HasPlayer
+                    && (!avoidPlayerNeighbours || !IsPlayerNeighbour(key)))
                     _freeCellsBuffer.Add(key);
             }
 
@@ -104,6 +107,50 @@ namespace CLAYmore
             var chosen = _freeCellsBuffer[Random.Range(0, _freeCellsBuffer.Count)];
             worldPos = tilemap.GetCellCenterWorld(new Vector3Int(chosen.x, chosen.y, 0));
             return true;
+        }
+
+        /// <summary>Current cost to expand the island by one tile in any direction.</summary>
+        public int ExpansionCost => _currentExpansionCost;
+
+        /// <summary>
+        /// Returns the world-space center and length (in world units) of the edge strip
+        /// that blocks movement in the given direction.
+        /// Used to position and scale the edge highlight line.
+        /// </summary>
+        public (Vector3 center, float length) GetEdgeLineWorld(Vector2Int direction)
+        {
+            Vector3Int cellA, cellB;
+
+            if (direction.y < 0) // down — bottom water row
+            {
+                cellA = _originCell + new Vector3Int(0,          0, 0);
+                cellB = _originCell + new Vector3Int(_width - 1, 0, 0);
+            }
+            else if (direction.y > 0) // up — row just above the island
+            {
+                cellA = _originCell + new Vector3Int(0,          _height, 0);
+                cellB = _originCell + new Vector3Int(_width - 1, _height, 0);
+            }
+            else if (direction.x < 0) // left — left water column
+            {
+                cellA = _originCell + new Vector3Int(0, 0,          0);
+                cellB = _originCell + new Vector3Int(0, _height - 1, 0);
+            }
+            else // right — right water column
+            {
+                cellA = _originCell + new Vector3Int(_width - 1, 0,          0);
+                cellB = _originCell + new Vector3Int(_width - 1, _height - 1, 0);
+            }
+
+            Vector3 wA     = tilemap.GetCellCenterWorld(cellA);
+            Vector3 wB     = tilemap.GetCellCenterWorld(cellB);
+            Vector3 center = (wA + wB) * 0.5f;
+
+            // distance between first and last cell centers + one cell to include both ends
+            float cellSpan = direction.y != 0 ? tilemap.cellSize.x : tilemap.cellSize.y;
+            float length   = Vector3.Distance(wA, wB) + cellSpan;
+
+            return (center, length);
         }
 
         /// <summary>Returns the tilemap cell the player is currently registered on.</summary>
@@ -159,6 +206,24 @@ namespace CLAYmore
             World.Current?.Events.Publish(new TilePotStateChangedEvent { Index = key, OldState = old, NewState = CellState.HasPot });
         }
 
+        /// <summary>Marks a cell as occupied by a chest. Returns false if cell is not empty.</summary>
+        public bool TryMarkChestLanded(Vector3 worldPos)
+        {
+            var key = ToAbsKey(worldPos);
+            if (!_tiles.TryGetValue(key, out TileData tile) || tile.State != CellState.Empty)
+                return false;
+            tile.State = CellState.HasChest;
+            return true;
+        }
+
+        /// <summary>Frees the cell when a chest is collected or removed.</summary>
+        public void ClearChest(Vector3 worldPos)
+        {
+            var key = ToAbsKey(worldPos);
+            if (!_tiles.TryGetValue(key, out TileData tile) || tile.State != CellState.HasChest) return;
+            tile.State = CellState.Empty;
+        }
+
         /// <summary>Frees the cell (pot was broken or removed).</summary>
         public void ClearCell(Vector3 worldPos)
         {
@@ -195,6 +260,14 @@ namespace CLAYmore
         }
 
         // ── Private ──────────────────────────────────────────────────────
+
+        private bool IsPlayerNeighbour(Vector2Int key)
+        {
+            return key == _playerTileIndex + new Vector2Int( 1,  0)
+                || key == _playerTileIndex + new Vector2Int(-1,  0)
+                || key == _playerTileIndex + new Vector2Int( 0,  1)
+                || key == _playerTileIndex + new Vector2Int( 0, -1);
+        }
 
         private Vector2Int ToAbsKey(Vector3 worldPos)
         {
