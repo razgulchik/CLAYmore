@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,14 +32,34 @@ namespace CLAYmore
             panel.SetActive(false);
         }
 
+        private bool _isOpen;
+
         private void OnEnable()
         {
             World.Current?.Events.Subscribe<ChestActivatedEvent>(OnChestActivated);
+            World.Current?.Events.Subscribe<PlayerMoveInputEvent>(OnMoveInput);
         }
 
         private void OnDisable()
         {
             World.Current?.Events.Unsubscribe<ChestActivatedEvent>(OnChestActivated);
+            World.Current?.Events.Unsubscribe<PlayerMoveInputEvent>(OnMoveInput);
+        }
+
+        private void OnMoveInput(PlayerMoveInputEvent evt)
+        {
+            if (!_isOpen) return;
+
+            var dir = evt.Direction;
+
+            if (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
+                cards[0].button.onClick.Invoke();
+            else if (dir == new Vector2Int(0, 1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
+                cards[1].button.onClick.Invoke();
+            else if (dir == new Vector2Int(1, 0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
+                cards[2].button.onClick.Invoke();
+            else if (dir == new Vector2Int(0, -1))
+                skipButton.onClick.Invoke();
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -90,6 +111,13 @@ namespace CLAYmore
             skipButton.onClick.AddListener(() => OnSkip(coinsOnSkip));
 
             panel.SetActive(true);
+            StartCoroutine(EnableInputAfterDelay(0.25f));
+        }
+
+        private IEnumerator EnableInputAfterDelay(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            _isOpen = true;
         }
 
         private void OnCardChosen(ModifierConfig modifier)
@@ -115,6 +143,7 @@ namespace CLAYmore
 
         private void Close()
         {
+            _isOpen = false;
             panel.SetActive(false);
             Time.timeScale = 1f;
             World.Current?.Events.Publish(new GamePausedEvent { IsPaused = false });

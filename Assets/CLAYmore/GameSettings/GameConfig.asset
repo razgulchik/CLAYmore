@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   playerMaxHp: 5
-  moveTime: 0.2
-  bounceTime: 0.1
+  moveTime: 0.25
+  bounceTime: 0.25
+  bounceReturnTime: 0.4
   spawnInitialInterval: 2
   spawnMinInterval: 0.5
   spawnIntervalDecreasePerSecond: 0.02
-  targetedSpawnEvery: 5
+  targetedSpawnEveryMin: 4
+  targetedSpawnEveryMax: 7
   chestSpawnInitialInterval: 2
   chestSpawnMinInterval: 5

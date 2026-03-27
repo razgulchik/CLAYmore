@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Damage +1
   description: Add 1 damage
-  icon: {fileID: -6779685724067936626, guid: 244ad0f0331939d488d0721d50f10e4e, type: 3}
+  icon: {fileID: -5757633094158525406, guid: 4d2f9c962e19df04ea8138a38f34da00, type: 3}
   maxLevel: 3
   spawnWeight: 1
   price: 10

@@ -93,15 +93,17 @@ namespace CLAYmore
                 if (playerHealth   != null) playerHealth.maxHp        = config.playerMaxHp;
                 if (playerMovement != null)
                 {
-                    playerMovement.moveTime   = config.moveTime;
-                    playerMovement.bounceTime = config.bounceTime;
+                    playerMovement.moveTime         = config.moveTime;
+                    playerMovement.bounceTime       = config.bounceTime;
+                    playerMovement.bounceReturnTime = config.bounceReturnTime;
                 }
                 if (potSpawner != null)
                 {
                     potSpawner.initialInterval           = config.spawnInitialInterval;
                     potSpawner.minInterval               = config.spawnMinInterval;
                     potSpawner.intervalDecreasePerSecond = config.spawnIntervalDecreasePerSecond;
-                    potSpawner.targetedSpawnEvery        = config.targetedSpawnEvery;
+                    potSpawner.targetedSpawnEveryMin     = config.targetedSpawnEveryMin;
+                    potSpawner.targetedSpawnEveryMax     = config.targetedSpawnEveryMax;
                 }
 
                 if (chestSpawner != null)

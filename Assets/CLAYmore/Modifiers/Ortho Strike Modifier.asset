@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Ortho Strike
   description: Perform an additional attack when landing next cell.
-  icon: {fileID: -2170344250636477687, guid: fdf0b36543734db49840a1053f041cb4, type: 3}
+  icon: {fileID: 9109321734598183470, guid: a09eb9c8b5e3d5f44aefece7448a582d, type: 3}
   maxLevel: 1
-  spawnWeight: 1
-  price: 10
+  spawnWeight: 10
+  price: 5

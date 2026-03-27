@@ -11,10 +11,17 @@ namespace CLAYmore
     public class PlayerMovement : MonoBehaviour
     {
         public IslandGenerator islandGenerator;
+        [SerializeField] private Transform spriteTransform;
 
         [Header("Movement Timing")]
-        public float moveTime   = 0.15f;
-        public float bounceTime = 0.1f;
+        public float moveTime         = 0.15f;
+        public float bounceTime       = 0.1f;
+        public float bounceReturnTime = 0.05f;
+
+        [Header("Hit Shake")]
+        public float shakeStrength  = 0.08f;
+        public float shakeDuration  = 0.2f;
+        public int   shakeVibrato   = 10;
 
         public Vector2Int FacingDirection => _movement.FacingDirection;
 
@@ -34,6 +41,8 @@ namespace CLAYmore
             _weapon = GetComponentInChildren<Weapon>();
             if (_weapon != null)
                 _weaponTransform = _weapon.transform;
+
+
         }
 
         private void Start()
@@ -82,14 +91,18 @@ namespace CLAYmore
                     bounceReturn.z = transform.position.z;
                     transform.DOMove(target, bounceTime)
                         .OnComplete(() =>
-                            transform.DOMove(bounceReturn, bounceTime)
+                        {
+                            HideWeapon();
+                            if (spriteTransform != null)
+                                spriteTransform.DOPunchPosition(Vector3.one * shakeStrength, shakeDuration, shakeVibrato, elasticity: 0f);
+                            transform.DOMove(bounceReturn, bounceReturnTime)
                                 .OnComplete(() =>
                                 {
                                     if (islandGenerator != null)
                                         islandGenerator.SetPlayerTileFromWorldPos(transform.position);
-                                    HideWeapon();
                                     _movement.IsMoving = false;
-                                }));
+                                });
+                        });
                     break;
 
                 case MoveType.Blocked:

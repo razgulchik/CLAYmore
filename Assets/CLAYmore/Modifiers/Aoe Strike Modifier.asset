@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Triple Strike
   description: AoE attack in three direction
-  icon: {fileID: -2170344250636477687, guid: fdf0b36543734db49840a1053f041cb4, type: 3}
+  icon: {fileID: 2851236752720064745, guid: d9199fda5218ed842925b92ddc58863d, type: 3}
   maxLevel: 1
   spawnWeight: 1
-  price: 10
+  price: 20

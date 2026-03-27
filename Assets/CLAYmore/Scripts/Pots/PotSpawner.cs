@@ -30,14 +30,17 @@ namespace CLAYmore
         public float intervalDecreasePerSecond = 0.02f;
 
         [Header("Targeted Spawn")]
-        [Tooltip("Every Nth spawn falls directly on the player's tile")]
-        public int targetedSpawnEvery = 5;
+        [Tooltip("N is chosen randomly in [min, max] each time; the next targeted spawn falls on the player's tile")]
+        [Min(1)] public int targetedSpawnEveryMin = 4;
+        [Min(1)] public int targetedSpawnEveryMax = 7;
 
         private Entity _entity;
         private int _spawnCount;
+        private int _nextTargetedAt;
 
         private void Start()
         {
+            _nextTargetedAt = Random.Range(targetedSpawnEveryMin, targetedSpawnEveryMax + 1);
             _entity = gameObject.AddComponent<Entity>();
             _entity.Add(new SpawnerComponent
             {
@@ -107,7 +110,9 @@ namespace CLAYmore
             if (islandGenerator == null || playerMovement == null) return;
 
             _spawnCount++;
-            bool isTargeted = targetedSpawnEvery > 0 && _spawnCount % targetedSpawnEvery == 0;
+            bool isTargeted = _spawnCount == _nextTargetedAt;
+            if (isTargeted)
+                _nextTargetedAt = _spawnCount + Random.Range(targetedSpawnEveryMin, targetedSpawnEveryMax + 1);
 
             PotConfig config = PickWeightedRandom(potConfigs);
 

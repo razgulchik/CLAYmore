@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Dash
   description: Dash until wall
-  icon: {fileID: 3691463601059337291, guid: 50b46f42c1d7aa644bb971537179586e, type: 3}
+  icon: {fileID: 6513249558748834103, guid: d9199fda5218ed842925b92ddc58863d, type: 3}
   maxLevel: 1
   spawnWeight: 2
-  price: 10
+  price: 1

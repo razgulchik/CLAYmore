@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Lightning
   description: Lightning strike every 10 sec
-  icon: {fileID: 4296704925731033946, guid: fdf0b36543734db49840a1053f041cb4, type: 3}
+  icon: {fileID: -2955446444336775604, guid: 871d9ce132719af42a17aa3e6e1156b8, type: 3}
   maxLevel: 3
-  spawnWeight: 3
-  price: 10
+  spawnWeight: 1
+  price: 15
   baseInterval: 5
   cooldownReductionPerLevel: 1

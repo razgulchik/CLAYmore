@@ -70,21 +70,26 @@ namespace CLAYmore
             var stats = player.Get<PlayerStatsComponent>();
             if (!stats.HasOrthoStrike) return;
 
-            Vector3Int playerCell = _island.GetPlayerCell();
-            Vector3Int[] neighbours =
-            {
-                playerCell + Vector3Int.right,
-                playerCell + Vector3Int.left,
-                playerCell + Vector3Int.up,
-                playerCell + Vector3Int.down,
-            };
+            Vector2Int move = evt.NewIndex - evt.OldIndex;
+            bool movedHorizontally = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
 
-            foreach (Vector3Int cell in neighbours)
+            Vector3Int playerCell = _island.GetPlayerCell();
+            Vector3Int[] perpendicular = movedHorizontally
+                ? new[] { playerCell + Vector3Int.up,   playerCell + Vector3Int.down }
+                : new[] { playerCell + Vector3Int.right, playerCell + Vector3Int.left };
+
+            foreach (Vector3Int cell in perpendicular)
             {
                 Entity pot = GetLandedPotAt(cell);
                 if (pot != null)
                     _damageSystem.PlayerHitPot(pot);
             }
+
+            _world.Events.Publish(new OrthoStrikeEvent
+            {
+                Origin            = _island.GetCellCenter(playerCell),
+                MovedHorizontally = movedHorizontally,
+            });
         }
 
         private void TriggerLightning()

@@ -26,10 +26,10 @@ namespace CLAYmore
             if (levelLabel       != null)
             {
                 levelLabel.gameObject.SetActive(modifier.maxLevel > 1);
-                levelLabel.text = $"Lv. {newLevel}/{modifier.maxLevel}";
+                levelLabel.text = $"Level {newLevel}/{modifier.maxLevel}";
             }
             if (priceLabel != null)
-                priceLabel.text = price > 0 ? $"{price}" : "Free";
+                priceLabel.text = price > 0 ? $"-{price}" : "Free";
 
             button.interactable = canAfford;
             button.onClick.RemoveAllListeners();

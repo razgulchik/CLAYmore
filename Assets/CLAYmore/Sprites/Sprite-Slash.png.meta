@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 61b223a4d9e83384b9adcb6ccf8a8bb0
+guid: 4d2f9c962e19df04ea8138a38f34da00
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5338738485830625687
-    second: circle_03_0
+      213: -5757633094158525406
+    second: Sprite-Slash_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: circle_03_0
+      name: Sprite-Slash_0
       rect:
         serializedVersion: 2
-        x: 13
-        y: 12
-        width: 487
-        height: 500
+        x: 0
+        y: 0
+        width: 100
+        height: 75
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 966db5b02adf8e5b0800000000000000
-      internalID: -5338738485830625687
+      spriteID: 22cd5a3c437c810b0800000000000000
+      internalID: -5757633094158525406
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      circle_03_0: -5338738485830625687
+      Sprite-Slash_0: -5757633094158525406
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
