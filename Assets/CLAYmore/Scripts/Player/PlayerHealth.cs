@@ -31,6 +31,15 @@ namespace CLAYmore
             {
                 bus.Subscribe<EntityDamagedEvent>(OnEntityDamaged);
                 bus.Subscribe<EntityDiedEvent>(OnEntityDied);
+                bus.Publish(new PlayerHpChangedEvent { Hp = maxHp, MaxHp = maxHp });
+
+                var movement = _entity.Has<MovementComponent>() ? _entity.Get<MovementComponent>() : null;
+                bus.Publish(new PlayerStatsChangedEvent
+                {
+                    MaxHp    = maxHp,
+                    Damage   = 1,
+                    MoveTime = movement?.MoveTime ?? 0f,
+                });
             }
         }
 
@@ -45,16 +54,25 @@ namespace CLAYmore
         }
 
         public void TakeDamage(int amount) => _system?.TakeDamage(_entity, amount);
-        public void Heal(int amount) => _system?.Heal(_entity, amount);
+
+        public void Heal(int amount)
+        {
+            _system?.Heal(_entity, amount);
+            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = Hp, MaxHp = maxHp });
+        }
 
         private void OnEntityDamaged(EntityDamagedEvent evt)
         {
-            if (evt.Entity == _entity) OnDamaged?.Invoke(evt.Hp);
+            if (evt.Entity != _entity) return;
+            OnDamaged?.Invoke(evt.Hp);
+            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = evt.Hp, MaxHp = maxHp });
         }
 
         private void OnEntityDied(EntityDiedEvent evt)
         {
-            if (evt.Entity == _entity) OnDied?.Invoke();
+            if (evt.Entity != _entity) return;
+            OnDied?.Invoke();
+            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = 0, MaxHp = maxHp });
         }
     }
 }

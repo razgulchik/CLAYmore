@@ -1,3 +1,4 @@
+using CLAYmore.ECS;
 using TMPro;
 using UnityEngine;
 
@@ -5,21 +6,18 @@ namespace CLAYmore
 {
     public class CoinContainer : MonoBehaviour
     {
-        public Economy economy;
         public TextMeshProUGUI coinsText;
 
-        private void Start()
+        private void OnEnable()
         {
-            economy.OnChanged += OnCoinsChanged;
-            OnCoinsChanged(economy.Coins);
+            World.Current?.Events.Subscribe<CoinBalanceChangedEvent>(OnCoinBalanceChanged);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            if (economy != null)
-                economy.OnChanged -= OnCoinsChanged;
+            World.Current?.Events.Unsubscribe<CoinBalanceChangedEvent>(OnCoinBalanceChanged);
         }
 
-        private void OnCoinsChanged(int coins) => coinsText.SetText(coins.ToString());
+        private void OnCoinBalanceChanged(CoinBalanceChangedEvent e) => coinsText.SetText(e.NewBalance.ToString());
     }
 }

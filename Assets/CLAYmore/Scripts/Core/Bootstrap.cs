@@ -16,10 +16,12 @@ namespace CLAYmore
         public GameConfig config;
 
         [Header("References")]
-        public IslandGenerator islandGenerator;
-        public PotSpawner      potSpawner;
-        public ChestSpawner    chestSpawner;
-        public HUD             hud;
+        public IslandGenerator  islandGenerator;
+        public PotSpawner       potSpawner;
+        public ChestSpawner     chestSpawner;
+        public StatsTracker     statsTracker;
+        public LeaderboardService leaderboardService;
+        public HUD              hud;
 
         [Header("Camera")]
         public CinemachineCamera virtualCamera;
@@ -38,11 +40,13 @@ namespace CLAYmore
 
         public bool IsGameOver { get; private set; }
 
-        private World _world;
-        private PlayerHealth _playerHealth;
+        private World  _world;
+        private Entity _playerEntity;
 
         private void Awake()
         {
+            PauseManager.Instance.Reset();
+
             // ── Create World and register all systems ──────────────────────
             _world = new World();
             _world.RegisterSystem(new HealthSystem());
@@ -88,6 +92,12 @@ namespace CLAYmore
             }
 
             // ── Apply config ───────────────────────────────────────────────
+            if (statsTracker != null)
+                statsTracker.Init(config);
+
+            if (leaderboardService != null)
+                leaderboardService.Init(statsTracker);
+
             if (config != null)
             {
                 if (playerHealth   != null) playerHealth.maxHp        = config.playerMaxHp;
@@ -96,6 +106,15 @@ namespace CLAYmore
                     playerMovement.moveTime         = config.moveTime;
                     playerMovement.bounceTime       = config.bounceTime;
                     playerMovement.bounceReturnTime = config.bounceReturnTime;
+                }
+
+                // Sync ECS components with config values (Awake sets Inspector defaults; Start overrides)
+                if (playerEntity != null && config != null)
+                {
+                    var statsComp = playerEntity.Get<CLAYmore.ECS.PlayerStatsComponent>();
+                    statsComp.BaseMoveTime = config.moveTime;
+                    if (playerEntity.Has<MovementComponent>())
+                        playerEntity.Get<MovementComponent>().MoveTime = config.moveTime;
                 }
                 if (potSpawner != null)
                 {
@@ -127,21 +146,15 @@ namespace CLAYmore
             if (chestSpawner != null)
             {
                 chestSpawner.islandGenerator = islandGenerator;
-                chestSpawner.bootstrap       = this;
                 chestSpawner.chestPool       = chestPool;
             }
 
-            if (hud != null)
-                hud.Setup(playerHealth);
 
             if (modifierChoiceUI != null && modifierPool != null)
                 modifierChoiceUI.modifierPool = modifierPool;
 
-            if (playerHealth != null)
-            {
-                playerHealth.OnDied += OnPlayerDied;
-                _playerHealth = playerHealth;
-            }
+            _playerEntity = playerEntity;
+            _world.Events.Subscribe<EntityDiedEvent>(OnEntityDied);
         }
 
         private void Update()
@@ -151,14 +164,16 @@ namespace CLAYmore
 
         private void OnDestroy()
         {
-            if (_playerHealth != null)
-                _playerHealth.OnDied -= OnPlayerDied;
+            _world?.Events.Unsubscribe<EntityDiedEvent>(OnEntityDied);
             _world?.Destroy();
         }
 
-        private void OnPlayerDied()
+        private void OnEntityDied(EntityDiedEvent e)
         {
+            if (e.Entity != _playerEntity) return;
             IsGameOver = true;
+            PauseManager.Instance.Push();
+            _world?.Events.Publish(new GameOverEvent());
             Debug.Log("Game Over!");
             // TODO: show Game Over UI, freeze input
         }
@@ -166,6 +181,7 @@ namespace CLAYmore
         public void Restart()
         {
             IsGameOver = false;
+            _world?.Events.Publish(new GameRestartedEvent());
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }

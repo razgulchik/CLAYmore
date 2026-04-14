@@ -25,16 +25,22 @@ namespace CLAYmore
         private void OnEnable()
         {
             _inputActions.Player.Enable();
-            _inputActions.Player.Move.started += HandleMove;
+            _inputActions.Player.Move.started  += HandleMove;
+            _inputActions.Player.Move.canceled += HandleMoveReleased;
             _inputActions.UI.Enable();
-            _inputActions.UI.Restart.performed += HandleRestart;
+            _inputActions.UI.Restart.performed  += HandleRestart;
+            _inputActions.UI.Journal.performed  += HandleJournal;
+            _inputActions.UI.Quit.performed     += HandleQuit;
         }
 
         private void OnDisable()
         {
-            _inputActions.Player.Move.started -= HandleMove;
+            _inputActions.Player.Move.started   -= HandleMove;
+            _inputActions.Player.Move.canceled  -= HandleMoveReleased;
             _inputActions.Player.Disable();
-            _inputActions.UI.Restart.performed -= HandleRestart;
+            _inputActions.UI.Restart.performed  -= HandleRestart;
+            _inputActions.UI.Journal.performed  -= HandleJournal;
+            _inputActions.UI.Quit.performed     -= HandleQuit;
             _inputActions.UI.Disable();
         }
 
@@ -48,6 +54,16 @@ namespace CLAYmore
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
+        private void HandleJournal(InputAction.CallbackContext context)
+        {
+            World.Current?.Events.Publish(new JournalToggleEvent());
+        }
+
+        private void HandleQuit(InputAction.CallbackContext context)
+        {
+            Application.Quit();
+        }
+
         private void HandleMove(InputAction.CallbackContext context)
         {
             Vector2 raw = context.ReadValue<Vector2>();
@@ -57,6 +73,12 @@ namespace CLAYmore
                 : new Vector2Int(0, (int)Mathf.Sign(raw.y));
 
             World.Current?.Events.Publish(new PlayerMoveInputEvent { Direction = direction });
+            World.Current?.Events.Publish(new PlayerMoveHeldEvent  { Direction = direction });
+        }
+
+        private void HandleMoveReleased(InputAction.CallbackContext context)
+        {
+            World.Current?.Events.Publish(new PlayerMoveHeldEvent { Direction = Vector2Int.zero });
         }
     }
 }

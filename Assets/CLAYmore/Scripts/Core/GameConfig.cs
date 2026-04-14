@@ -27,5 +27,15 @@ namespace CLAYmore
         [Header("Chest Spawner")]
         public float chestSpawnInitialInterval = 30f;
         public float chestSpawnMinInterval     = 20f;
+
+        [Header("Scoring")]
+        [Tooltip("Points awarded per second of play time")]
+        public int pointsPerSecond   = 5;
+        [Tooltip("Points awarded per pot destroyed")]
+        public int pointsPerPot      = 10;
+        [Tooltip("Points awarded per modifier chosen")]
+        public int pointsPerModifier = 20;
+        [Tooltip("Points awarded per coin earned")]
+        public int pointsPerCoin     = 5;
     }
 }

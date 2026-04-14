@@ -19,4 +19,4 @@ MonoBehaviour:
   fallEase: 5
   spawnHeight: 5
   sprite: {fileID: -5744736755499725856, guid: f577a4aa3e374504881baf4800f9c454, type: 3}
-  spawnWeight: 10
+  spawnWeight: 20

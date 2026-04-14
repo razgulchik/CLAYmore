@@ -44,7 +44,7 @@ namespace CLAYmore
                 {
                     stats.ShieldCooldown = 0f;
                     stats.ShieldCurrent  = stats.ShieldMax;
-                    _world.Events.Publish(new PlayerStatsChangedEvent());
+                    PlayerStatsPublisher.Publish(_world);
                 }
             }
 
@@ -111,12 +111,7 @@ namespace CLAYmore
             _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
         }
 
-        private Entity GetPlayerEntity()
-        {
-            foreach (Entity e in _world.Query<PlayerStatsComponent>())
-                return e;
-            return null;
-        }
+        private Entity GetPlayerEntity() => _world.QueryFirst<PlayerStatsComponent>();
 
         private Entity GetLandedPotAt(Vector3Int cell)
         {

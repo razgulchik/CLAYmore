@@ -97,11 +97,6 @@ namespace CLAYmore
             return true;
         }
 
-        private Entity GetPlayerEntity()
-        {
-            foreach (Entity e in _world.Query<MovementComponent>())
-                return e;
-            return null;
-        }
+        private Entity GetPlayerEntity() => _world.QueryFirst<MovementComponent>();
     }
 }

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Dash Modifier
   m_EditorClassIdentifier: 
   displayName: Dash
-  description: Dash until wall
-  icon: {fileID: 6513249558748834103, guid: d9199fda5218ed842925b92ddc58863d, type: 3}
+  description: Press the button to move without stopping
+  icon: {fileID: 4837626284502113166, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 1
-  spawnWeight: 2
-  price: 1
+  spawnWeight: 8
+  price: 30

@@ -4,13 +4,22 @@ namespace CLAYmore
 {
     public class HUD : MonoBehaviour
     {
-        public HeartContainer heartContainer;
-        public CoinContainer coinContainer;
+        [Header("Containers")]
+        public HeartContainer      heartContainer;
+        public CoinContainer       coinContainer;
+        public ModifierChoiceUI    modifierChoiceUI;
+        public IslandEdgeIndicator islandEdgeIndicator;
+        public JournalUI           journalUI;
+        public LeaderboardUI       leaderboardUI;
 
-        public void Setup(PlayerHealth playerHealth)
+        private void Awake()
         {
-            if (heartContainer != null)
-                heartContainer.playerHealth = playerHealth;
+            if (heartContainer      != null) heartContainer.gameObject.SetActive(true);
+            if (coinContainer       != null) coinContainer.gameObject.SetActive(true);
+            if (modifierChoiceUI    != null) modifierChoiceUI.gameObject.SetActive(true);
+            if (islandEdgeIndicator != null) islandEdgeIndicator.gameObject.SetActive(true);
+            if (journalUI           != null) journalUI.gameObject.SetActive(true);
+            if (leaderboardUI       != null) leaderboardUI.gameObject.SetActive(true);
         }
     }
 }

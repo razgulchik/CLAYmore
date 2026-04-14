@@ -20,6 +20,7 @@ namespace CLAYmore
         private World _world;
         private DamageSystem _damageSystem;
         private bool _isPaused;
+        private Vector2Int _heldDirection;
 
         public MovementSystem(IslandGenerator island)
         {
@@ -31,16 +32,38 @@ namespace CLAYmore
             _world        = world;
             _damageSystem = world.GetSystem<DamageSystem>();
             world.Events.Subscribe<PlayerMoveInputEvent>(OnMoveInput);
+            world.Events.Subscribe<PlayerMoveHeldEvent>(OnMoveHeld);
             world.Events.Subscribe<GamePausedEvent>(OnGamePaused);
         }
 
-        public void Tick(float deltaTime) { }
+        public void Tick(float deltaTime)
+        {
+            if (_isPaused || _heldDirection == Vector2Int.zero) return;
+
+            Entity playerEntity = GetPlayerEntity();
+            if (playerEntity == null) return;
+
+            var movement = playerEntity.Get<MovementComponent>();
+            if (movement.IsMoving) return;
+
+            var stats = playerEntity.Has<PlayerStatsComponent>()
+                ? playerEntity.Get<PlayerStatsComponent>()
+                : null;
+            if (stats == null || !stats.HasDash) return;
+
+            OnMoveInput(new PlayerMoveInputEvent { Direction = _heldDirection });
+        }
 
         // ── Private ───────────────────────────────────────────────────────────
 
         private void OnGamePaused(GamePausedEvent evt)
         {
             _isPaused = evt.IsPaused;
+        }
+
+        private void OnMoveHeld(PlayerMoveHeldEvent evt)
+        {
+            _heldDirection = evt.Direction;
         }
 
         private void OnMoveInput(PlayerMoveInputEvent evt)
@@ -104,61 +127,6 @@ namespace CLAYmore
                 return;
             }
 
-            // ── Dash: slide until hitting a wall, water, or pot ───────────────
-            if (stats != null && stats.HasDash)
-            {
-                Vector3Int dashCell   = currentCell + new Vector3Int(direction.x, direction.y, 0);
-                Entity     dashHitPot = null;
-
-                while (true)
-                {
-                    // Current cell has a chest — stop on it
-                    if (GetActiveChestAt(dashCell) != null) break;
-
-                    Vector3 dashWorld = _island.GetCellCenter(dashCell);
-
-                    // Island edge (water/outside) — stop here, no expansion
-                    if (_island.IsBlockedByEdge(dashWorld, direction)) break;
-
-                    Vector3Int nextCell = dashCell + new Vector3Int(direction.x, direction.y, 0);
-
-                    // Next cell has a pot — stop and hit it
-                    dashHitPot = GetLandedPotAt(nextCell);
-                    if (dashHitPot != null) break;
-
-                    dashCell = nextCell;
-                }
-
-                validTarget = _island.GetCellCenter(dashCell);
-
-                // Dash ended on a pot — deal damage and return
-                if (dashHitPot != null)
-                {
-                    Vector3Int potCell = dashCell + new Vector3Int(direction.x, direction.y, 0);
-
-                    if (stats.HasAoeStrike)
-                    {
-                        foreach (Vector3Int sideCell in GetSideCells(potCell, direction))
-                        {
-                            Entity sidePot = GetLandedPotAt(sideCell);
-                            if (sidePot != null)
-                                _damageSystem.PlayerHitPot(sidePot);
-                        }
-                    }
-
-                    movement.IsMoving = true;
-                    bool potDied = _damageSystem.PlayerHitPot(dashHitPot);
-                    _world.Events.Publish(new PlayerMoveResultEvent
-                    {
-                        Direction   = direction,
-                        Target      = _island.GetCellCenter(potCell),
-                        SlideTarget = potDied ? Vector3.zero : validTarget, // отскок назад на 1 клетку (dashCell)
-                        MoveType    = potDied ? MoveType.Walk : MoveType.Bounce,
-                    });
-                    return;
-                }
-            }
-
             // ── Valid move ────────────────────────────────────────────────────
             movement.IsMoving = true;
             _world.Events.Publish(new PlayerMoveResultEvent
@@ -169,12 +137,7 @@ namespace CLAYmore
             });
         }
 
-        private Entity GetPlayerEntity()
-        {
-            foreach (Entity entity in _world.Query<MovementComponent>())
-                return entity;
-            return null;
-        }
+        private Entity GetPlayerEntity() => _world.QueryFirst<MovementComponent>();
 
         private Entity GetLandedPotAt(Vector3Int cell)
         {

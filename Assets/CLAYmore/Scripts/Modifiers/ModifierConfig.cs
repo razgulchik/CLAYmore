@@ -26,5 +26,11 @@ namespace CLAYmore
         /// Optional: override to return a level-specific description.
         /// </summary>
         public virtual string GetDescription(int level) => description;
+
+        /// <summary>
+        /// Optional: override to conditionally exclude this modifier from the pool.
+        /// Return false to hide the modifier (e.g. when player is at full HP).
+        /// </summary>
+        public virtual bool IsAvailable(Entity playerEntity) => true;
     }
 }

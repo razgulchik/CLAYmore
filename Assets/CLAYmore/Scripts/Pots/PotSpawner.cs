@@ -14,7 +14,6 @@ namespace CLAYmore
         public IslandGenerator islandGenerator;
         public PlayerMovement playerMovement;
         public Economy economy;
-        public Bootstrap bootstrap;
 
         [Header("Pools")]
         public PrefabPool potPool;
@@ -35,8 +34,9 @@ namespace CLAYmore
         [Min(1)] public int targetedSpawnEveryMax = 7;
 
         private Entity _entity;
-        private int _spawnCount;
-        private int _nextTargetedAt;
+        private int    _spawnCount;
+        private int    _nextTargetedAt;
+        private bool   _isGameOver;
 
         private void Start()
         {
@@ -53,6 +53,7 @@ namespace CLAYmore
 
             World.Current?.RegisterEntity(_entity);
             World.Current?.Events.Subscribe<SpawnRequestedEvent>(OnSpawnRequested);
+            World.Current?.Events.Subscribe<GameOverEvent>(OnGameOver);
             LogWeights();
         }
 
@@ -73,12 +74,15 @@ namespace CLAYmore
         private void OnDestroy()
         {
             World.Current?.Events.Unsubscribe<SpawnRequestedEvent>(OnSpawnRequested);
+            World.Current?.Events.Unsubscribe<GameOverEvent>(OnGameOver);
         }
+
+        private void OnGameOver(GameOverEvent e) => _isGameOver = true;
 
         private void OnSpawnRequested(SpawnRequestedEvent evt)
         {
             if (evt.SpawnerEntity != _entity) return;
-            if (bootstrap != null && bootstrap.IsGameOver) return;
+            if (_isGameOver) return;
             SpawnPot();
         }
 

@@ -57,6 +57,13 @@ namespace CLAYmore.ECS
             _entities.Remove(entity);
         }
 
+        /// <summary>Returns the first live entity that has component T, or null.</summary>
+        public Entity QueryFirst<T>() where T : IComponent
+        {
+            foreach (var e in Query<T>()) return e;
+            return null;
+        }
+
         /// <summary>Returns all live entities that have component T.</summary>
         public IEnumerable<Entity> Query<T>() where T : IComponent
         {

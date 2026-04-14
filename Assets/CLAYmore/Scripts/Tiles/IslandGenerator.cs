@@ -354,9 +354,12 @@ namespace CLAYmore
         }
 
         private IslandTileType GetTileType(int relX, int relY)
+            => GetTileType(relX, relY, _width, _height);
+
+        private static IslandTileType GetTileType(int relX, int relY, int width, int height)
         {
-            int maxX = _width - 1;
-            int maxY = _height - 1;
+            int maxX = width - 1;
+            int maxY = height - 1;
 
             bool isLeft   = relX == 0;
             bool isRight  = relX == maxX;
@@ -388,6 +391,65 @@ namespace CLAYmore
             if (isInteriorBottom)                    return IslandTileType.InteriorBotCenter;
 
             return IslandTileType.CenterInner;
+        }
+
+        /// <summary>
+        /// Returns the tiles that would be added (or changed) if the island expands in the given direction.
+        /// Used to render a ghost preview without actually expanding.
+        ///
+        /// Up    — 1 row  (the island top has no separate water border)
+        /// Down  — 2 rows (outer water border + inner cliff row)
+        /// Left  — 2 cols (outer water border + inner cliff column)
+        /// Right — 2 cols (outer water border + inner cliff column)
+        /// </summary>
+        public List<(Vector3Int cell, IslandTileType type, bool isLight)> GetExpansionGhostCells(Vector2Int dir)
+        {
+            var result = new List<(Vector3Int, IslandTileType, bool)>();
+
+            int newOriginX = _originCell.x;
+            int newOriginY = _originCell.y;
+            int newWidth   = _width;
+            int newHeight  = _height;
+
+            if      (dir.x < 0) { newOriginX--; newWidth++; }
+            else if (dir.x > 0) { newWidth++; }
+            else if (dir.y < 0) { newOriginY--; newHeight++; }
+            else                { newHeight++; }
+
+            if (dir.y > 0) // UP — 1 row at the new top
+            {
+                int relY = newHeight - 1;
+                for (int relX = 0; relX < newWidth; relX++)
+                    AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
+            }
+            else if (dir.y < 0) // DOWN — 2 rows: outer water border (relY=0) + inner cliff (relY=1)
+            {
+                for (int relY = 0; relY <= 1; relY++)
+                    for (int relX = 0; relX < newWidth; relX++)
+                        AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
+            }
+            else if (dir.x < 0) // LEFT — 2 cols: outer water (relX=0) + inner cliff (relX=1)
+            {
+                for (int relX = 0; relX <= 1; relX++)
+                    for (int relY = 0; relY < newHeight; relY++)
+                        AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
+            }
+            else // RIGHT — 2 cols: inner cliff (relX=newWidth-2) + outer water (relX=newWidth-1)
+            {
+                for (int relX = newWidth - 2; relX <= newWidth - 1; relX++)
+                    for (int relY = 0; relY < newHeight; relY++)
+                        AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
+            }
+
+            return result;
+        }
+
+        private static void AddGhostCell(
+            List<(Vector3Int, IslandTileType, bool)> list,
+            int absX, int absY, int relX, int relY, int width, int height)
+        {
+            bool isLight = (absX + absY) % 2 == 0;
+            list.Add((new Vector3Int(absX, absY, 0), GetTileType(relX, relY, width, height), isLight));
         }
     }
 }

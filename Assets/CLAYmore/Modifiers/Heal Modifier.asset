@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3354c49a5468c3c409629605d08e1e20, type: 3}
-  m_Name: Aoe Strike Modifier
+  m_Script: {fileID: 11500000, guid: db7e88dfdca16f9429894d6abe633fe2, type: 3}
+  m_Name: Heal Modifier
   m_EditorClassIdentifier: 
-  displayName: Triple Strike
-  description: AoE attack in three direction
-  icon: {fileID: 2851236752720064745, guid: d9199fda5218ed842925b92ddc58863d, type: 3}
-  maxLevel: 1
+  displayName: 
+  description: Restore 1 HP
+  icon: {fileID: -2007369450944448633, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  maxLevel: 3
   spawnWeight: 1
-  price: 20
+  price: 50

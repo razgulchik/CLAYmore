@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86a44f7425f5f3e44927dacaa2a19803, type: 3}
   m_Name: PotConfig 2
   m_EditorClassIdentifier: 
-  maxHp: 3
+  maxHp: 4
   coinDropMin: 1
   coinDropMax: 3
   fallDuration: 1
   fallEase: 5
   spawnHeight: 5
   sprite: {fileID: -411944185114684318, guid: 8ee44deb100464541a69322355dcd766, type: 3}
-  spawnWeight: 1
+  spawnWeight: 5

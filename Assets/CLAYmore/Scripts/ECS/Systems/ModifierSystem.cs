@@ -32,7 +32,11 @@ namespace CLAYmore
             modifiers.Levels[evt.Modifier.name] = newLevel;
 
             evt.Modifier.Apply(playerEntity, newLevel);
-            _world.Events.Publish(new PlayerStatsChangedEvent());
+            PlayerStatsPublisher.Publish(_world);
+
+            var health = playerEntity.Has<HealthComponent>() ? playerEntity.Get<HealthComponent>() : null;
+            if (health != null)
+                _world.Events.Publish(new PlayerHpChangedEvent { Hp = health.Hp, MaxHp = health.MaxHp });
         }
 
         private void OnModifierSkipped(ModifierSkippedEvent evt)
@@ -40,12 +44,6 @@ namespace CLAYmore
             _economy.Add(evt.CoinsGiven);
         }
 
-        private Entity GetPlayerEntity()
-        {
-            foreach (Entity e in _world.Query<PlayerStatsComponent>())
-                return e;
-            return null;
-        }
-
+        private Entity GetPlayerEntity() => _world.QueryFirst<PlayerStatsComponent>();
     }
 }

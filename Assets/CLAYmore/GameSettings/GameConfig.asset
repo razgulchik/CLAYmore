@@ -16,10 +16,14 @@ MonoBehaviour:
   moveTime: 0.25
   bounceTime: 0.25
   bounceReturnTime: 0.4
-  spawnInitialInterval: 2
-  spawnMinInterval: 0.5
-  spawnIntervalDecreasePerSecond: 0.02
+  spawnInitialInterval: 3
+  spawnMinInterval: 0.2
+  spawnIntervalDecreasePerSecond: 0.015
   targetedSpawnEveryMin: 4
   targetedSpawnEveryMax: 7
-  chestSpawnInitialInterval: 2
-  chestSpawnMinInterval: 5
+  chestSpawnInitialInterval: 20
+  chestSpawnMinInterval: 30
+  pointsPerSecond: 5
+  pointsPerPot: 10
+  pointsPerModifier: 20
+  pointsPerCoin: 5

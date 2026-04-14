@@ -7,5 +7,6 @@ namespace CLAYmore
     {
         public bool IsMoving;
         public Vector2Int FacingDirection = Vector2Int.down;
+        public float MoveTime = 0.15f;
     }
 }

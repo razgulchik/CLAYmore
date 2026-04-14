@@ -23,6 +23,8 @@ namespace CLAYmore
             if (c == null) return;
             c.Coins += amount;
             OnChanged?.Invoke(c.Coins);
+            _world.Events.Publish(new CoinsAddedEvent { Amount = amount });
+            _world.Events.Publish(new CoinBalanceChangedEvent { NewBalance = c.Coins });
         }
 
         public bool TrySpend(int amount)
@@ -31,6 +33,7 @@ namespace CLAYmore
             if (c == null || c.Coins < amount) return false;
             c.Coins -= amount;
             OnChanged?.Invoke(c.Coins);
+            _world.Events.Publish(new CoinBalanceChangedEvent { NewBalance = c.Coins });
             return true;
         }
 

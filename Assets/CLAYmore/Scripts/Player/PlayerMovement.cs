@@ -35,7 +35,8 @@ namespace CLAYmore
             var entity = gameObject.GetComponent<Entity>() ?? gameObject.AddComponent<Entity>();
             _movement = entity.Add(new MovementComponent
             {
-                FacingDirection = Vector2Int.down
+                FacingDirection = Vector2Int.down,
+                MoveTime        = moveTime,
             });
 
             _weapon = GetComponentInChildren<Weapon>();
@@ -54,11 +55,22 @@ namespace CLAYmore
         private void OnEnable()
         {
             World.Current?.Events.Subscribe<PlayerMoveResultEvent>(OnMoveResult);
+            World.Current?.Events.Subscribe<PlayerStatsChangedEvent>(OnStatsChanged);
         }
 
         private void OnDisable()
         {
             World.Current?.Events.Unsubscribe<PlayerMoveResultEvent>(OnMoveResult);
+            World.Current?.Events.Unsubscribe<PlayerStatsChangedEvent>(OnStatsChanged);
+        }
+
+        private void OnStatsChanged(PlayerStatsChangedEvent evt)
+        {
+            if (evt.MoveTime > 0f)
+            {
+                moveTime = evt.MoveTime;
+                _movement.MoveTime = evt.MoveTime;
+            }
         }
 
         // ── Private ───────────────────────────────────────────────────────────

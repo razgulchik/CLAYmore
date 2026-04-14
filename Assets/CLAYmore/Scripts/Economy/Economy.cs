@@ -31,6 +31,7 @@ namespace CLAYmore
             _system = World.Current?.GetSystem<EconomySystem>();
             if (_system != null)
                 _system.OnChanged += coins => OnChanged?.Invoke(coins);
+            World.Current?.Events.Publish(new CoinBalanceChangedEvent { NewBalance = startingCoins });
         }
 
         private void OnDestroy()

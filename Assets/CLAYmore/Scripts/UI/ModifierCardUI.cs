@@ -25,8 +25,8 @@ namespace CLAYmore
             if (descriptionLabel != null) descriptionLabel.text = modifier.GetDescription(newLevel);
             if (levelLabel       != null)
             {
-                levelLabel.gameObject.SetActive(modifier.maxLevel > 1);
-                levelLabel.text = $"Level {newLevel}/{modifier.maxLevel}";
+                levelLabel.gameObject.SetActive(modifier.maxLevel > 0);
+                levelLabel.text = $"{newLevel}"; ///{modifier.maxLevel}
             }
             if (priceLabel != null)
                 priceLabel.text = price > 0 ? $"-{price}" : "Free";

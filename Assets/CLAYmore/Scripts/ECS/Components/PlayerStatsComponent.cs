@@ -3,6 +3,7 @@ namespace CLAYmore.ECS
     public class PlayerStatsComponent : IComponent
     {
         public int   DamageBonus       = 0;
+        public float BaseMoveTime      = 0.15f;
         public bool  HasDash           = false;
         public bool  HasAoeStrike      = false;
         public bool  HasOrthoStrike    = false;

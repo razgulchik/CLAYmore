@@ -10,7 +10,6 @@ namespace CLAYmore
     public class ChestSpawner : MonoBehaviour
     {
         [HideInInspector] public IslandGenerator islandGenerator;  // set by Bootstrap
-        [HideInInspector] public Bootstrap       bootstrap;         // set by Bootstrap
 
         [Header("Pool")]
         [HideInInspector] public PrefabPool chestPool;              // set by Bootstrap
@@ -21,6 +20,7 @@ namespace CLAYmore
         public float minInterval     = 20f;
 
         private Entity _entity;
+        private bool   _isGameOver;
 
         private void Start()
         {
@@ -43,17 +43,21 @@ namespace CLAYmore
 
             World.Current?.RegisterEntity(_entity);
             World.Current?.Events.Subscribe<SpawnRequestedEvent>(OnSpawnRequested);
+            World.Current?.Events.Subscribe<GameOverEvent>(OnGameOver);
         }
 
         private void OnDestroy()
         {
             World.Current?.Events.Unsubscribe<SpawnRequestedEvent>(OnSpawnRequested);
+            World.Current?.Events.Unsubscribe<GameOverEvent>(OnGameOver);
         }
+
+        private void OnGameOver(GameOverEvent e) => _isGameOver = true;
 
         private void OnSpawnRequested(SpawnRequestedEvent evt)
         {
             if (evt.SpawnerEntity != _entity) return;
-            if (bootstrap != null && bootstrap.IsGameOver) return;
+            if (_isGameOver) return;
             SpawnChest();
         }
 

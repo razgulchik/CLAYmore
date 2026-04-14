@@ -83,8 +83,7 @@ namespace CLAYmore
             }
 
             // Pause game
-            Time.timeScale = 0f;
-            World.Current?.Events.Publish(new GamePausedEvent { IsPaused = true });
+            PauseManager.Instance.Push();
 
             // Populate cards
             int currentCoins = World.Current?.GetSystem<EconomySystem>()?.GetCoinCount() ?? 0;
@@ -145,26 +144,35 @@ namespace CLAYmore
         {
             _isOpen = false;
             panel.SetActive(false);
-            Time.timeScale = 1f;
-            World.Current?.Events.Publish(new GamePausedEvent { IsPaused = false });
+            PauseManager.Instance.Pop();
         }
 
         /// <summary>
-        /// Filters out modifiers that have already reached maxLevel.
+        /// Filters out modifiers that have reached maxLevel or whose IsAvailable() returns false.
         /// </summary>
         private List<ModifierConfig> BuildAvailablePool()
         {
             var result = new List<ModifierConfig>();
             if (modifierPool == null) return result;
 
+            Entity player = GetPlayerEntity();
+
             foreach (var mod in modifierPool)
             {
                 if (mod == null) continue;
                 _modifiers.Levels.TryGetValue(mod.name, out int currentLevel);
-                if (currentLevel < mod.maxLevel)
+                if (currentLevel < mod.maxLevel && mod.IsAvailable(player))
                     result.Add(mod);
             }
             return result;
+        }
+
+        private Entity GetPlayerEntity()
+        {
+            if (World.Current == null) return null;
+            foreach (var e in World.Current.Query<CLAYmore.ECS.PlayerStatsComponent>())
+                return e;
+            return null;
         }
 
         /// <summary>
