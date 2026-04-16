@@ -22,6 +22,8 @@ namespace CLAYmore
 
         [HideInInspector]
         public ModifierConfig[] modifierPool;  // set by Bootstrap
+        [HideInInspector]
+        public int coinsOnSkip;                // set by Bootstrap
 
         private ChestConfig _chestConfig;
         private List<ModifierConfig> _offered = new();
@@ -77,7 +79,7 @@ namespace CLAYmore
                 // Nothing to offer — give coins and skip automatically
                 World.Current?.Events.Publish(new ModifierSkippedEvent
                 {
-                    CoinsGiven = _chestConfig != null ? _chestConfig.coinsOnSkip : 0,
+                    CoinsGiven = coinsOnSkip,
                 });
                 return;
             }
@@ -103,7 +105,6 @@ namespace CLAYmore
             }
 
             // Skip button
-            int coinsOnSkip = _chestConfig != null ? _chestConfig.coinsOnSkip : 0;
             if (skipCoinsLabel != null)
                 skipCoinsLabel.text = coinsOnSkip > 0 ? $"+{coinsOnSkip}" : "Skip";
             skipButton.onClick.RemoveAllListeners();

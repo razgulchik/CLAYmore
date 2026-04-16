@@ -13,16 +13,11 @@ namespace CLAYmore
         public float bounceTime       = 0.1f;
         public float bounceReturnTime = 0.05f;
 
-        [Header("Pot Spawner — Timing")]
-        public float spawnInitialInterval = 3f;
-        public float spawnMinInterval = 0.5f;
-        [Tooltip("Seconds subtracted from spawn interval per second of play time")]
-        public float spawnIntervalDecreasePerSecond = 0.02f;
-
-        [Header("Pot Spawner — Targeted")]
-        [Tooltip("N is chosen randomly in [min, max] each time; the next targeted spawn falls on the player's tile")]
-        [Min(1)] public int targetedSpawnEveryMin = 4;
-        [Min(1)] public int targetedSpawnEveryMax = 7;
+        [Header("Session")]
+        [Tooltip("Total session duration in seconds (e.g. 600 = 10 min)")]
+        public float sessionDuration = 600f;
+        [Tooltip("Difficulty waves sorted by startTime. Leave empty to skip wave progression.")]
+        public WaveConfig[] waves;
 
         [Header("Chest Spawner")]
         public float chestSpawnInitialInterval = 30f;

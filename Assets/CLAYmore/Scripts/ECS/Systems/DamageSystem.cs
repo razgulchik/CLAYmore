@@ -38,6 +38,8 @@ namespace CLAYmore
         /// </summary>
         public bool PlayerHitPot(Entity potEntity)
         {
+            if (potEntity.Get<PotComponent>().Config.isRock) return false;
+
             int dmg = 1;
             Entity player = GetPlayerEntity();
             if (player != null && player.Has<PlayerStatsComponent>())
@@ -59,9 +61,12 @@ namespace CLAYmore
             if (playerEntity != null && !TryAbsorbWithShield(playerEntity))
                 _healthSystem.TakeDamage(playerEntity, 1);
 
-            // Drain remaining HP to trigger EntityDiedEvent → Pot.BreakVisual
-            var h = evt.PotEntity.Get<HealthComponent>();
-            _healthSystem.TakeDamage(evt.PotEntity, h.Hp);
+            // Drain remaining HP to trigger EntityDiedEvent → Pot.BreakVisual (skip rocks)
+            if (!pot.Config.isRock)
+            {
+                var h = evt.PotEntity.Get<HealthComponent>();
+                _healthSystem.TakeDamage(evt.PotEntity, h.Hp);
+            }
         }
 
         private void OnPlayerTileChanged(PlayerTileChangedEvent evt)
@@ -77,8 +82,11 @@ namespace CLAYmore
                 if (playerEntity != null && !TryAbsorbWithShield(playerEntity))
                     _healthSystem.TakeDamage(playerEntity, 1);
 
-                var h = entity.Get<HealthComponent>();
-                _healthSystem.TakeDamage(entity, h.Hp);
+                if (!pot.Config.isRock)
+                {
+                    var h = entity.Get<HealthComponent>();
+                    _healthSystem.TakeDamage(entity, h.Hp);
+                }
                 return;
             }
         }

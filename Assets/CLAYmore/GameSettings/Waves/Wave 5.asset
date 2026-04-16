@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33706aa759ffdbe408d2929e5f8689e4, type: 3}
+  m_Name: Wave 5
+  m_EditorClassIdentifier: 
+  startTime: 240
+  spawnInterval: 1.2
+  minSpawnInterval: 0.2
+  spawnDecreasePerSecond: 0.005
+  fallDurationMultiplier: 0.7
+  targetedSpawnEveryMin: 3
+  targetedSpawnEveryMax: 4
+  potWeights:
+  - config: {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
+    weight: 1
+  - config: {fileID: 11400000, guid: 379fd2a7acec7af4590d2d5ca96c9e88, type: 2}
+    weight: 5
+  - config: {fileID: 11400000, guid: ab72deec00c5ee9428d3b838120894fe, type: 2}
+    weight: 15
+  - config: {fileID: 11400000, guid: bb48dd03c28f94a489d32b31e0a05e94, type: 2}
+    weight: 10
+  rockSpawnChance: 0.3

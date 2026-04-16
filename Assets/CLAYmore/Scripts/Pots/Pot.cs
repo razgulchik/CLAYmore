@@ -37,7 +37,8 @@ namespace CLAYmore
         public void Initialize(PotConfig config, Vector3 landPos, Tilemap tilemap,
                                Economy economy,
                                IslandGenerator islandGenerator,
-                               PrefabPool potPool, PrefabPool shadowPool)
+                               PrefabPool potPool, PrefabPool shadowPool,
+                               float fallDurationMultiplier = 1f)
         {
             _economy         = economy;
             _islandGenerator = islandGenerator;
@@ -80,7 +81,7 @@ namespace CLAYmore
 
             _currentShadow = _shadowPool?.Get(new Vector3(landPos.x, landPos.y, transform.position.z));
 
-            transform.DOMove(landPos, config.fallDuration)
+            transform.DOMove(landPos, config.fallDuration * fallDurationMultiplier)
                 .SetEase(config.fallEase)
                 .OnComplete(OnTweenLanded);
         }

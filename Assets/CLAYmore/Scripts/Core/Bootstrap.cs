@@ -35,6 +35,8 @@ namespace CLAYmore
         public PrefabPool chestPool;
 
         [Header("Chest / Modifiers")]
+        [Tooltip("Coins awarded to the player when skipping a modifier choice")]
+        public int coinsOnSkip = 5;
         public ModifierConfig[] modifierPool;
         public ModifierChoiceUI modifierChoiceUI;
 
@@ -116,15 +118,6 @@ namespace CLAYmore
                     if (playerEntity.Has<MovementComponent>())
                         playerEntity.Get<MovementComponent>().MoveTime = config.moveTime;
                 }
-                if (potSpawner != null)
-                {
-                    potSpawner.initialInterval           = config.spawnInitialInterval;
-                    potSpawner.minInterval               = config.spawnMinInterval;
-                    potSpawner.intervalDecreasePerSecond = config.spawnIntervalDecreasePerSecond;
-                    potSpawner.targetedSpawnEveryMin     = config.targetedSpawnEveryMin;
-                    potSpawner.targetedSpawnEveryMax     = config.targetedSpawnEveryMax;
-                }
-
                 if (chestSpawner != null)
                 {
                     chestSpawner.initialInterval = config.chestSpawnInitialInterval;
@@ -150,11 +143,19 @@ namespace CLAYmore
             }
 
 
-            if (modifierChoiceUI != null && modifierPool != null)
+            if (modifierChoiceUI != null)
+            {
                 modifierChoiceUI.modifierPool = modifierPool;
+                modifierChoiceUI.coinsOnSkip  = coinsOnSkip;
+            }
+
+            _world.RegisterSystem(new SessionTimerSystem(
+                config != null ? config.sessionDuration : 600f,
+                config?.waves));
 
             _playerEntity = playerEntity;
             _world.Events.Subscribe<EntityDiedEvent>(OnEntityDied);
+            _world.Events.Subscribe<SessionTimeUpEvent>(OnSessionTimeUp);
         }
 
         private void Update()
@@ -165,17 +166,25 @@ namespace CLAYmore
         private void OnDestroy()
         {
             _world?.Events.Unsubscribe<EntityDiedEvent>(OnEntityDied);
+            _world?.Events.Unsubscribe<SessionTimeUpEvent>(OnSessionTimeUp);
             _world?.Destroy();
         }
 
         private void OnEntityDied(EntityDiedEvent e)
         {
             if (e.Entity != _playerEntity) return;
+            TriggerGameOver();
+        }
+
+        private void OnSessionTimeUp(SessionTimeUpEvent _) => TriggerGameOver();
+
+        private void TriggerGameOver()
+        {
+            if (IsGameOver) return;
             IsGameOver = true;
             PauseManager.Instance.Push();
             _world?.Events.Publish(new GameOverEvent());
             Debug.Log("Game Over!");
-            // TODO: show Game Over UI, freeze input
         }
 
         public void Restart()

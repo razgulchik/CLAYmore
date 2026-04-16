@@ -14,5 +14,7 @@ namespace CLAYmore
         public float spawnHeight = 8f;
         public Sprite sprite;
         [Min(0f)] public float spawnWeight = 1f;
+        [Tooltip("Rocks are indestructible and permanently block the cell")]
+        public bool isRock = false;
     }
 }
