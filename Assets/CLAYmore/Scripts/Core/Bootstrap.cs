@@ -149,13 +149,10 @@ namespace CLAYmore
                 modifierChoiceUI.coinsOnSkip  = coinsOnSkip;
             }
 
-            _world.RegisterSystem(new SessionTimerSystem(
-                config != null ? config.sessionDuration : 600f,
-                config?.waves));
+            _world.RegisterSystem(new SessionTimerSystem(config?.waves));
 
             _playerEntity = playerEntity;
             _world.Events.Subscribe<EntityDiedEvent>(OnEntityDied);
-            _world.Events.Subscribe<SessionTimeUpEvent>(OnSessionTimeUp);
         }
 
         private void Update()
@@ -166,7 +163,6 @@ namespace CLAYmore
         private void OnDestroy()
         {
             _world?.Events.Unsubscribe<EntityDiedEvent>(OnEntityDied);
-            _world?.Events.Unsubscribe<SessionTimeUpEvent>(OnSessionTimeUp);
             _world?.Destroy();
         }
 
@@ -175,8 +171,6 @@ namespace CLAYmore
             if (e.Entity != _playerEntity) return;
             TriggerGameOver();
         }
-
-        private void OnSessionTimeUp(SessionTimeUpEvent _) => TriggerGameOver();
 
         private void TriggerGameOver()
         {

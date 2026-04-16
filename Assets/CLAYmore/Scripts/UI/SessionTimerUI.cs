@@ -31,9 +31,9 @@ namespace CLAYmore
 
             if (_timerSystem == null || timerLabel == null) return;
 
-            float remaining = _timerSystem.TimeRemaining;
-            int minutes = (int)(remaining / 60f);
-            int seconds = (int)(remaining % 60f);
+            float elapsed = _timerSystem.TimeElapsed;
+            int minutes = (int)(elapsed / 60f);
+            int seconds = (int)(elapsed % 60f);
             timerLabel.text = $"{minutes:D2}:{seconds:D2}";
         }
 

@@ -14,8 +14,6 @@ namespace CLAYmore
         public float bounceReturnTime = 0.05f;
 
         [Header("Session")]
-        [Tooltip("Total session duration in seconds (e.g. 600 = 10 min)")]
-        public float sessionDuration = 600f;
         [Tooltip("Difficulty waves sorted by startTime. Leave empty to skip wave progression.")]
         public WaveConfig[] waves;
 

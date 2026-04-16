@@ -4,12 +4,11 @@ using UnityEngine;
 namespace CLAYmore
 {
     /// <summary>
-    /// Counts down the session, fires WaveChangedEvent at each wave boundary,
-    /// and publishes SessionTimeUpEvent when time runs out.
+    /// Counts up from zero, fires WaveChangedEvent at each wave boundary.
+    /// The last wave stays active until the player dies — no session time limit.
     /// </summary>
     public class SessionTimerSystem : ISystem
     {
-        private readonly float        _sessionDuration;
         private readonly WaveConfig[] _waves; // sorted by startTime
 
         private World _world;
@@ -17,12 +16,10 @@ namespace CLAYmore
         private int   _nextWaveIndex;
         private bool  _active = true;
 
-        public float TimeRemaining => Mathf.Max(0f, _sessionDuration - _elapsed);
+        public float TimeElapsed => _elapsed;
 
-        public SessionTimerSystem(float sessionDuration, WaveConfig[] waves)
+        public SessionTimerSystem(WaveConfig[] waves)
         {
-            _sessionDuration = sessionDuration;
-
             if (waves != null && waves.Length > 0)
             {
                 _waves = (WaveConfig[])waves.Clone();
@@ -46,7 +43,6 @@ namespace CLAYmore
 
             _elapsed += deltaTime;
 
-            // Trigger all waves whose startTime has been passed this frame
             while (_nextWaveIndex < _waves.Length &&
                    _elapsed >= _waves[_nextWaveIndex].startTime)
             {
@@ -58,13 +54,6 @@ namespace CLAYmore
                 });
                 Debug.Log($"[SessionTimer] Wave {_nextWaveIndex} — t={_elapsed:F0}s");
                 _nextWaveIndex++;
-            }
-
-            if (_elapsed >= _sessionDuration)
-            {
-                _active = false;
-                _world.Events.Publish(new SessionTimeUpEvent());
-                Debug.Log("[SessionTimer] Session complete.");
             }
         }
 
