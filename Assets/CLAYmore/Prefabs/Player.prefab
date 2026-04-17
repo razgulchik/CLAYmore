@@ -108,6 +108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4422931552575058763}
   - component: {fileID: 3188779002144291419}
+  - component: {fileID: 6658031181592957376}
   m_Layer: 0
   m_Name: ShieldVisualTop
   m_TagString: Untagged
@@ -185,6 +186,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6658031181592957376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5249968570035507224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44ed01687ee959e408141fe04457a13d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeInDuration: 0.3
+  fadeOutDuration: 0.5
+  hitPunchScale: 0.3
+  hitPunchTime: 0.2
 --- !u!1 &5275171147501656390
 GameObject:
   m_ObjectHideFlags: 0
