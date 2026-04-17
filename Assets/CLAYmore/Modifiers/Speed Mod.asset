@@ -18,5 +18,5 @@ MonoBehaviour:
   maxLevel: 3
   spawnWeight: 10
   price: 20
-  reductionPerLevel: 0.02
-  minMoveTime: 0.05
+  reductionPerLevel: 0.05
+  minMoveTime: 0.1

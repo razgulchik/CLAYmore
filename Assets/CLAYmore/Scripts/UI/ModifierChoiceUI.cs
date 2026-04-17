@@ -145,6 +145,12 @@ namespace CLAYmore
         {
             _isOpen = false;
             panel.SetActive(false);
+            StartCoroutine(UnpauseNextFrame());
+        }
+
+        private IEnumerator UnpauseNextFrame()
+        {
+            yield return null;
             PauseManager.Instance.Pop();
         }
 

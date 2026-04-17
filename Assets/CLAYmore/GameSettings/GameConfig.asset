@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   playerMaxHp: 5
-  moveTime: 0.25
-  bounceTime: 0.25
+  moveTime: 0.4
+  bounceTime: 0.4
   bounceReturnTime: 0.4
   waves:
   - {fileID: 11400000, guid: 3b673221f4759a947ae3906350429f49, type: 2}

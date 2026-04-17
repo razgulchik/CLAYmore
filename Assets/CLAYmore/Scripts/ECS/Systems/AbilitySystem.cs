@@ -82,7 +82,7 @@ namespace CLAYmore
             {
                 Entity pot = GetLandedPotAt(cell);
                 if (pot != null)
-                    _damageSystem.PlayerHitPot(pot);
+                    _damageSystem.PlayerHitPot(pot, stats.OrthoStrikeDamage);
             }
 
             _world.Events.Publish(new OrthoStrikeEvent
@@ -106,8 +106,9 @@ namespace CLAYmore
 
             Entity  target   = candidates[Random.Range(0, candidates.Count)];
             Vector3 worldPos = _island.GetCellCenter(target.Get<PotComponent>().LandCell);
-            var h = target.Get<HealthComponent>();
-            _healthSystem.TakeDamage(target, h.Hp);
+            Entity  player   = GetPlayerEntity();
+            int     dmg      = player?.Get<PlayerStatsComponent>().LightningDamage ?? 1;
+            _damageSystem.PlayerHitPot(target, dmg);
             _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
         }
 

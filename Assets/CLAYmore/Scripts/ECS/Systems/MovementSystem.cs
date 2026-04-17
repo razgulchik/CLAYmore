@@ -59,6 +59,8 @@ namespace CLAYmore
         private void OnGamePaused(GamePausedEvent evt)
         {
             _isPaused = evt.IsPaused;
+            if (!_isPaused)
+                _heldDirection = Vector2Int.zero;
         }
 
         private void OnMoveHeld(PlayerMoveHeldEvent evt)

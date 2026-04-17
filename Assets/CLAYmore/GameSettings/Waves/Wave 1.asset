@@ -21,7 +21,7 @@ MonoBehaviour:
   targetedSpawnEveryMax: 7
   potWeights:
   - config: {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
-    weight: 10
+    weight: 1
   - config: {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
     weight: 1
   rockSpawnChance: 0

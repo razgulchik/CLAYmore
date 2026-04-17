@@ -46,6 +46,7 @@ namespace CLAYmore
             _shadowPool      = shadowPool;
 
             transform.DOKill();
+            transform.localScale = Vector3.one;
 
             _entity = GetComponent<Entity>() ?? gameObject.AddComponent<Entity>();
 

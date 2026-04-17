@@ -36,14 +36,23 @@ namespace CLAYmore
         /// Called by MovementSystem when the player attempts to enter a pot's cell.
         /// Returns true if the pot was destroyed (player may enter the cell).
         /// </summary>
-        public bool PlayerHitPot(Entity potEntity)
+        /// <param name="flatDamage">When > 0, bypasses player DamageBonus and deals exactly this much.</param>
+        public bool PlayerHitPot(Entity potEntity, int flatDamage = 0)
         {
             if (potEntity.Get<PotComponent>().Config.isRock) return false;
 
-            int dmg = 1;
-            Entity player = GetPlayerEntity();
-            if (player != null && player.Has<PlayerStatsComponent>())
-                dmg += player.Get<PlayerStatsComponent>().DamageBonus;
+            int dmg;
+            if (flatDamage > 0)
+            {
+                dmg = flatDamage;
+            }
+            else
+            {
+                dmg = 1;
+                Entity player = GetPlayerEntity();
+                if (player != null && player.Has<PlayerStatsComponent>())
+                    dmg += player.Get<PlayerStatsComponent>().DamageBonus;
+            }
 
             _healthSystem.TakeDamage(potEntity, dmg);
             return potEntity.Get<HealthComponent>().Hp <= 0;
