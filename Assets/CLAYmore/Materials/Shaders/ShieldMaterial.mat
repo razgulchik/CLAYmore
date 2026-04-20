@@ -38,11 +38,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _DissolveThreshold: 1
+    - _GlowIntesity: 0.2
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RingRadius: 0.83
-    - _RingWidth: 0.24
-    - _SoftBottom: 0.28
+    - _RingRadius: 0.78
+    - _RingWidth: 0.2
+    - _SoftBottom: 0.39
     m_Colors:
     - _Color: {r: 0.2999999, g: 0.7, b: 1, a: 0.78431374}
   m_BuildTextureStacks: []

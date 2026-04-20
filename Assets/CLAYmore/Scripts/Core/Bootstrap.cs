@@ -39,6 +39,8 @@ namespace CLAYmore
         public int coinsOnSkip = 5;
         public ModifierConfig[] modifierPool;
         public ModifierChoiceUI modifierChoiceUI;
+        [Tooltip("Modifiers applied to the player at game start (for testing / preset builds)")]
+        public ModifierConfig[] startingModifiers;
 
         public bool IsGameOver { get; private set; }
 
@@ -152,6 +154,20 @@ namespace CLAYmore
             _world.RegisterSystem(new SessionTimerSystem(config?.waves));
 
             _playerEntity = playerEntity;
+
+            if (startingModifiers != null)
+            {
+                var modLevels = new System.Collections.Generic.Dictionary<string, int>();
+                foreach (var mod in startingModifiers)
+                {
+                    if (mod == null) continue;
+                    modLevels.TryGetValue(mod.name, out int level);
+                    if (level >= mod.maxLevel) continue;
+                    modLevels[mod.name] = level + 1;
+                    _world.Events.Publish(new ModifierChosenEvent { Modifier = mod });
+                }
+            }
+
             _world.Events.Subscribe<EntityDiedEvent>(OnEntityDied);
         }
 

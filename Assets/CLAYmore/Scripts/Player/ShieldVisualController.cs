@@ -35,6 +35,10 @@ namespace CLAYmore
         {
             World.Current?.Events.Subscribe<ShieldAbsorbedEvent>(OnShieldAbsorbed);
             World.Current?.Events.Subscribe<PlayerStatsChangedEvent>(OnStatsChanged);
+
+            var stats = GetPlayerStats();
+            if (stats != null && stats.ShieldMax > 0 && stats.ShieldCurrent > 0 && stats.ShieldCooldown <= 0f)
+                AnimateAppear();
         }
 
         private void OnDestroy()
