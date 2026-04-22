@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: PotConfig
   m_EditorClassIdentifier: 
   maxHp: 1
-  coinDropMin: 1
-  coinDropMax: 1
+  coinDropMin: 100
+  coinDropMax: 100
   fallDuration: 1
   fallEase: 5
   spawnHeight: 5
   sprite: {fileID: -5744736755499725856, guid: f577a4aa3e374504881baf4800f9c454, type: 3}
   spawnWeight: 20
+  isRock: 0

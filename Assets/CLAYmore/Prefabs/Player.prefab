@@ -198,8 +198,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ed01687ee959e408141fe04457a13d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeInDuration: 0.3
-  fadeOutDuration: 0.5
+  appearDuration: 0.4
+  dissolveDuration: 0.6
   hitPunchScale: 0.3
   hitPunchTime: 0.2
 --- !u!1 &5275171147501656390
@@ -365,7 +365,7 @@ SpriteRenderer:
   m_SortingLayerID: -428061367
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -5692521275274912567, guid: 3ab467228328ef943a661b26c2336bc4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a79c11e4e86685848b2979e913fe8540, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
