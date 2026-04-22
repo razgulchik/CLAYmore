@@ -13,6 +13,10 @@ namespace CLAYmore
         public Ease fallEase = Ease.InQuad;
         public float spawnHeight = 8f;
         public Sprite sprite;
+        [Header("Damage Sprites")]
+        public Sprite damageSprite1;
+        public Sprite damageSprite2;
+        public Sprite damageSprite3;
         [Min(0f)] public float spawnWeight = 1f;
         [Tooltip("Rocks are indestructible and permanently block the cell")]
         public bool isRock = false;

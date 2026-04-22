@@ -32,6 +32,7 @@ namespace CLAYmore
         [Header("Pools")]
         public PrefabPool potPool;
         public PrefabPool shadowPool;
+        public PrefabPool coinPool;
         public PrefabPool chestPool;
 
         [Header("Chest / Modifiers")]
@@ -136,6 +137,7 @@ namespace CLAYmore
                 potSpawner.playerMovement = playerMovement;
                 potSpawner.potPool        = potPool;
                 potSpawner.shadowPool     = shadowPool;
+                potSpawner.coinPool       = coinPool;
             }
 
             if (chestSpawner != null)

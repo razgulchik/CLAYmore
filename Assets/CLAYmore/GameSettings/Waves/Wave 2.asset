@@ -15,7 +15,7 @@ MonoBehaviour:
   startTime: 60
   spawnInterval: 1.8
   minSpawnInterval: 0.5
-  spawnDecreasePerSecond: 0.02
+  spawnDecreasePerSecond: 0.025
   fallDurationMultiplier: 1
   targetedSpawnEveryMin: 4
   targetedSpawnEveryMax: 6

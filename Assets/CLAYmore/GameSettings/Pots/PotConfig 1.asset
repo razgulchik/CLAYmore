@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 2
   coinDropMin: 1
-  coinDropMax: 2
+  coinDropMax: 3
   fallDuration: 1
   fallEase: 5
-  spawnHeight: 5
+  spawnHeight: 8
   sprite: {fileID: -3101179406812733988, guid: 4ace2d7fa58ab9a4881d3c49cfe0e82e, type: 3}
+  damageSprite1: {fileID: -355344813515412506, guid: 4a39de452fa84e84cb154be94d2eb110, type: 3}
+  damageSprite2: {fileID: 610571194260500032, guid: 4a39de452fa84e84cb154be94d2eb110, type: 3}
+  damageSprite3: {fileID: 1011128839336406101, guid: 4a39de452fa84e84cb154be94d2eb110, type: 3}
   spawnWeight: 10
+  isRock: 0

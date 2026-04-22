@@ -12,8 +12,6 @@ namespace CLAYmore
     [RequireComponent(typeof(SpriteRenderer))]
     public class Pot : MonoBehaviour
     {
-        public GameObject coinPrefab;
-
         private PotComponent _pot;
         private Entity _entity;
         private SpriteRenderer _renderer;
@@ -27,6 +25,9 @@ namespace CLAYmore
 
         private PrefabPool _potPool;
         private PrefabPool _shadowPool;
+        private PrefabPool _coinPool;
+
+        private int _hitCount;
         private GameObject _currentShadow;
 
         // ── Init ─────────────────────────────────────────────────────────────
@@ -37,13 +38,14 @@ namespace CLAYmore
         public void Initialize(PotConfig config, Vector3 landPos, Tilemap tilemap,
                                Economy economy,
                                IslandGenerator islandGenerator,
-                               PrefabPool potPool, PrefabPool shadowPool,
+                               PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool,
                                float fallDurationMultiplier = 1f)
         {
             _economy         = economy;
             _islandGenerator = islandGenerator;
             _potPool         = potPool;
             _shadowPool      = shadowPool;
+            _coinPool        = coinPool;
 
             transform.DOKill();
             transform.localScale = Vector3.one;
@@ -59,6 +61,7 @@ namespace CLAYmore
             _pot.State    = PotState.InFlight;
             _pot.LandPos  = landPos;
             _pot.LandCell = tilemap.WorldToCell(landPos);
+            _hitCount     = 0;
 
             if (_entity.Has<HealthComponent>())
             {
@@ -141,7 +144,22 @@ namespace CLAYmore
 
         private void OnEntityDamaged(EntityDamagedEvent evt)
         {
-            if (evt.Entity == _entity && evt.Hp > 0) HitVisual();
+            if (evt.Entity != _entity) return;
+            _hitCount++;
+            UpdateDamageVisual();
+            if (evt.Hp > 0) HitVisual();
+        }
+
+        private void UpdateDamageVisual()
+        {
+            var cfg = _pot.Config;
+            Sprite next = _hitCount switch
+            {
+                1 => cfg.damageSprite1,
+                2 => cfg.damageSprite2,
+                _ => cfg.damageSprite3,
+            };
+            if (next != null) _renderer.sprite = next;
         }
 
         private void OnEntityDied(EntityDiedEvent evt)
@@ -179,15 +197,15 @@ namespace CLAYmore
                     Random.Range(0.3f, 1.2f),
                     0f);
 
-                if (coinPrefab != null)
+                if (_coinPool != null)
                 {
-                    GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
-                    var captured = coin;
+                    GameObject coin = _coinPool.Get(transform.position);
+                    var pool = _coinPool;
                     coin.transform.DOJump(targetPos, 0.5f, 1, 0.4f)
                         .OnComplete(() =>
                         {
                             _economy?.Add(1);
-                            Destroy(captured);
+                            pool.Return(coin);
                         });
                 }
                 else

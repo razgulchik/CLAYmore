@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4820ff841cc40d24bb4843dfc6bb325e, type: 3}
   m_Name: ChestConfig
   m_EditorClassIdentifier: 
-  sprite: {fileID: -5281422124547630143, guid: 54173b04fecef9f4fab75009326e3323, type: 3}
+  sprite: {fileID: 21300000, guid: 809d58b318e80d54a9e4e448e04562f6, type: 3}
   choiceCount: 3
-  coinsOnSkip: 10
+  coinsOnSkip: 20
