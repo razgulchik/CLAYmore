@@ -30,6 +30,7 @@ namespace CLAYmore
         private int _currentExpansionCost;
 
         private readonly Dictionary<Vector2Int, TileData> _tiles = new();
+        private readonly Dictionary<Vector3Int, TileBase> _decorCache = new();
         private Vector2Int _playerTileIndex = new(int.MinValue, int.MinValue);
 
         private readonly List<Vector2Int> _walkableCells  = new();
@@ -52,6 +53,7 @@ namespace CLAYmore
             _currentExpansionCost = initialExpansionCost;
 
             _tiles.Clear();
+            _decorCache.Clear();
             _playerTileIndex = new(int.MinValue, int.MinValue);
 
             tilemap.ClearAllTiles();
@@ -304,7 +306,22 @@ namespace CLAYmore
                     Vector3Int cell = _originCell + new Vector3Int(relX, relY, 0);
                     IslandTileType type = GetTileType(relX, relY);
                     bool isLight = (cell.x + cell.y) % 2 == 0;
-                    TileBase tile = tileSet.GetTile(type, isLight);
+                    TileBase tile;
+                    if (type == IslandTileType.CenterInner)
+                    {
+                        if (!_decorCache.TryGetValue(cell, out tile))
+                        {
+                            tile = Random.value < 0.3f
+                                ? tileSet.GetRandomDecorTile(isLight)
+                                : tileSet.GetTile(type, isLight);
+                            _decorCache[cell] = tile;
+                        }
+                    }
+                    else
+                    {
+                        _decorCache.Remove(cell);
+                        tile = tileSet.GetTile(type, isLight);
+                    }
 
                     if (tile != null)
                     {

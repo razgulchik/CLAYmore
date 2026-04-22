@@ -20,12 +20,12 @@ MonoBehaviour:
   targetedSpawnEveryMin: 3
   targetedSpawnEveryMax: 4
   potWeights:
-  - config: {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
-    weight: 1
   - config: {fileID: 11400000, guid: 379fd2a7acec7af4590d2d5ca96c9e88, type: 2}
     weight: 5
   - config: {fileID: 11400000, guid: ab72deec00c5ee9428d3b838120894fe, type: 2}
     weight: 15
   - config: {fileID: 11400000, guid: bb48dd03c28f94a489d32b31e0a05e94, type: 2}
     weight: 10
+  - config: {fileID: 11400000, guid: fe7c43f1dec3b5242a1722fa094aea97, type: 2}
+    weight: 5
   rockSpawnChance: 0.3

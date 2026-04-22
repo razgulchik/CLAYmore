@@ -46,6 +46,18 @@ namespace CLAYmore
         public TileBase interiorTopCenterDark;
         public TileBase interiorTopRightCornerDark;
 
+        [Header("Interior Decorative (Flowers/Grass) — Light")]
+        public TileBase[] interiorDecorLight = new TileBase[6];
+
+        [Header("Interior Decorative (Flowers/Grass) — Dark")]
+        public TileBase[] interiorDecorDark = new TileBase[6];
+
+        public TileBase GetRandomDecorTile(bool isLight)
+        {
+            var arr = isLight ? interiorDecorLight : interiorDecorDark;
+            return arr[Random.Range(0, arr.Length)];
+        }
+
         public TileBase GetTile(IslandTileType type, bool isLight)
         {
             if (isLight)

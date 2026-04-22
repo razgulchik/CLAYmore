@@ -44,3 +44,17 @@ MonoBehaviour:
   interiorTopLeftCornerDark: {fileID: 11400000, guid: db4bf60cee0bc184ead4146cb0315e31, type: 2}
   interiorTopCenterDark: {fileID: 11400000, guid: fcdfb860bc420964c85044d4b4a7fb2f, type: 2}
   interiorTopRightCornerDark: {fileID: 11400000, guid: bd9f7a7d2ea1a5c49a48a0792aadc3b5, type: 2}
+  interiorDecorLight:
+  - {fileID: 11400000, guid: a3017f4912113504b8251970aa5e50d9, type: 2}
+  - {fileID: 11400000, guid: d4d8b9505397e2a409fb41ecd4e0d057, type: 2}
+  - {fileID: 11400000, guid: 057df5d9c21802c43b41ad8e3b924751, type: 2}
+  - {fileID: 11400000, guid: 1544428727310bb409e12eac21d6a2c5, type: 2}
+  - {fileID: 11400000, guid: f17b61b48493f0240acfd36b19220167, type: 2}
+  - {fileID: 11400000, guid: f78eed434c6d2f54aa6b17cbacf91a23, type: 2}
+  interiorDecorDark:
+  - {fileID: 11400000, guid: d69a3fb93314a99459c7891be62d1544, type: 2}
+  - {fileID: 11400000, guid: 8ec5416b9c59b544aa0350f053542be8, type: 2}
+  - {fileID: 11400000, guid: e048bc51bfc66844d9e4027858804573, type: 2}
+  - {fileID: 11400000, guid: 3000bcce54be52140973fa9a33abcb85, type: 2}
+  - {fileID: 11400000, guid: 1d1508a6574bfec49bb1b66bece0cfb1, type: 2}
+  - {fileID: 11400000, guid: 31816d0b8f4d18449a81faa1bad1d1c9, type: 2}
