@@ -3024,7 +3024,7 @@ MonoBehaviour:
   ghostCannotAffordColor: {r: 1, g: 1, b: 1, a: 0.50980395}
   canAffordColor: {r: 1, g: 1, b: 1, a: 1}
   cannotAffordColor: {r: 1, g: 0.14171882, b: 0.051886797, a: 1}
-  holdDuration: 2
+  holdDuration: 1
   shakeStrength: 0.04
   shakeDuration: 0.3
   shakeVibrato: 20
