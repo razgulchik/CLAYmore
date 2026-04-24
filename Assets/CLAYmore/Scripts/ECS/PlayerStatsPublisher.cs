@@ -15,9 +15,11 @@ namespace CLAYmore
 
             world.Events.Publish(new PlayerStatsChangedEvent
             {
-                MaxHp    = health?.MaxHp ?? 0,
-                Damage   = 1 + stats.DamageBonus,
-                MoveTime = movement?.MoveTime ?? 0f,
+                MaxHp            = health?.MaxHp ?? 0,
+                Damage           = 1 + stats.DamageBonus,
+                MoveTime         = movement?.MoveTime ?? 0f,
+                BounceReturnTime = stats.BaseBounceReturnTime / stats.SpeedMultiplier,
+                HasWhirlwind     = stats.HasWhirlwind,
             });
         }
     }

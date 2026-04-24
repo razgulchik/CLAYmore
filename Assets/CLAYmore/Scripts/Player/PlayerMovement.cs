@@ -15,17 +15,20 @@ namespace CLAYmore
 
         [Header("Movement Timing")]
         public float moveTime         = 0.15f;
-        public float bounceTime       = 0.1f;
-        public float bounceReturnTime = 0.05f;
+        public float bounceReturnTime = 0.1f;
 
         [Header("Hit Shake")]
         public float shakeStrength  = 0.08f;
         public float shakeDuration  = 0.2f;
         public int   shakeVibrato   = 10;
 
+        [Header("Whirlwind VFX")]
+        [SerializeField] private WhirlVFXController _whirlVFX;
+
         public Vector2Int FacingDirection => _movement.FacingDirection;
 
         private MovementComponent _movement;
+        private PlayerStatsComponent _stats;
         private Weapon _weapon;
         private Transform _weaponTransform;
         private Vector3 _weaponDefaultLocalPos;
@@ -68,9 +71,15 @@ namespace CLAYmore
         {
             if (evt.MoveTime > 0f)
             {
-                moveTime = evt.MoveTime;
+                moveTime           = evt.MoveTime;
                 _movement.MoveTime = evt.MoveTime;
             }
+
+            if (evt.BounceReturnTime > 0f)
+                bounceReturnTime = evt.BounceReturnTime;
+
+            if (_stats == null)
+                _stats = gameObject.GetComponent<Entity>()?.Get<PlayerStatsComponent>();
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -87,6 +96,7 @@ namespace CLAYmore
             {
                 case MoveType.Walk:
                     ShowWeapon();
+                    if (_stats?.HasWhirlwind == true) _whirlVFX?.Play();
                     transform.DOMove(target, moveTime)
                         .OnComplete(() =>
                         {
@@ -101,7 +111,7 @@ namespace CLAYmore
                     ShowWeapon();
                     Vector3 bounceReturn = evt.SlideTarget != Vector3.zero ? evt.SlideTarget : transform.position;
                     bounceReturn.z = transform.position.z;
-                    transform.DOMove(target, bounceTime)
+                    transform.DOMove(target, moveTime)
                         .OnComplete(() =>
                         {
                             HideWeapon();

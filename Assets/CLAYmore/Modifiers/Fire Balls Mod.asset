@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d282bd8e611f26645826dffbbd633eb6, type: 3}
-  m_Name: Ortho Strike Modifier
+  m_Name: Fire Balls Mod
   m_EditorClassIdentifier: 
   displayName: Fire Balls
-  description: Perform an additional attack when landing next cell.
+  description: Shoot fire balls sideways when moving.
   icon: {fileID: 1878486588829640458, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 1
+  maxLevel: 5
   spawnWeight: 1
   price: 70
+  damagePerLevel: 1

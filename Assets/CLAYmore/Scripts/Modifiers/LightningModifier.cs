@@ -24,7 +24,7 @@ namespace CLAYmore
         public override string GetDescription(int level)
         {
             float interval = Mathf.Max(1f, baseInterval - (level - 1) * cooldownReductionPerLevel);
-            return $"Lightning strike every {interval:F1}s (-{cooldownReductionPerLevel:F1}s per level)";
+            return $"Every {interval:F0}s strikes a random pot for {damage} damage (cd -{cooldownReductionPerLevel:F0}s per level)";
         }
     }
 }

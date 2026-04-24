@@ -68,26 +68,26 @@ namespace CLAYmore
             if (player == null) return;
 
             var stats = player.Get<PlayerStatsComponent>();
-            if (!stats.HasOrthoStrike) return;
+            if (!stats.HasFireBalls) return;
 
             Vector2Int move = evt.NewIndex - evt.OldIndex;
             bool movedHorizontally = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
 
-            Vector3Int playerCell = _island.GetPlayerCell();
+            Vector3Int originCell = new Vector3Int(evt.OldIndex.x, evt.OldIndex.y, 0);
             Vector3Int[] perpendicular = movedHorizontally
-                ? new[] { playerCell + Vector3Int.up,   playerCell + Vector3Int.down }
-                : new[] { playerCell + Vector3Int.right, playerCell + Vector3Int.left };
+                ? new[] { originCell + Vector3Int.up,   originCell + Vector3Int.down }
+                : new[] { originCell + Vector3Int.right, originCell + Vector3Int.left };
 
             foreach (Vector3Int cell in perpendicular)
             {
                 Entity pot = GetLandedPotAt(cell);
                 if (pot != null)
-                    _damageSystem.PlayerHitPot(pot, stats.OrthoStrikeDamage);
+                    _damageSystem.PlayerHitPot(pot, stats.FireBallsDamage);
             }
 
             _world.Events.Publish(new OrthoStrikeEvent
             {
-                Origin            = _island.GetCellCenter(playerCell),
+                Origin            = _island.GetCellCenter(originCell),
                 MovedHorizontally = movedHorizontally,
             });
         }

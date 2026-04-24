@@ -15,8 +15,7 @@ MonoBehaviour:
   displayName: Speed
   description: Increase speed
   icon: {fileID: -5181058338123407249, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 3
+  maxLevel: 10
   spawnWeight: 10
   price: 20
-  reductionPerLevel: 0.05
-  minMoveTime: 0.1
+  speedBonusPerLevel: 0.1

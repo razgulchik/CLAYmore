@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2175288bf3e5594a9cf2e39d9a6af32, type: 3}
-  m_Name: Lightning Modifier
+  m_Name: Lightning Mod
   m_EditorClassIdentifier: 
   displayName: Lightning
   description: Lightning strike every 10 sec

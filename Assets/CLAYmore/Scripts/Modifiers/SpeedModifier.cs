@@ -6,21 +6,22 @@ namespace CLAYmore
     [CreateAssetMenu(menuName = "CLAYmore/Modifiers/Speed")]
     public class SpeedModifier : ModifierConfig
     {
-        [Min(0.001f)] public float reductionPerLevel = 0.02f;
-        [Min(0.03f)]  public float minMoveTime       = 0.05f;
+        [Range(0.01f, 0.5f)] public float speedBonusPerLevel = 0.10f;
 
         public override void Apply(Entity playerEntity, int newLevel)
         {
             var stats = playerEntity.Get<PlayerStatsComponent>();
             var move  = playerEntity.Get<MovementComponent>();
-            move.MoveTime = Mathf.Max(minMoveTime, stats.BaseMoveTime - newLevel * reductionPerLevel);
+
+            stats.SpeedMultiplier = 1f + newLevel * speedBonusPerLevel;
+            move.MoveTime         = stats.BaseMoveTime / stats.SpeedMultiplier;
         }
 
         public override string GetDescription(int level)
         {
-            float reduction = reductionPerLevel * level * 1000f;
-            float min       = minMoveTime * 1000f;
-            return $"Move time -{reduction:F0}ms (min {min:F0}ms)";
+            float totalBonus = speedBonusPerLevel * level * 100f;
+            float reduction  = (1f - 1f / (1f + speedBonusPerLevel * level)) * 100f;
+            return $"+{totalBonus:F0}% speed ({reduction:F0}% faster)";
         }
     }
 }

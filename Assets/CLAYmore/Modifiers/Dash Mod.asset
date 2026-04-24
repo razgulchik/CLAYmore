@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e4a060d2f2e69a47adb0a7f93fd7c3c, type: 3}
-  m_Name: Shield Modifier
+  m_Script: {fileID: 11500000, guid: 5208707dad10c0c42ab901f679092696, type: 3}
+  m_Name: Dash Mod
   m_EditorClassIdentifier: 
-  displayName: Shield
-  description: Defend from 1 damage
-  icon: {fileID: 615481755291691938, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  displayName: Dash
+  description: Press the button to move without stopping
+  icon: {fileID: 4837626284502113166, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 1
-  spawnWeight: 100
-  price: 40
-  cooldownSeconds: 11
+  spawnWeight: 8
+  price: 30

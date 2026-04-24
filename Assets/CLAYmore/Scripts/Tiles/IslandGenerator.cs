@@ -77,13 +77,18 @@ namespace CLAYmore
             bool isWater   = !isOutside && (relX == 0 || relX == _width - 1 || relY == 0);
 
             if (isWater || isOutside)
-            {
-                if (!TryExpand(direction))
-                    return tilemap.GetCellCenterWorld(currentCell);
-            }
+                return tilemap.GetCellCenterWorld(currentCell);
 
             return tilemap.GetCellCenterWorld(targetCell);
         }
+
+        /// <summary>
+        /// Returns true if moving in direction from worldPos would hit the expansion boundary
+        /// AND the player can afford the expansion.
+        /// </summary>
+        public bool CanExpand(Vector3 worldPos, Vector2Int direction)
+            => IsBlockedByEdge(worldPos, direction)
+            && (economy == null || economy.Coins >= _currentExpansionCost);
 
         /// <summary>Returns the world center of a random empty walkable cell with no player.
         /// If avoidPlayerNeighbours is true, also excludes the 4 orthogonal neighbours of the player.
@@ -277,7 +282,7 @@ namespace CLAYmore
             return new Vector2Int(c.x, c.y);
         }
 
-        private bool TryExpand(Vector2Int dir)
+        public bool TryExpand(Vector2Int dir)
         {
             if (economy != null && !economy.TrySpend(_currentExpansionCost))
             {

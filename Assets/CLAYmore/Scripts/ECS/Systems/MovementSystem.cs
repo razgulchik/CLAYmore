@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CLAYmore.ECS;
 using UnityEngine;
 
@@ -21,6 +22,7 @@ namespace CLAYmore
         private DamageSystem _damageSystem;
         private bool _isPaused;
         private Vector2Int _heldDirection;
+        private bool _wasMoving;
 
         public MovementSystem(IslandGenerator island)
         {
@@ -38,13 +40,18 @@ namespace CLAYmore
 
         public void Tick(float deltaTime)
         {
-            if (_isPaused || _heldDirection == Vector2Int.zero) return;
-
             Entity playerEntity = GetPlayerEntity();
             if (playerEntity == null) return;
 
             var movement = playerEntity.Get<MovementComponent>();
-            if (movement.IsMoving) return;
+            bool isMoving = movement.IsMoving;
+
+            if (_wasMoving && !isMoving)
+                OnPlayerLanded(playerEntity);
+
+            _wasMoving = isMoving;
+
+            if (_isPaused || _heldDirection == Vector2Int.zero || isMoving) return;
 
             var stats = playerEntity.Has<PlayerStatsComponent>()
                 ? playerEntity.Get<PlayerStatsComponent>()
@@ -52,6 +59,21 @@ namespace CLAYmore
             if (stats == null || !stats.HasDash) return;
 
             OnMoveInput(new PlayerMoveInputEvent { Direction = _heldDirection });
+        }
+
+        private void OnPlayerLanded(Entity playerEntity)
+        {
+            if (!playerEntity.Has<PlayerStatsComponent>()) return;
+            var stats = playerEntity.Get<PlayerStatsComponent>();
+            if (!stats.HasWhirlwind) return;
+
+            Vector3Int center = _island.GetPlayerCell();
+            foreach (Vector3Int cell in GetCellsInRadius(center, stats.WhirlwindRadius))
+            {
+                Entity pot = GetLandedPotAt(cell);
+                if (pot != null)
+                    _damageSystem.PlayerHitPot(pot, stats.WhirlwindDamage);
+            }
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -92,17 +114,6 @@ namespace CLAYmore
             if (potEntity != null)
             {
                 movement.IsMoving = true;
-
-                // AoeStrike: also hit the two perpendicular side cells
-                if (stats != null && stats.HasAoeStrike)
-                {
-                    foreach (Vector3Int sideCell in GetSideCells(targetCell, direction))
-                    {
-                        Entity sidePot = GetLandedPotAt(sideCell);
-                        if (sidePot != null)
-                            _damageSystem.PlayerHitPot(sidePot);
-                    }
-                }
 
                 bool potDied = _damageSystem.PlayerHitPot(potEntity);
                 _world.Events.Publish(new PlayerMoveResultEvent
@@ -163,16 +174,14 @@ namespace CLAYmore
             return null;
         }
 
-        /// <summary>
-        /// Returns the two cells perpendicular to the movement direction,
-        /// adjacent to the target cell (for AoeStrike).
-        /// </summary>
-        private static Vector3Int[] GetSideCells(Vector3Int target, Vector2Int dir)
+        private static IEnumerable<Vector3Int> GetCellsInRadius(Vector3Int center, int radius)
         {
-            Vector3Int perp = dir.x != 0
-                ? new Vector3Int(0, 1, 0)
-                : new Vector3Int(1, 0, 0);
-            return new[] { target + perp, target - perp };
+            for (int dx = -radius; dx <= radius; dx++)
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                if (dx == 0 && dy == 0) continue;
+                yield return center + new Vector3Int(dx, dy, 0);
+            }
         }
     }
 }

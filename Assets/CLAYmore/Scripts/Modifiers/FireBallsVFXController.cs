@@ -8,7 +8,7 @@ namespace CLAYmore
     /// Listens to OrthoStrikeEvent and spawns spark VFX flying outward in 4 directions.
     /// Attach to any scene GameObject and assign sparksPool in the Inspector.
     /// </summary>
-    public class OrthoStrikeVFXController : MonoBehaviour
+    public class FireBallsVFXController : MonoBehaviour
     {
         public PrefabPool sparksPool;
         public IslandGenerator islandGenerator;

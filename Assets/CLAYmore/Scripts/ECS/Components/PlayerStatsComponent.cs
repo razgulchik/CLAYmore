@@ -3,11 +3,15 @@ namespace CLAYmore.ECS
     public class PlayerStatsComponent : IComponent
     {
         public int   DamageBonus       = 0;
-        public float BaseMoveTime      = 0.15f;
+        public float BaseMoveTime           = 0.4f;
+        public float BaseBounceReturnTime   = 0.4f;
+        public float SpeedMultiplier        = 1f;
         public bool  HasDash           = false;
-        public bool  HasAoeStrike      = false;
-        public bool  HasOrthoStrike    = false;
-        public int   OrthoStrikeDamage = 1;
+        public bool  HasWhirlwind      = false;
+        public int   WhirlwindRadius   = 1;
+        public int   WhirlwindDamage   = 1;
+        public bool  HasFireBalls    = false;
+        public int   FireBallsDamage = 1;
         public int   ShieldCurrent     = 0;
         public int   ShieldMax         = 0;
         public float ShieldCooldown    = 0f;

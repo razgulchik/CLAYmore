@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3354c49a5468c3c409629605d08e1e20, type: 3}
-  m_Name: Triple Strike Modifier
+  m_Name: Whirlwind Mod
   m_EditorClassIdentifier: 
-  displayName: Triple Strike
-  description: Triple attasack in front of your direction.
-  icon: {fileID: -7998488699848172066, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 1
+  displayName: Whirlwind
+  description: On landing, hit all cells in radius 1.
+  icon: {fileID: -4653318599284180464, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  maxLevel: 10
   spawnWeight: 1
   price: 100

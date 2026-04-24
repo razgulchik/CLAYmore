@@ -109,7 +109,6 @@ namespace CLAYmore
                 if (playerMovement != null)
                 {
                     playerMovement.moveTime         = config.moveTime;
-                    playerMovement.bounceTime       = config.bounceTime;
                     playerMovement.bounceReturnTime = config.bounceReturnTime;
                 }
 
@@ -117,7 +116,8 @@ namespace CLAYmore
                 if (playerEntity != null && config != null)
                 {
                     var statsComp = playerEntity.Get<CLAYmore.ECS.PlayerStatsComponent>();
-                    statsComp.BaseMoveTime = config.moveTime;
+                    statsComp.BaseMoveTime         = config.moveTime;
+                    statsComp.BaseBounceReturnTime = config.bounceReturnTime;
                     if (playerEntity.Has<MovementComponent>())
                         playerEntity.Get<MovementComponent>().MoveTime = config.moveTime;
                 }

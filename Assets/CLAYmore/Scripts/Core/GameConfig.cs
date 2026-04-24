@@ -9,9 +9,8 @@ namespace CLAYmore
         [Min(1)] public int playerMaxHp = 3;
 
         [Header("Player — Movement")]
-        public float moveTime         = 0.15f;
-        public float bounceTime       = 0.1f;
-        public float bounceReturnTime = 0.05f;
+        public float moveTime         = 0.4f;
+        public float bounceReturnTime = 0.4f;
 
         [Header("Session")]
         [Tooltip("Difficulty waves sorted by startTime. Leave empty to skip wave progression.")]
