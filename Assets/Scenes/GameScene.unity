@@ -454,7 +454,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: f25bd9b615996f94fa94c52d15d6f62c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 924c600de007fb44aa4582dad1cfb450, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2999,26 +2999,18 @@ MonoBehaviour:
     root: {fileID: 1791756214}
     spriteRenderer: {fileID: 2010309538}
     priceLabel: {fileID: 948586129}
-    holdBar: {fileID: 375104337}
-    holdFill: {fileID: 1030233596}
   down:
     root: {fileID: 504146601}
     spriteRenderer: {fileID: 188016334}
     priceLabel: {fileID: 152394807}
-    holdBar: {fileID: 110118728}
-    holdFill: {fileID: 1303585157}
   left:
     root: {fileID: 1631098842}
     spriteRenderer: {fileID: 1189767413}
     priceLabel: {fileID: 174131281}
-    holdBar: {fileID: 737647993}
-    holdFill: {fileID: 1286627170}
   right:
     root: {fileID: 1385650777}
     spriteRenderer: {fileID: 920789736}
     priceLabel: {fileID: 1194421962}
-    holdBar: {fileID: 352209800}
-    holdFill: {fileID: 1168215811}
   ghostTilemap: {fileID: 1458690075}
   ghostCanAffordColor: {r: 1, g: 1, b: 1, a: 0.50980395}
   ghostCannotAffordColor: {r: 1, g: 1, b: 1, a: 0.50980395}
@@ -13407,7 +13399,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: f25bd9b615996f94fa94c52d15d6f62c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 924c600de007fb44aa4582dad1cfb450, type: 3}
   m_Color: {r: 1, g: 0.94727135, b: 0.042452812, a: 1}
   m_FlipX: 0
   m_FlipY: 0

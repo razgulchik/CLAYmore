@@ -38,8 +38,8 @@ namespace CLAYmore
         private Vector2Int _heldDirection;
         private float      _holdTimer;
         private bool       _holdActive;
-        private Tween      _shakeTween;
-        private Vector3    _shakeOrigin;
+        private Tween      _ghostShakeTween;
+        private Vector3    _ghostShakeOrigin;
 
         // ── Lifecycle ─────────────────────────────────────────────────────────
 
@@ -65,7 +65,7 @@ namespace CLAYmore
             if (!_holdActive) return;
 
             _holdTimer += Time.deltaTime;
-            SetFill(_heldDirection, Mathf.Clamp01(_holdTimer / holdDuration));
+            PublishProgress(Mathf.Clamp01(_holdTimer / holdDuration));
 
             if (_holdTimer >= holdDuration)
                 CompleteHold();
@@ -92,8 +92,10 @@ namespace CLAYmore
             _heldDirection = dir;
             _holdTimer     = 0f;
             _holdActive    = true;
-            SetFill(dir, 0f);
-            StartShake(dir);
+            PublishProgress(0f);
+            StartGhostShake();
+            RedrawGhostForDirection(dir);
+            HideInactiveEdges(dir);
         }
 
         private void CancelHold()
@@ -101,57 +103,59 @@ namespace CLAYmore
             if (!_holdActive) return;
             _holdActive = false;
             _holdTimer  = 0f;
-            StopShake(_heldDirection);
-            SetFill(_heldDirection, -1f);
+            StopGhostShake();
+            PublishProgress(-1f);
+            Refresh();
         }
 
         private void CompleteHold()
         {
             _holdActive = false;
             _holdTimer  = 0f;
-            StopShake(_heldDirection);
+            StopGhostShake();
+            PublishProgress(-1f);
             islandGenerator.TryExpand(_heldDirection);
-            SetFill(_heldDirection, -1f);
         }
 
-        private void StartShake(Vector2Int dir)
+        private void PublishProgress(float progress)
         {
-            var t = GetLine(dir)?.holdBar?.transform;
-            if (t == null) return;
-            _shakeTween?.Kill();
-            _shakeOrigin = t.localPosition;
-            _shakeTween = DOTween.Sequence()
-                .Append(t.DOShakePosition(shakeDuration, shakeStrength, shakeVibrato, fadeOut: true))
+            World.Current?.Events.Publish(new ExpansionHoldProgressEvent { Progress = progress });
+        }
+
+        private void StartGhostShake()
+        {
+            if (ghostTilemap == null) return;
+            _ghostShakeTween?.Kill();
+            _ghostShakeOrigin = ghostTilemap.transform.localPosition;
+            _ghostShakeTween = DOTween.Sequence()
+                .Append(ghostTilemap.transform.DOShakePosition(shakeDuration, shakeStrength, shakeVibrato, fadeOut: true))
                 .SetLoops(-1);
         }
 
-        private void StopShake(Vector2Int dir)
+        private void StopGhostShake()
         {
-            _shakeTween?.Kill();
-            _shakeTween = null;
-            var t = GetLine(dir)?.holdBar?.transform;
-            if (t != null) t.localPosition = _shakeOrigin;
+            _ghostShakeTween?.Kill();
+            _ghostShakeTween = null;
+            if (ghostTilemap != null) ghostTilemap.transform.localPosition = _ghostShakeOrigin;
         }
 
-        private void SetFill(Vector2Int dir, float progress)
+        private void HideInactiveEdges(Vector2Int activeDir)
         {
-            var line = GetLine(dir);
-            if (line?.holdBar == null) return;
+            var active = GetLine(activeDir);
+            foreach (var line in new[] { up, down, left, right })
+                if (line != active && line != null && line.root != null)
+                    line.root.SetActive(false);
+        }
 
-            if (progress < 0f)
+        private void RedrawGhostForDirection(Vector2Int dir)
+        {
+            if (ghostTilemap == null) return;
+            ghostTilemap.ClearAllTiles();
+            var ghostCells = islandGenerator.GetExpansionGhostCells(dir);
+            foreach (var (cell, type, isLight) in ghostCells)
             {
-                line.holdBar.SetActive(false);
-            }
-            else
-            {
-                line.holdBar.SetActive(true);
-                if (line.holdFill != null)
-                {
-                    var s = line.holdFill.localScale;
-                    s.x = progress;
-                    s.y = progress;
-                    line.holdFill.localScale = s;
-                }
+                var tile = islandGenerator.tileSet.GetTile(type, isLight);
+                if (tile != null) ghostTilemap.SetTile(cell, tile);
             }
         }
 
@@ -202,10 +206,10 @@ namespace CLAYmore
             {
                 var (center, _) = islandGenerator.GetEdgeLineWorld(dir);
 
-                EdgeLineConfig cfg    = line.root.GetComponent<EdgeLineConfig>();
-                float edgeOffset      = cfg != null ? cfg.edgeOffset   : 0.5f;
-                float centerOffset    = cfg != null ? cfg.centerOffset  : 0f;
-                var   perp            = new Vector2(-dir.y, dir.x);
+                EdgeLineConfig cfg = line.root.GetComponent<EdgeLineConfig>();
+                float edgeOffset   = cfg != null ? cfg.edgeOffset  : 0.5f;
+                float centerOffset = cfg != null ? cfg.centerOffset : 0f;
+                var   perp         = new Vector2(-dir.y, dir.x);
 
                 float z = line.root.transform.position.z;
                 line.root.transform.position = new Vector3(
@@ -245,7 +249,5 @@ namespace CLAYmore
         public GameObject     root;
         public SpriteRenderer spriteRenderer;
         public TextMeshPro    priceLabel;
-        public GameObject     holdBar;   // включается при удержании
-        public Transform      holdFill;  // Fill круг — scale (0,0,1) → (1,1,1)
     }
 }

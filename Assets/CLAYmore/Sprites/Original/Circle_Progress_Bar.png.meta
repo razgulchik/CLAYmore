@@ -1,46 +1,10 @@
 fileFormatVersion: 2
-guid: fdf0b36543734db49840a1053f041cb4
+guid: 924c600de007fb44aa4582dad1cfb450
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2170344250636477687
-    second: Hit02_0
-  - first:
-      213: -8449049289270191739
-    second: Hit02_1
-  - first:
-      213: 8107571797260278827
-    second: Hit02_2
-  - first:
-      213: 268561988440982897
-    second: Hit02_3
-  - first:
-      213: 4296704925731033946
-    second: Hit02_4
-  - first:
-      213: 395691976363604443
-    second: Hit02_5
-  - first:
-      213: 6124620800660215759
-    second: Hit02_6
-  - first:
-      213: -3981008769372238420
-    second: Hit02_7
-  - first:
-      213: -689829266793449250
-    second: Hit02_8
-  - first:
-      213: 8471481496264320124
-    second: Hit02_9
-  - first:
-      213: 8870167944540197827
-    second: Hit02_10
-  - first:
-      213: -5755699040388144239
-    second: Hit02_11
-  - first:
-      213: -5908678745485348422
-    second: Hit02_12
+      213: 4376882355545916814
+    second: Circle_Progress_Bar_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -82,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -133,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -146,11 +110,11 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -162,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hit02_0
+      name: Circle_Progress_Bar_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 288
-        width: 96
-        height: 96
+        y: 0
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -177,96 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 90b508c276361e1e0800000000000000
-      internalID: -2170344250636477687
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hit02_1
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 288
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5899847bf62feba80800000000000000
-      internalID: -8449049289270191739
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hit02_4
-      rect:
-        serializedVersion: 2
-        x: 384
-        y: 288
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a539ed27d56f0ab30800000000000000
-      internalID: 4296704925731033946
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hit02_2
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 288
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5c166c9e669b6b146a968cee002acbe9
-      internalID: 8107571797260278827
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hit02_3
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 288
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 363e66a0b55e1c04591eea7ec692224c
-      internalID: 268561988440982897
+      spriteID: e854df9005fcdbc30800000000000000
+      internalID: 4376882355545916814
       vertices: []
       indices: 
       edges: []
@@ -275,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6412e40b4b0b16546a939c0fdad9593a
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -285,11 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Hit02_0: -2170344250636477687
-      Hit02_1: -8449049289270191739
-      Hit02_2: 8107571797260278827
-      Hit02_3: 268561988440982897
-      Hit02_4: 4296704925731033946
+      Circle_Progress_Bar_0: 4376882355545916814
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

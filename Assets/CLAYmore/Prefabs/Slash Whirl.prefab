@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4037533783592872152}
   - component: {fileID: 6962930119293782490}
+  - component: {fileID: 7270919750783685719}
   m_Layer: 0
   m_Name: Slash Whirl
   m_TagString: Untagged
@@ -76,10 +77,10 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a6b359c85f5d39143be123061d4bccf6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 90ca707932e46814689a3f67358ec7a4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
+  m_FlipX: 1
+  m_FlipY: 1
   m_DrawMode: 0
   m_Size: {x: 3, y: 3}
   m_AdaptiveModeThreshold: 0.5
@@ -87,3 +88,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7270919750783685719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2939271929555055536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1853f2e245193d5499b258266810e2fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeInTime: 0.05
+  visibleTime: 0.15
+  fadeOutTime: 0.25
+  shakeStrength: 0.05
+  shakeDuration: 0.35
+  shakeVibrato: 16

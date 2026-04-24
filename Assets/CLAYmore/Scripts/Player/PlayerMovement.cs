@@ -22,21 +22,24 @@ namespace CLAYmore
         public float shakeDuration  = 0.2f;
         public int   shakeVibrato   = 10;
 
+        [Header("Visual Root")]
+        [SerializeField] private Transform _visualRoot;
+
         [Header("Whirlwind VFX")]
         [SerializeField] private WhirlVFXController _whirlVFX;
 
         public Vector2Int FacingDirection => _movement.FacingDirection;
 
+        private Entity _entity;
         private MovementComponent _movement;
-        private PlayerStatsComponent _stats;
         private Weapon _weapon;
         private Transform _weaponTransform;
         private Vector3 _weaponDefaultLocalPos;
 
         private void Awake()
         {
-            var entity = gameObject.GetComponent<Entity>() ?? gameObject.AddComponent<Entity>();
-            _movement = entity.Add(new MovementComponent
+            _entity   = gameObject.GetComponent<Entity>() ?? gameObject.AddComponent<Entity>();
+            _movement = _entity.Add(new MovementComponent
             {
                 FacingDirection = Vector2Int.down,
                 MoveTime        = moveTime,
@@ -45,8 +48,6 @@ namespace CLAYmore
             _weapon = GetComponentInChildren<Weapon>();
             if (_weapon != null)
                 _weaponTransform = _weapon.transform;
-
-
         }
 
         private void Start()
@@ -77,9 +78,6 @@ namespace CLAYmore
 
             if (evt.BounceReturnTime > 0f)
                 bounceReturnTime = evt.BounceReturnTime;
-
-            if (_stats == null)
-                _stats = gameObject.GetComponent<Entity>()?.Get<PlayerStatsComponent>();
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -96,7 +94,9 @@ namespace CLAYmore
             {
                 case MoveType.Walk:
                     ShowWeapon();
-                    if (_stats?.HasWhirlwind == true) _whirlVFX?.Play();
+                    if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
+                        && _whirlVFX != null)
+                        _whirlVFX.Play();
                     transform.DOMove(target, moveTime)
                         .OnComplete(() =>
                         {
@@ -143,7 +143,8 @@ namespace CLAYmore
             if (direction.x != 0)
             {
                 float scaleX = direction.x < 0 ? -1f : 1f;
-                transform.localScale = new Vector3(scaleX, 1f, 1f);
+                var flipTarget = _visualRoot != null ? _visualRoot : transform;
+                flipTarget.localScale = new Vector3(scaleX, 1f, 1f);
                 _weaponTransform.SetLocalPositionAndRotation(_weaponDefaultLocalPos, Quaternion.identity);
             }
             else if (direction.y != 0)
