@@ -114,7 +114,8 @@ namespace CLAYmore
             _holdTimer  = 0f;
             StopGhostShake();
             PublishProgress(-1f);
-            islandGenerator.TryExpand(_heldDirection);
+            if (islandGenerator.TryExpand(_heldDirection))
+                Refresh();
         }
 
         private void PublishProgress(float progress)

@@ -17,6 +17,8 @@ namespace CLAYmore
         public Sprite damageSprite1;
         public Sprite damageSprite2;
         public Sprite damageSprite3;
+        [Header("Death VFX")]
+        public Sprite shardsSprite;
         [Min(0f)] public float spawnWeight = 1f;
         [Tooltip("Rocks are indestructible and permanently block the cell")]
         public bool isRock = false;

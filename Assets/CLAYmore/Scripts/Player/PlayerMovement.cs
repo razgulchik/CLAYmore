@@ -94,14 +94,14 @@ namespace CLAYmore
             {
                 case MoveType.Walk:
                     ShowWeapon();
-                    if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
-                        && _whirlVFX != null)
-                        _whirlVFX.Play();
                     transform.DOMove(target, moveTime)
                         .OnComplete(() =>
                         {
                             if (islandGenerator != null)
                                 islandGenerator.SetPlayerTileFromWorldPos(transform.position);
+                            if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
+                                && _whirlVFX != null)
+                                _whirlVFX.Play();
                             HideWeapon();
                             _movement.IsMoving = false;
                         });
@@ -122,6 +122,9 @@ namespace CLAYmore
                                 {
                                     if (islandGenerator != null)
                                         islandGenerator.SetPlayerTileFromWorldPos(transform.position);
+                                    if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
+                                        && _whirlVFX != null)
+                                        _whirlVFX.Play();
                                     _movement.IsMoving = false;
                                 });
                         });

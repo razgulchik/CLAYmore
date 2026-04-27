@@ -20,6 +20,7 @@ namespace CLAYmore
         public PrefabPool potPool;
         public PrefabPool shadowPool;
         public PrefabPool coinPool;
+        public PrefabPool shardsPool;
 
         [Header("Pot Configs")]
         [Tooltip("All pot types including rocks (isRock = true). Rocks are picked separately via wave rockSpawnChance.")]
@@ -219,7 +220,7 @@ namespace CLAYmore
 
             pot.Initialize(config, landPos, islandGenerator.tilemap,
                            economy,
-                           islandGenerator, potPool, shadowPool, coinPool,
+                           islandGenerator, potPool, shadowPool, coinPool, shardsPool,
                            _fallDurationMultiplier);
         }
     }

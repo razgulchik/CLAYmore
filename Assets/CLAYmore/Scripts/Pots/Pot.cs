@@ -26,6 +26,7 @@ namespace CLAYmore
         private PrefabPool _potPool;
         private PrefabPool _shadowPool;
         private PrefabPool _coinPool;
+        private PrefabPool _shardsPool;
 
         private int _hitCount;
         private GameObject _currentShadow;
@@ -38,7 +39,7 @@ namespace CLAYmore
         public void Initialize(PotConfig config, Vector3 landPos, Tilemap tilemap,
                                Economy economy,
                                IslandGenerator islandGenerator,
-                               PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool,
+                               PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool, PrefabPool shardsPool,
                                float fallDurationMultiplier = 1f)
         {
             _economy         = economy;
@@ -46,6 +47,7 @@ namespace CLAYmore
             _potPool         = potPool;
             _shadowPool      = shadowPool;
             _coinPool        = coinPool;
+            _shardsPool      = shardsPool;
 
             transform.DOKill();
             transform.localScale = Vector3.one;
@@ -172,6 +174,7 @@ namespace CLAYmore
             World.Current?.Events.Unsubscribe<EntityDamagedEvent>(OnEntityDamaged);
             World.Current?.Events.Unsubscribe<EntityDiedEvent>(OnEntityDied);
             ReturnShadow();
+            SpawnShards();
             if (_islandGenerator != null) _islandGenerator.ClearCell(_pot.LandPos);
 
             int count = Random.Range(_pot.Config.coinDropMin, _pot.Config.coinDropMax + 1);
@@ -179,6 +182,22 @@ namespace CLAYmore
 
             World.Current?.UnregisterEntity(_entity);
             _potPool.Return(gameObject);
+        }
+
+        private void SpawnShards()
+        {
+            if (_shardsPool == null || _pot.Config.shardsSprite == null) return;
+
+            GameObject shard = _shardsPool.Get(_pot.LandPos);
+            var sr = shard.GetComponent<SpriteRenderer>();
+            if (sr == null) return;
+
+            sr.sprite = _pot.Config.shardsSprite;
+            sr.sortingLayerName = LayerPots;
+            var c = sr.color; c.a = 1f; sr.color = c;
+
+            var pool = _shardsPool;
+            sr.DOFade(0f, 1f).OnComplete(() => pool.Return(shard));
         }
 
         private void ReturnShadow()

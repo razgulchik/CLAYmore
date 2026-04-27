@@ -22,5 +22,6 @@ MonoBehaviour:
   damageSprite1: {fileID: 3678282554786554794, guid: 4a39de452fa84e84cb154be94d2eb110, type: 3}
   damageSprite2: {fileID: 7868973461045865839, guid: 4a39de452fa84e84cb154be94d2eb110, type: 3}
   damageSprite3: {fileID: -680546143917837609, guid: 4a39de452fa84e84cb154be94d2eb110, type: 3}
+  shardsSprite: {fileID: -3914326238502564165, guid: 92c6e72bff04bdf498d9d92deb54299e, type: 3}
   spawnWeight: 2
   isRock: 0
