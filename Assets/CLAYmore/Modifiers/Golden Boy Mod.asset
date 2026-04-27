@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd2e7f54b298d5a4198bfedf33031921, type: 3}
-  m_Name: Speed Mod
+  m_Script: {fileID: 11500000, guid: 81a7a2cf8745c914595e3add584b60fa, type: 3}
+  m_Name: Golden Boy Mod
   m_EditorClassIdentifier: 
-  displayName: Speed
-  description: Increase speed
-  icon: {fileID: -5181058338123407249, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 10
-  spawnWeight: 14
+  displayName: Golden Boy
+  description: 
+  icon: {fileID: -1988601373601522851, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  maxLevel: 5
+  spawnWeight: 12
   price: 8
   priceMultiplier: 1.2
-  speedBonusPerLevel: 0.1
+  goldPerLevel: 1

@@ -13,19 +13,17 @@ MonoBehaviour:
   m_Name: Wave 5
   m_EditorClassIdentifier: 
   startTime: 240
-  spawnInterval: 1.2
-  minSpawnInterval: 0.2
-  spawnDecreasePerSecond: 0.005
-  fallDurationMultiplier: 0.7
-  targetedSpawnEveryMin: 3
-  targetedSpawnEveryMax: 4
+  spawnInterval: 1.8
+  minSpawnInterval: 0.3
+  spawnDecreasePerSecond: 0.06
+  fallDurationMultiplier: 0.8
+  targetedSpawnEveryMin: 4
+  targetedSpawnEveryMax: 8
   potWeights:
-  - config: {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
-    weight: 1
   - config: {fileID: 11400000, guid: 379fd2a7acec7af4590d2d5ca96c9e88, type: 2}
-    weight: 5
+    weight: 1
   - config: {fileID: 11400000, guid: ab72deec00c5ee9428d3b838120894fe, type: 2}
-    weight: 15
+    weight: 6
   - config: {fileID: 11400000, guid: bb48dd03c28f94a489d32b31e0a05e94, type: 2}
-    weight: 10
+    weight: 3
   rockSpawnChance: 0.3

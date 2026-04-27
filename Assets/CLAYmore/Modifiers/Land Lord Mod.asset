@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd2e7f54b298d5a4198bfedf33031921, type: 3}
-  m_Name: Speed Mod
+  m_Script: {fileID: 11500000, guid: bbb98b45b5e5a8749993b77a644bba3d, type: 3}
+  m_Name: Land Lord Mod
   m_EditorClassIdentifier: 
-  displayName: Speed
-  description: Increase speed
-  icon: {fileID: -5181058338123407249, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  displayName: Land Lord
+  description: 
+  icon: {fileID: -7452033042806375050, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 10
-  spawnWeight: 14
-  price: 8
+  spawnWeight: 8
+  price: 12
   priceMultiplier: 1.2
-  speedBonusPerLevel: 0.1
+  discountPerLevel: 0.05

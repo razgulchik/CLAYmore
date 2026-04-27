@@ -16,6 +16,7 @@ MonoBehaviour:
   description: Add 1 damage
   icon: {fileID: 6292855791294788123, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 3
-  spawnWeight: 10
-  price: 20
+  spawnWeight: 12
+  price: 10
+  priceMultiplier: 1.2
   damagePerLevel: 1

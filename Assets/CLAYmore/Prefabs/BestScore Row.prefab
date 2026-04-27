@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4214314334345513261}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 700, y: 50}
+  m_SizeDelta: {x: 653.4641, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5597086456864722737
 CanvasRenderer:
@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: GorgeousRelaxingBagpipe#8
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c8fdcda265875474e896300f886777cc, type: 2}
-  m_sharedMaterial: {fileID: -629704239129067732, guid: c8fdcda265875474e896300f886777cc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
+  m_sharedMaterial: {fileID: 5473580645866514549, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -169,10 +169,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4214314334345513261}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 79.3816, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2018362844818744714
 CanvasRenderer:
@@ -204,8 +204,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c8fdcda265875474e896300f886777cc, type: 2}
-  m_sharedMaterial: {fileID: -629704239129067732, guid: c8fdcda265875474e896300f886777cc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
+  m_sharedMaterial: {fileID: 5473580645866514549, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -306,10 +306,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4214314334345513261}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -65, y: 0}
-  m_SizeDelta: {x: 130, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 150.1396, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5990783723406106897
 CanvasRenderer:
@@ -341,8 +341,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 99999
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c8fdcda265875474e896300f886777cc, type: 2}
-  m_sharedMaterial: {fileID: -629704239129067732, guid: c8fdcda265875474e896300f886777cc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
+  m_sharedMaterial: {fileID: 5473580645866514549, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -421,6 +421,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4214314334345513261}
   - component: {fileID: 3718554316547591873}
+  - component: {fileID: 5274319646363328069}
   m_Layer: 5
   m_Name: BestScore Row
   m_TagString: Untagged
@@ -465,3 +466,29 @@ MonoBehaviour:
   rankLabel: {fileID: 5071557345740744187}
   playerLabel: {fileID: 7533139809224997065}
   scoreLabel: {fileID: 1531913742599664128}
+--- !u!114 &5274319646363328069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8271779565902881679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0

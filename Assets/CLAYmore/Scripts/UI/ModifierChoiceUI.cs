@@ -89,6 +89,7 @@ namespace CLAYmore
 
             // Populate cards
             int currentCoins = World.Current?.GetSystem<EconomySystem>()?.GetCoinCount() ?? 0;
+            float discount = GetPlayerPriceDiscount();
             for (int i = 0; i < cards.Length; i++)
             {
                 if (i < _offered.Count)
@@ -96,7 +97,8 @@ namespace CLAYmore
                     var mod = _offered[i];
                     _modifiers.Levels.TryGetValue(mod.name, out int currentLevel);
                     cards[i].gameObject.SetActive(true);
-                    cards[i].Setup(mod, currentLevel + 1, mod.price, currentCoins >= mod.price, OnCardChosen);
+                    int nextPrice = Mathf.FloorToInt(mod.GetPrice(currentLevel + 1) * (1f - discount));
+                    cards[i].Setup(mod, currentLevel + 1, nextPrice, currentCoins >= nextPrice, OnCardChosen);
                 }
                 else
                 {
@@ -123,10 +125,10 @@ namespace CLAYmore
         private void OnCardChosen(ModifierConfig modifier)
         {
             var economy = World.Current?.GetSystem<EconomySystem>();
-            if (modifier.price > 0 && (economy == null || !economy.TrySpend(modifier.price)))
-                return;
-
             _modifiers.Levels.TryGetValue(modifier.name, out int currentLevel);
+            int price = Mathf.FloorToInt(modifier.GetPrice(currentLevel + 1) * (1f - GetPlayerPriceDiscount()));
+            if (price > 0 && (economy == null || !economy.TrySpend(price)))
+                return;
             World.Current?.Events.Publish(new ModifierChosenEvent
             {
                 Modifier = modifier,
@@ -180,6 +182,14 @@ namespace CLAYmore
             foreach (var e in World.Current.Query<CLAYmore.ECS.PlayerStatsComponent>())
                 return e;
             return null;
+        }
+
+        private float GetPlayerPriceDiscount()
+        {
+            if (World.Current == null) return 0f;
+            foreach (var e in World.Current.Query<CLAYmore.ECS.PlayerStatsComponent>())
+                return e.Get<CLAYmore.ECS.PlayerStatsComponent>().PriceDiscount;
+            return 0f;
         }
 
         /// <summary>

@@ -16,5 +16,6 @@ MonoBehaviour:
   description: Restore 1 HP
   icon: {fileID: -2007369450944448633, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 3
-  spawnWeight: 1
-  price: 50
+  spawnWeight: 8
+  price: 20
+  priceMultiplier: 1.4

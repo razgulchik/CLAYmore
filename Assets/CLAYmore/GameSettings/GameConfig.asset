@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMaxHp: 5
   moveTime: 0.4
-  bounceTime: 0.4
   bounceReturnTime: 0.4
   waves:
   - {fileID: 11400000, guid: 3b673221f4759a947ae3906350429f49, type: 2}
@@ -22,8 +21,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9b5595b1715580b47ae9a1b04744a90c, type: 2}
   - {fileID: 11400000, guid: 25c55b02933523147866d2298b1ad871, type: 2}
   - {fileID: 11400000, guid: d31483dd2c1ad5c44963d5aee6cf10bd, type: 2}
-  chestSpawnInitialInterval: 5
-  chestSpawnMinInterval: 5
+  chestSpawnInitialInterval: 15
+  chestSpawnMinInterval: 20
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20

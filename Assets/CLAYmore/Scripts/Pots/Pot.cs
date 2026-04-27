@@ -178,7 +178,7 @@ namespace CLAYmore
             if (_islandGenerator != null) _islandGenerator.ClearCell(_pot.LandPos);
 
             int count = Random.Range(_pot.Config.coinDropMin, _pot.Config.coinDropMax + 1);
-            SpawnCoins(count);
+            SpawnCoins(count + GetPlayerGoldBonus());
 
             World.Current?.UnregisterEntity(_entity);
             _potPool.Return(gameObject);
@@ -205,6 +205,14 @@ namespace CLAYmore
             if (_currentShadow == null) return;
             _shadowPool?.Return(_currentShadow);
             _currentShadow = null;
+        }
+
+        private int GetPlayerGoldBonus()
+        {
+            if (World.Current == null) return 0;
+            foreach (Entity e in World.Current.Query<PlayerStatsComponent>())
+                return e.Get<PlayerStatsComponent>().GoldBonusPerPot;
+            return 0;
         }
 
         private void SpawnCoins(int count)

@@ -13,17 +13,15 @@ MonoBehaviour:
   m_Name: Wave 2
   m_EditorClassIdentifier: 
   startTime: 60
-  spawnInterval: 1.8
-  minSpawnInterval: 0.5
-  spawnDecreasePerSecond: 0.025
+  spawnInterval: 3
+  minSpawnInterval: 0.65
+  spawnDecreasePerSecond: 0.09
   fallDurationMultiplier: 1
-  targetedSpawnEveryMin: 4
-  targetedSpawnEveryMax: 6
+  targetedSpawnEveryMin: 8
+  targetedSpawnEveryMax: 12
   potWeights:
   - config: {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
-    weight: 5
+    weight: 7
   - config: {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
-    weight: 20
-  - config: {fileID: 11400000, guid: 379fd2a7acec7af4590d2d5ca96c9e88, type: 2}
-    weight: 2
+    weight: 3
   rockSpawnChance: 0

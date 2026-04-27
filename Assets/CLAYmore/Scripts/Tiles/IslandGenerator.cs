@@ -116,8 +116,16 @@ namespace CLAYmore
             return true;
         }
 
-        /// <summary>Current cost to expand the island by one tile in any direction.</summary>
-        public int ExpansionCost => _currentExpansionCost;
+        /// <summary>Current cost to expand the island by one tile in any direction, after player discounts.</summary>
+        public int ExpansionCost => GetDiscountedExpansionCost();
+
+        private int GetDiscountedExpansionCost()
+        {
+            if (World.Current == null) return _currentExpansionCost;
+            foreach (Entity e in World.Current.Query<PlayerStatsComponent>())
+                return Mathf.FloorToInt(_currentExpansionCost * (1f - e.Get<PlayerStatsComponent>().LandDiscount));
+            return _currentExpansionCost;
+        }
 
         /// <summary>
         /// Returns the world-space center and length (in world units) of the edge strip
@@ -284,9 +292,10 @@ namespace CLAYmore
 
         public bool TryExpand(Vector2Int dir)
         {
-            if (economy != null && !economy.TrySpend(_currentExpansionCost))
+            int cost = GetDiscountedExpansionCost();
+            if (economy != null && !economy.TrySpend(cost))
             {
-                Debug.Log($"IslandGenerator: cannot expand — need {_currentExpansionCost} coins (have {economy.Coins}).");
+                Debug.Log($"IslandGenerator: cannot expand — need {cost} coins (have {economy.Coins}).");
                 return false;
             }
 

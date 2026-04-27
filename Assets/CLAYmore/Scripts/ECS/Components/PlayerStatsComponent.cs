@@ -3,6 +3,9 @@ namespace CLAYmore.ECS
     public class PlayerStatsComponent : IComponent
     {
         public int   DamageBonus       = 0;
+        public int   GoldBonusPerPot   = 0;
+        public float PriceDiscount     = 0f;
+        public float LandDiscount      = 0f;
         public float BaseMoveTime           = 0.4f;
         public float BaseBounceReturnTime   = 0.4f;
         public float SpeedMultiplier        = 1f;

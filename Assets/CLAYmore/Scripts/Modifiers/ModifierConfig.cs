@@ -12,9 +12,13 @@ namespace CLAYmore
         public string displayName;
         [TextArea] public string description;
         public Sprite icon;
-        [Min(1)] public int   maxLevel    = 1;
-        [Min(0)] public float spawnWeight = 1f;
-        [Min(0)] public int   price       = 0;
+        [Min(1)] public int   maxLevel        = 1;
+        [Min(0)] public float spawnWeight    = 1f;
+        [Min(0)] public int   price          = 0;
+        [Min(1)] public float priceMultiplier = 1.2f;
+
+        public int GetPrice(int level)
+            => Mathf.RoundToInt(price * Mathf.Pow(priceMultiplier, level - 1));
 
         /// <summary>
         /// Apply this modifier to the player. Called by ModifierSystem.
