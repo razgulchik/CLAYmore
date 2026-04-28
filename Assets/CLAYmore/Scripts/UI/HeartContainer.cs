@@ -5,9 +5,7 @@ namespace CLAYmore
 {
     public class HeartContainer : MonoBehaviour
     {
-        public Heart heartPrefab;
-
-        private Heart[] _hearts;
+        public Heart[] hearts;
 
         private void OnEnable()
         {
@@ -21,19 +19,13 @@ namespace CLAYmore
 
         private void OnHpChanged(PlayerHpChangedEvent e)
         {
-            // Инициализируем сердечки при первом событии или если MaxHp изменился
-            if (_hearts == null || _hearts.Length != e.MaxHp)
+            for (int i = 0; i < hearts.Length; i++)
             {
-                foreach (Transform child in transform)
-                    Destroy(child.gameObject);
-
-                _hearts = new Heart[e.MaxHp];
-                for (int i = 0; i < _hearts.Length; i++)
-                    _hearts[i] = Instantiate(heartPrefab, transform);
+                if (hearts[i] == null) continue;
+                bool inRange = i < e.MaxHp;
+                hearts[i].gameObject.SetActive(inRange);
+                if (inRange) hearts[i].SetAlive(i < e.Hp);
             }
-
-            for (int i = 0; i < _hearts.Length; i++)
-                _hearts[i].SetAlive(i < e.Hp);
         }
     }
 }

@@ -58,21 +58,22 @@ namespace CLAYmore
         public void Heal(int amount)
         {
             _system?.Heal(_entity, amount);
-            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = Hp, MaxHp = maxHp });
+            var h = _entity.Get<HealthComponent>();
+            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = h.Hp, MaxHp = h.MaxHp });
         }
 
         private void OnEntityDamaged(EntityDamagedEvent evt)
         {
             if (evt.Entity != _entity) return;
             OnDamaged?.Invoke(evt.Hp);
-            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = evt.Hp, MaxHp = maxHp });
+            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = evt.Hp, MaxHp = _entity.Get<HealthComponent>().MaxHp });
         }
 
         private void OnEntityDied(EntityDiedEvent evt)
         {
             if (evt.Entity != _entity) return;
             OnDied?.Invoke();
-            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = 0, MaxHp = maxHp });
+            World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = 0, MaxHp = _entity.Get<HealthComponent>().MaxHp });
         }
     }
 }
