@@ -11221,9 +11221,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: eedef1356e1982540bf50b5a5edfbf9b, type: 2}
   - {fileID: 11400000, guid: 7cc2ef82fdf3370489892b802940ec90, type: 2}
   - {fileID: 11400000, guid: 1e98175978fb2a044b162bb4fa28eca4, type: 2}
+  - {fileID: 11400000, guid: 2e93548b2769d894da44c0ef8200431d, type: 2}
   modifierChoiceUI: {fileID: 1373037523}
-  startingModifiers:
-  - {fileID: 11400000, guid: 238fe5e4ea161864ca36ed7e8dbbd860, type: 2}
+  startingModifiers: []
 --- !u!1 &838967580
 GameObject:
   m_ObjectHideFlags: 0

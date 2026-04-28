@@ -13,6 +13,6 @@ namespace CLAYmore
             health.Hp = Mathf.Min(health.Hp + 1, health.MaxHp);
         }
 
-        public override string GetDescription(int level) => "+1 макс HP";
+        public override string GetDescription(int level) => "+1 max HP";
     }
 }
