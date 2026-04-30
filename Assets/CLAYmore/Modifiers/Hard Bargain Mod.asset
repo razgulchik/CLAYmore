@@ -15,8 +15,8 @@ MonoBehaviour:
   displayName: Hard Bargain
   description: 
   icon: {fileID: 5162985353037888492, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 10
+  maxLevel: 5
   spawnWeight: 10
   price: 10
   priceMultiplier: 1.2
-  discountPerLevel: 0.05
+  discountPerLevel: 0.1

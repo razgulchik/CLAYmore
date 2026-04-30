@@ -19,6 +19,6 @@ namespace CLAYmore
             return health.Hp < health.MaxHp;
         }
 
-        public override string GetDescription(int level) => "+1 HP";
+        public override string GetDescription(int level) => "Restore all HP";
     }
 }

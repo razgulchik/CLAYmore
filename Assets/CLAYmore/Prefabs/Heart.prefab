@@ -88,6 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 169193cb2661cb14d898ba6d6f29d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 0}
-  fullSprite: {fileID: 21300000, guid: a38665601fff23544b3d936f45f67de7, type: 3}
-  emptySprite: {fileID: 21300000, guid: 941a968ed284d21408d63b74149e5d1e, type: 3}
+  fullSprite: {fileID: 6373200500095391422, guid: 3fed849c6e0696e49b9fa35d6ce9b7a5, type: 3}
+  emptySprite: {fileID: 649971242994912028, guid: 3fed849c6e0696e49b9fa35d6ce9b7a5, type: 3}
+  popScale: 1.4
+  popDuration: 0.08
+  popReturn: 0.15

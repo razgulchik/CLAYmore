@@ -16,7 +16,7 @@ namespace CLAYmore
 
         public override string GetDescription(int level)
         {
-            return $"On move: shoot fire balls sideways for {damagePerLevel * level} damage (+{damagePerLevel} per level)";
+            return $"Shoot fire balls sideways for {damagePerLevel * level} damage (+{damagePerLevel} per level)";
         }
     }
 }

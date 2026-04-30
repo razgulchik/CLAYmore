@@ -22,8 +22,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25c55b02933523147866d2298b1ad871, type: 2}
   - {fileID: 11400000, guid: d31483dd2c1ad5c44963d5aee6cf10bd, type: 2}
   - {fileID: 11400000, guid: e5a20b2c176f5b648a8d8483f37ffb5a, type: 2}
-  chestSpawnInitialInterval: 5
-  chestSpawnMinInterval: 5
+  chestSpawnInitialInterval: 10
+  chestSpawnMinInterval: 10
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20

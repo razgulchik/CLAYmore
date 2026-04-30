@@ -9,13 +9,15 @@ namespace CLAYmore
         [Min(1f)] public float baseInterval             = 8f;
         [Min(0f)] public float cooldownReductionPerLevel = 1f;
         [Min(1)]  public int   damage                   = 1;
+        [Min(0f)] public float impactDelay              = 0.4f;
 
         public override void Apply(Entity playerEntity, int newLevel)
         {
             var stats = playerEntity.Get<PlayerStatsComponent>();
-            stats.HasLightning      = true;
-            stats.LightningDamage   = damage;
-            stats.LightningInterval = Mathf.Max(1f, baseInterval - (newLevel - 1) * cooldownReductionPerLevel);
+            stats.HasLightning        = true;
+            stats.LightningDamage     = damage;
+            stats.LightningInterval   = Mathf.Max(1f, baseInterval - (newLevel - 1) * cooldownReductionPerLevel);
+            stats.LightningImpactDelay = impactDelay;
             // Keep existing timer so there's no immediate reset on upgrade
             if (stats.LightningTimer <= 0f)
                 stats.LightningTimer = stats.LightningInterval;

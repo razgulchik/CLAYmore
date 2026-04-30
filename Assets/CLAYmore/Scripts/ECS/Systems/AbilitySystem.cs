@@ -11,8 +11,16 @@ namespace CLAYmore
     /// </summary>
     public class AbilitySystem : ISystem
     {
-        private readonly IslandGenerator _island;
-        private World _world;
+        private struct PendingImpact
+        {
+            public Entity Target;
+            public int    Damage;
+            public float  Timer;
+        }
+
+        private readonly IslandGenerator       _island;
+        private readonly System.Collections.Generic.List<PendingImpact> _pendingImpacts = new();
+        private World        _world;
         private HealthSystem _healthSystem;
         private DamageSystem _damageSystem;
 
@@ -58,6 +66,22 @@ namespace CLAYmore
                     TriggerLightning();
                 }
             }
+
+            // ── Pending lightning impacts ─────────────────────────────────────
+            for (int i = _pendingImpacts.Count - 1; i >= 0; i--)
+            {
+                var p = _pendingImpacts[i];
+                p.Timer -= deltaTime;
+                if (p.Timer <= 0f)
+                {
+                    _damageSystem.PlayerHitPot(p.Target, p.Damage);
+                    _pendingImpacts.RemoveAt(i);
+                }
+                else
+                {
+                    _pendingImpacts[i] = p;
+                }
+            }
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -94,11 +118,11 @@ namespace CLAYmore
 
         private void TriggerLightning()
         {
-            // Collect all landed pots, pick one at random
             var candidates = new System.Collections.Generic.List<Entity>();
             foreach (Entity e in _world.Query<PotComponent>())
             {
-                if (e.Get<PotComponent>().State == PotState.Landed)
+                var pot = e.Get<PotComponent>();
+                if (pot.State == PotState.Landed && !pot.Config.isRock)
                     candidates.Add(e);
             }
 
@@ -106,10 +130,17 @@ namespace CLAYmore
 
             Entity  target   = candidates[Random.Range(0, candidates.Count)];
             Vector3 worldPos = _island.GetCellCenter(target.Get<PotComponent>().LandCell);
-            Entity  player   = GetPlayerEntity();
-            int     dmg      = player?.Get<PlayerStatsComponent>().LightningDamage ?? 1;
-            _damageSystem.PlayerHitPot(target, dmg);
+            Entity               player = GetPlayerEntity();
+            PlayerStatsComponent stats  = player != null ? player.Get<PlayerStatsComponent>() : null;
+            int   dmg   = stats != null ? stats.LightningDamage    : 1;
+            float delay = stats != null ? stats.LightningImpactDelay : 0f;
+
             _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
+
+            if (delay <= 0f)
+                _damageSystem.PlayerHitPot(target, dmg);
+            else
+                _pendingImpacts.Add(new PendingImpact { Target = target, Damage = dmg, Timer = delay });
         }
 
         private Entity GetPlayerEntity() => _world.QueryFirst<PlayerStatsComponent>();

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Health
   description: 
-  icon: {fileID: 21300000, guid: a38665601fff23544b3d936f45f67de7, type: 3}
+  icon: {fileID: 21300000, guid: 48ae3292aca22a64ca7beac1bef2902b, type: 3}
   maxLevel: 5
   spawnWeight: 5
   price: 15

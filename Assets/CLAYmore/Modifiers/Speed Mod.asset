@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Speed
   description: Increase speed
-  icon: {fileID: -5181058338123407249, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 10
-  spawnWeight: 14
+  icon: {fileID: 21300000, guid: 7bb44e7a434034f4e972176bc084b26f, type: 3}
+  maxLevel: 5
+  spawnWeight: 12
   price: 8
   priceMultiplier: 1.2
-  speedBonusPerLevel: 0.1
+  speedBonusPerLevel: 0.2

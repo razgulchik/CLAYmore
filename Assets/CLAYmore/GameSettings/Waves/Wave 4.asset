@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startTime: 180
   spawnInterval: 2
-  minSpawnInterval: 0.4
-  spawnDecreasePerSecond: 0.06
-  fallDurationMultiplier: 0.85
-  targetedSpawnEveryMin: 5
-  targetedSpawnEveryMax: 9
+  minSpawnInterval: 0.5
+  spawnDecreasePerSecond: 0.08
+  fallDurationMultiplier: 1.2
+  targetedSpawnEveryMin: 8
+  targetedSpawnEveryMax: 12
   potWeights:
+  - config: {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
+    weight: 1
   - config: {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
     weight: 1
   - config: {fileID: 11400000, guid: 379fd2a7acec7af4590d2d5ca96c9e88, type: 2}
     weight: 6
   - config: {fileID: 11400000, guid: ab72deec00c5ee9428d3b838120894fe, type: 2}
-    weight: 3
-  rockSpawnChance: 0.2
+    weight: 2
+  rockSpawnChance: 0.1

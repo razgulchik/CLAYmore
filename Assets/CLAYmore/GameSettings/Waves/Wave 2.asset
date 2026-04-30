@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startTime: 60
   spawnInterval: 3
-  minSpawnInterval: 0.65
-  spawnDecreasePerSecond: 0.09
-  fallDurationMultiplier: 1
-  targetedSpawnEveryMin: 8
-  targetedSpawnEveryMax: 12
+  minSpawnInterval: 0.8
+  spawnDecreasePerSecond: 0.1
+  fallDurationMultiplier: 1.4
+  targetedSpawnEveryMin: 10
+  targetedSpawnEveryMax: 15
   potWeights:
   - config: {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
     weight: 7
