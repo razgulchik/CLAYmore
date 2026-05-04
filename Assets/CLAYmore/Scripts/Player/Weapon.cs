@@ -20,6 +20,8 @@ namespace CLAYmore
             Hide();
         }
 
+        public SpriteRenderer WeaponRenderer => spriteRenderer;
+
         public void Show()
         {
             if (spriteRenderer != null)

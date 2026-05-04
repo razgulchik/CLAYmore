@@ -10,19 +10,20 @@ namespace CLAYmore
     /// </summary>
     public class Economy : MonoBehaviour
     {
-        [HideInInspector] public int startingCoins = 0;
-
         public int Coins => _system?.GetCoinCount() ?? 0;
 
         public event Action<int> OnChanged;
 
+        private int _startingCoins;
         private Entity _entity;
         private EconomySystem _system;
+
+        public void Init(int startingCoins) => _startingCoins = startingCoins;
 
         private void Awake()
         {
             _entity = gameObject.AddComponent<Entity>();
-            _entity.Add(new CoinComponent { Coins = startingCoins, StartingCoins = startingCoins });
+            _entity.Add(new CoinComponent { Coins = _startingCoins, StartingCoins = _startingCoins });
         }
 
         private void Start()
@@ -31,7 +32,7 @@ namespace CLAYmore
             _system = World.Current?.GetSystem<EconomySystem>();
             if (_system != null)
                 _system.OnChanged += coins => OnChanged?.Invoke(coins);
-            World.Current?.Events.Publish(new CoinBalanceChangedEvent { NewBalance = startingCoins });
+            World.Current?.Events.Publish(new CoinBalanceChangedEvent { NewBalance = _startingCoins });
         }
 
         private void OnDestroy()

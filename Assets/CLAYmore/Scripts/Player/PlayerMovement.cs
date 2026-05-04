@@ -10,44 +10,58 @@ namespace CLAYmore
     /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
-        public IslandGenerator islandGenerator;
-        [SerializeField] private Transform spriteTransform;
-
         [Header("Movement Timing")]
-        public float moveTime         = 0.15f;
-        public float bounceReturnTime = 0.1f;
+        [SerializeField] private float _moveTime         = 0.15f;
+        [SerializeField] private float _bounceReturnTime = 0.1f;
 
         [Header("Hit Shake")]
-        public float shakeStrength  = 0.08f;
-        public float shakeDuration  = 0.2f;
-        public int   shakeVibrato   = 10;
+        [SerializeField] private float _shakeStrength = 0.08f;
+        [SerializeField] private float _shakeDuration  = 0.2f;
+        [SerializeField] private int   _shakeVibrato   = 10;
 
         [Header("Visual Root")]
-        [SerializeField] private Transform _visualRoot;
+        [SerializeField] private Transform      _visualRoot;
+        [SerializeField] private SpriteRenderer _playerSprite;
+        [SerializeField] private Sprite         _frontSprite;
+        [SerializeField] private Sprite         _backSprite;
 
         [Header("Whirlwind VFX")]
         [SerializeField] private WhirlVFXController _whirlVFX;
 
         public Vector2Int FacingDirection => _movement.FacingDirection;
 
-        private Entity _entity;
+        private IslandGenerator   _islandGenerator;
+        private Entity            _entity;
         private MovementComponent _movement;
-        private Weapon _weapon;
-        private Transform _weaponTransform;
-        private Vector3 _weaponDefaultLocalPos;
+        private Weapon            _weapon;
+        private Transform         _weaponTransform;
+        private SpriteRenderer    _weaponSprite;
+        private Vector3           _weaponDefaultLocalPos;
+
+        public void Init(IslandGenerator islandGenerator, float moveTime, float bounceReturnTime)
+        {
+            _islandGenerator  = islandGenerator;
+            _moveTime         = moveTime;
+            _bounceReturnTime = bounceReturnTime;
+            _movement.MoveTime = moveTime;
+        }
 
         private void Awake()
         {
-            _entity   = gameObject.GetComponent<Entity>() ?? gameObject.AddComponent<Entity>();
+            _entity = gameObject.GetComponent<Entity>();
+            if (_entity == null) _entity = gameObject.AddComponent<Entity>();
             _movement = _entity.Add(new MovementComponent
             {
                 FacingDirection = Vector2Int.down,
-                MoveTime        = moveTime,
+                MoveTime        = _moveTime,
             });
 
             _weapon = GetComponentInChildren<Weapon>();
             if (_weapon != null)
+            {
                 _weaponTransform = _weapon.transform;
+                _weaponSprite    = _weapon.WeaponRenderer;
+            }
         }
 
         private void Start()
@@ -72,12 +86,12 @@ namespace CLAYmore
         {
             if (evt.MoveTime > 0f)
             {
-                moveTime           = evt.MoveTime;
+                _moveTime          = evt.MoveTime;
                 _movement.MoveTime = evt.MoveTime;
             }
 
             if (evt.BounceReturnTime > 0f)
-                bounceReturnTime = evt.BounceReturnTime;
+                _bounceReturnTime = evt.BounceReturnTime;
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -85,8 +99,8 @@ namespace CLAYmore
         private void OnMoveResult(PlayerMoveResultEvent evt)
         {
             UpdateWeaponOrientation(evt.Direction);
+            UpdateSpriteForDirection(evt.Direction);
 
-            // Preserve the player's z (rendering layer)
             Vector3 target = evt.Target;
             target.z = transform.position.z;
 
@@ -94,11 +108,11 @@ namespace CLAYmore
             {
                 case MoveType.Walk:
                     ShowWeapon();
-                    transform.DOMove(target, moveTime)
+                    transform.DOMove(target, _moveTime)
                         .OnComplete(() =>
                         {
-                            if (islandGenerator != null)
-                                islandGenerator.SetPlayerTileFromWorldPos(transform.position);
+                            if (_islandGenerator != null)
+                                _islandGenerator.SetPlayerTileFromWorldPos(transform.position);
                             if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
                                 && _whirlVFX != null)
                                 _whirlVFX.Play();
@@ -111,17 +125,17 @@ namespace CLAYmore
                     ShowWeapon();
                     Vector3 bounceReturn = evt.SlideTarget != Vector3.zero ? evt.SlideTarget : transform.position;
                     bounceReturn.z = transform.position.z;
-                    transform.DOMove(target, moveTime)
+                    transform.DOMove(target, _moveTime)
                         .OnComplete(() =>
                         {
                             HideWeapon();
-                            if (spriteTransform != null)
-                                spriteTransform.DOPunchPosition(Vector3.one * shakeStrength, shakeDuration, shakeVibrato, elasticity: 0f);
-                            transform.DOMove(bounceReturn, bounceReturnTime)
+                            if (_playerSprite != null)
+                                _playerSprite.transform.DOPunchPosition(Vector3.one * _shakeStrength, _shakeDuration, _shakeVibrato, elasticity: 0f);
+                            transform.DOMove(bounceReturn, _bounceReturnTime)
                                 .OnComplete(() =>
                                 {
-                                    if (islandGenerator != null)
-                                        islandGenerator.SetPlayerTileFromWorldPos(transform.position);
+                                    if (_islandGenerator != null)
+                                        _islandGenerator.SetPlayerTileFromWorldPos(transform.position);
                                     if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
                                         && _whirlVFX != null)
                                         _whirlVFX.Play();
@@ -138,6 +152,15 @@ namespace CLAYmore
 
         private void ShowWeapon() => _weapon?.Show();
         private void HideWeapon() => _weapon?.Hide();
+
+        private void UpdateSpriteForDirection(Vector2Int direction)
+        {
+            bool facingUp = direction.y > 0;
+            if (_playerSprite != null)
+                _playerSprite.sprite = facingUp ? _backSprite : _frontSprite;
+            if (_weaponSprite != null && _playerSprite != null)
+                _weaponSprite.sortingOrder = _playerSprite.sortingOrder + (facingUp ? -1 : 1);
+        }
 
         private void UpdateWeaponOrientation(Vector2Int direction)
         {

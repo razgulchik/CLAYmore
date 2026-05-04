@@ -15,6 +15,7 @@ MonoBehaviour:
   playerMaxHp: 5
   moveTime: 0.4
   bounceReturnTime: 0.4
+  inputBufferWindow: 0.25
   waves:
   - {fileID: 11400000, guid: 3b673221f4759a947ae3906350429f49, type: 2}
   - {fileID: 11400000, guid: 59e0fae4b6274dd4ca531197be852f9e, type: 2}
@@ -22,8 +23,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25c55b02933523147866d2298b1ad871, type: 2}
   - {fileID: 11400000, guid: d31483dd2c1ad5c44963d5aee6cf10bd, type: 2}
   - {fileID: 11400000, guid: e5a20b2c176f5b648a8d8483f37ffb5a, type: 2}
+  - {fileID: 11400000, guid: ea6840a5a25c67f41a04269343305622, type: 2}
+  - {fileID: 11400000, guid: 280b686ededbe36439dbd5853599219e, type: 2}
   chestSpawnInitialInterval: 5
-  chestSpawnMinInterval: 5
+  chestSpawnMinInterval: 10
   coinsOnSkip: 25
   modifierPool:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
@@ -38,9 +41,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bed6cefaed1ae2046865c5778b5fa3de, type: 2}
   - {fileID: 11400000, guid: 7a414bc2b8904274ca73e61da16fed6f, type: 2}
   - {fileID: 11400000, guid: e8663d77cc891ce46be458cc63f05825, type: 2}
-  startingCoins: 1234
-  startingModifiers:
-  - {fileID: 11400000, guid: 9534ea2a1b7327d47b832e471b6a6d97, type: 2}
+  startingCoins: 10
+  startingModifiers: []
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20

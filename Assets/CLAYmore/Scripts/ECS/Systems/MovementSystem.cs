@@ -24,9 +24,14 @@ namespace CLAYmore
         private Vector2Int _heldDirection;
         private bool _wasMoving;
 
-        public MovementSystem(IslandGenerator island)
+        private Vector2Int _bufferedDirection;
+        private float      _bufferTimestamp;
+        private readonly float _bufferWindow;
+
+        public MovementSystem(IslandGenerator island, float bufferWindow = 0.25f)
         {
-            _island = island;
+            _island      = island;
+            _bufferWindow = bufferWindow;
         }
 
         public void Initialize(World world)
@@ -47,7 +52,17 @@ namespace CLAYmore
             bool isMoving = movement.IsMoving;
 
             if (_wasMoving && !isMoving)
+            {
                 OnPlayerLanded(playerEntity);
+                if (!_isPaused && _bufferedDirection != Vector2Int.zero
+                    && Time.time - _bufferTimestamp <= _bufferWindow)
+                {
+                    Vector2Int dir = _bufferedDirection;
+                    _bufferedDirection = Vector2Int.zero;
+                    OnMoveInput(new PlayerMoveInputEvent { Direction = dir });
+                    isMoving = movement.IsMoving;
+                }
+            }
 
             _wasMoving = isMoving;
 
@@ -81,7 +96,9 @@ namespace CLAYmore
         private void OnGamePaused(GamePausedEvent evt)
         {
             _isPaused = evt.IsPaused;
-            if (!_isPaused)
+            if (_isPaused)
+                _bufferedDirection = Vector2Int.zero;
+            else
                 _heldDirection = Vector2Int.zero;
         }
 
@@ -96,7 +113,13 @@ namespace CLAYmore
             if (playerEntity == null) return;
 
             var movement = playerEntity.Get<MovementComponent>();
-            if (_isPaused || movement.IsMoving) return;
+            if (_isPaused) return;
+            if (movement.IsMoving)
+            {
+                _bufferedDirection = evt.Direction;
+                _bufferTimestamp   = Time.time;
+                return;
+            }
 
             Vector2Int direction  = evt.Direction;
             movement.FacingDirection = direction;
@@ -158,17 +181,6 @@ namespace CLAYmore
             {
                 var pot = entity.Get<PotComponent>();
                 if (pot.State == PotState.Landed && pot.LandCell == cell)
-                    return entity;
-            }
-            return null;
-        }
-
-        private Entity GetActiveChestAt(Vector3Int cell)
-        {
-            foreach (Entity entity in _world.Query<ChestComponent>())
-            {
-                var chest = entity.Get<ChestComponent>();
-                if (chest.State == ChestState.Active && chest.LandCell == cell)
                     return entity;
             }
             return null;

@@ -30,4 +30,4 @@ MonoBehaviour:
     weight: 6
   - config: {fileID: 11400000, guid: bb48dd03c28f94a489d32b31e0a05e94, type: 2}
     weight: 1
-  rockSpawnChance: 0.2
+  rockSpawnChance: 0.1

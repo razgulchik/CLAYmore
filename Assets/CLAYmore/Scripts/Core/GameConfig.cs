@@ -11,6 +11,8 @@ namespace CLAYmore
         [Header("Player — Movement")]
         public float moveTime         = 0.4f;
         public float bounceReturnTime = 0.4f;
+        [Tooltip("How long (s) an input stays buffered while mid-move. 0 = no buffer.")]
+        [Min(0)] public float inputBufferWindow = 0.15f;
 
         [Header("Session")]
         [Tooltip("Difficulty waves sorted by startTime. Leave empty to skip wave progression.")]

@@ -7,7 +7,7 @@ namespace CLAYmore
     [RequireComponent(typeof(Entity))]
     public class PlayerHealth : MonoBehaviour
     {
-        [Min(1)] public int maxHp = 3;
+        [SerializeField, Min(1)] private int _maxHp = 3;
 
         public int Hp => _entity.Get<HealthComponent>().Hp;
 
@@ -17,6 +17,8 @@ namespace CLAYmore
         private Entity _entity;
         private HealthSystem _system;
 
+        public void Init(int maxHp) => _maxHp = maxHp;
+
         private void Awake()
         {
             _entity = GetComponent<Entity>();
@@ -24,19 +26,19 @@ namespace CLAYmore
 
         private void Start()
         {
-            _entity.Add(new HealthComponent { MaxHp = maxHp, Hp = maxHp });
+            _entity.Add(new HealthComponent { MaxHp = _maxHp, Hp = _maxHp });
             _system = World.Current?.GetSystem<HealthSystem>();
             var bus = World.Current?.Events;
             if (bus != null)
             {
                 bus.Subscribe<EntityDamagedEvent>(OnEntityDamaged);
                 bus.Subscribe<EntityDiedEvent>(OnEntityDied);
-                bus.Publish(new PlayerHpChangedEvent { Hp = maxHp, MaxHp = maxHp });
+                bus.Publish(new PlayerHpChangedEvent { Hp = _maxHp, MaxHp = _maxHp });
 
                 var movement = _entity.Has<MovementComponent>() ? _entity.Get<MovementComponent>() : null;
                 bus.Publish(new PlayerStatsChangedEvent
                 {
-                    MaxHp    = maxHp,
+                    MaxHp    = _maxHp,
                     Damage   = 1,
                     MoveTime = movement?.MoveTime ?? 0f,
                 });

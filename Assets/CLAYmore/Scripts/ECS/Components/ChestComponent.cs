@@ -7,7 +7,6 @@ namespace CLAYmore
 
     public class ChestComponent : IComponent
     {
-        public ChestConfig Config;
         public ChestState  State;
         public Vector3Int  LandCell;
         public Vector3     LandPos;

@@ -50,7 +50,7 @@ namespace CLAYmore
             PauseManager.Instance.Reset();
 
             if (economy != null && config != null)
-                economy.startingCoins = config.startingCoins;
+                economy.Init(config.startingCoins);
 
             // ── Create World and register all systems ──────────────────────
             _world = new World();
@@ -58,7 +58,7 @@ namespace CLAYmore
             _world.RegisterSystem(new DamageSystem(islandGenerator));
             _world.RegisterSystem(new EconomySystem());
             _world.RegisterSystem(new SpawnerSystem());
-            _world.RegisterSystem(new MovementSystem(islandGenerator));
+            _world.RegisterSystem(new MovementSystem(islandGenerator, config != null ? config.inputBufferWindow : 0.15f));
             _world.RegisterSystem(new ChestSystem(islandGenerator));
             _world.RegisterSystem(new ModifierSystem());
             _world.RegisterSystem(new AbilitySystem(islandGenerator));
@@ -73,11 +73,7 @@ namespace CLAYmore
             }
 
             // ── Spawn player ───────────────────────────────────────────────
-            if (!islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 spawnPos))
-            {
-                Debug.LogError("Bootstrap: no walkable cell available to spawn player.");
-                return;
-            }
+            Vector3 spawnPos = islandGenerator.GetIslandCenterWorldPos();
             GameObject playerGO = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
             islandGenerator.SetPlayerTileFromWorldPos(spawnPos);
 
@@ -105,15 +101,10 @@ namespace CLAYmore
 
             if (config != null)
             {
-                if (playerHealth   != null) playerHealth.maxHp        = config.playerMaxHp;
-                if (playerMovement != null)
-                {
-                    playerMovement.moveTime         = config.moveTime;
-                    playerMovement.bounceReturnTime = config.bounceReturnTime;
-                }
+                if (playerHealth   != null) playerHealth.Init(config.playerMaxHp);
+                if (playerMovement != null) playerMovement.Init(islandGenerator, config.moveTime, config.bounceReturnTime);
 
-                // Sync ECS components with config values (Awake sets Inspector defaults; Start overrides)
-                if (playerEntity != null && config != null)
+                if (playerEntity != null)
                 {
                     var statsComp = playerEntity.Get<CLAYmore.ECS.PlayerStatsComponent>();
                     statsComp.BaseMoveTime         = config.moveTime;
@@ -121,40 +112,14 @@ namespace CLAYmore
                     if (playerEntity.Has<MovementComponent>())
                         playerEntity.Get<MovementComponent>().MoveTime = config.moveTime;
                 }
-                if (chestSpawner != null)
-                {
-                    chestSpawner.initialInterval = config.chestSpawnInitialInterval;
-                    chestSpawner.minInterval     = config.chestSpawnMinInterval;
-                }
+
+                if (chestSpawner    != null) chestSpawner.Init(islandGenerator, chestPool,
+                                                               config.chestSpawnInitialInterval, config.chestSpawnMinInterval);
+                if (modifierChoiceUI != null) modifierChoiceUI.Init(config.modifierPool, config.coinsOnSkip);
             }
 
-            // ── Wire scene references ──────────────────────────────────────
-            if (playerMovement != null)
-                playerMovement.islandGenerator = islandGenerator;
-
-            if (potSpawner != null)
-            {
-                potSpawner.islandGenerator = islandGenerator;
-                potSpawner.economy         = economy;
-                potSpawner.playerMovement  = playerMovement;
-                potSpawner.potPool         = potPool;
-                potSpawner.shadowPool      = shadowPool;
-                potSpawner.coinPool        = coinPool;
-                potSpawner.shardsPool      = shardsPool;
-            }
-
-            if (chestSpawner != null)
-            {
-                chestSpawner.islandGenerator = islandGenerator;
-                chestSpawner.chestPool       = chestPool;
-            }
-
-
-            if (modifierChoiceUI != null && config != null)
-            {
-                modifierChoiceUI.modifierPool = config.modifierPool;
-                modifierChoiceUI.coinsOnSkip  = config.coinsOnSkip;
-            }
+            if (potSpawner != null) potSpawner.Init(islandGenerator, economy, playerMovement,
+                                                    potPool, shadowPool, coinPool, shardsPool);
 
             _world.RegisterSystem(new SessionTimerSystem(config?.waves));
 

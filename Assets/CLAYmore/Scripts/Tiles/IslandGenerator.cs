@@ -178,6 +178,13 @@ namespace CLAYmore
         /// <summary>Returns the world center of a given cell.</summary>
         public Vector3 GetCellCenter(Vector3Int cell) => tilemap.GetCellCenterWorld(cell);
 
+        /// <summary>Returns the world-space center of the island's walkable area.</summary>
+        public Vector3 GetIslandCenterWorldPos()
+        {
+            var centerCell = _originCell + new Vector3Int(_width / 2, _height / 2, 0);
+            return tilemap.GetCellCenterWorld(centerCell);
+        }
+
         // ── Tile data accessors ───────────────────────────────────────────
 
         public TileData GetTileFromWorldPos(Vector3 worldPos)

@@ -11,17 +11,17 @@ namespace CLAYmore
     /// </summary>
     public class PotSpawner : MonoBehaviour
     {
-        [HideInInspector] public IslandGenerator islandGenerator;  // set by Bootstrap
-        [HideInInspector] public PlayerMovement  playerMovement;   // set by Bootstrap
-        [HideInInspector] public Economy         economy;          // set by Bootstrap
-        [HideInInspector] public PrefabPool      potPool;          // set by Bootstrap
-        [HideInInspector] public PrefabPool      shadowPool;       // set by Bootstrap
-        [HideInInspector] public PrefabPool      coinPool;         // set by Bootstrap
-        [HideInInspector] public PrefabPool      shardsPool;       // set by Bootstrap
-
         [Header("Pot Configs")]
         [Tooltip("All pot types including rocks (isRock = true). Rocks are picked separately via wave rockSpawnChance.")]
         public PotConfig[] potConfigs;
+
+        private IslandGenerator _islandGenerator;
+        private PlayerMovement  _playerMovement;
+        private Economy         _economy;
+        private PrefabPool      _potPool;
+        private PrefabPool      _shadowPool;
+        private PrefabPool      _coinPool;
+        private PrefabPool      _shardsPool;
 
         private int targetedSpawnEveryMin;
         private int targetedSpawnEveryMax;
@@ -36,14 +36,24 @@ namespace CLAYmore
         private PotConfig[] _potOnlyConfigs;
         private PotConfig[] _rockOnlyConfigs;
 
+        public void Init(IslandGenerator islandGenerator, Economy economy, PlayerMovement playerMovement,
+                         PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool, PrefabPool shardsPool)
+        {
+            _islandGenerator = islandGenerator;
+            _economy         = economy;
+            _playerMovement  = playerMovement;
+            _potPool         = potPool;
+            _shadowPool      = shadowPool;
+            _coinPool        = coinPool;
+            _shardsPool      = shardsPool;
+        }
+
         private void Start()
         {
             _potOnlyConfigs  = System.Array.FindAll(potConfigs ?? System.Array.Empty<PotConfig>(), c => !c.isRock);
             _rockOnlyConfigs = System.Array.FindAll(potConfigs ?? System.Array.Empty<PotConfig>(), c => c.isRock);
 
             _entity = gameObject.AddComponent<Entity>();
-            // Timing is fully controlled by WaveConfig — start with infinite timer
-            // so nothing spawns until Wave 0 fires and sets real values.
             _entity.Add(new SpawnerComponent
             {
                 InitialInterval           = float.MaxValue,
@@ -115,7 +125,6 @@ namespace CLAYmore
 
         private PotConfig PickWeightedRandom()
         {
-            // Use per-wave overrides if defined for this wave
             if (_currentWave?.potWeights != null && _currentWave.potWeights.Length > 0)
             {
                 float total = 0f;
@@ -135,7 +144,6 @@ namespace CLAYmore
                 }
             }
 
-            // Fallback: use PotConfig.spawnWeight from non-rock configs
             return PickWeightedFromConfigs(_potOnlyConfigs);
         }
 
@@ -162,15 +170,14 @@ namespace CLAYmore
 
         private void SpawnPot()
         {
-            if (potPool == null || potConfigs == null || potConfigs.Length == 0) return;
-            if (islandGenerator == null || playerMovement == null) return;
+            if (_potPool == null || potConfigs == null || potConfigs.Length == 0) return;
+            if (_islandGenerator == null || _playerMovement == null) return;
 
             _spawnCount++;
             bool isTargeted = _spawnCount == _nextTargetedAt;
             if (isTargeted)
                 _nextTargetedAt = _spawnCount + Random.Range(targetedSpawnEveryMin, targetedSpawnEveryMax + 1);
 
-            // Decide: rock or pot? Rocks never target the player.
             bool spawnRock = !isTargeted
                 && _currentWave != null
                 && _currentWave.rockSpawnChance > 0f
@@ -195,29 +202,29 @@ namespace CLAYmore
             Vector3 landPos;
             if (isTargeted)
             {
-                landPos = islandGenerator.GetCellCenter(
-                    islandGenerator.GetCell(playerMovement.transform.position));
-                if (!islandGenerator.TryReserveCell(landPos)) return;
+                landPos = _islandGenerator.GetCellCenter(
+                    _islandGenerator.GetCell(_playerMovement.transform.position));
+                if (!_islandGenerator.TryReserveCell(landPos)) return;
             }
             else
             {
-                if (!islandGenerator.TryGetRandomWalkableCellCenter(out landPos)) return;
-                if (!islandGenerator.TryReserveCell(landPos)) return;
+                if (!_islandGenerator.TryGetRandomWalkableCellCenter(out landPos)) return;
+                if (!_islandGenerator.TryReserveCell(landPos)) return;
             }
 
             Vector3 spawnPos = landPos + Vector3.up * config.spawnHeight;
 
-            GameObject potGO = potPool.Get(spawnPos);
+            GameObject potGO = _potPool.Get(spawnPos);
             if (!potGO.TryGetComponent<Pot>(out Pot pot))
             {
                 Debug.LogWarning("PotSpawner: pot prefab is missing a Pot component.");
-                potPool.Return(potGO);
+                _potPool.Return(potGO);
                 return;
             }
 
-            pot.Initialize(config, landPos, islandGenerator.tilemap,
-                           economy,
-                           islandGenerator, potPool, shadowPool, coinPool, shardsPool,
+            pot.Initialize(config, landPos, _islandGenerator.tilemap,
+                           _economy,
+                           _islandGenerator, _potPool, _shadowPool, _coinPool, _shardsPool,
                            _fallDurationMultiplier);
         }
     }

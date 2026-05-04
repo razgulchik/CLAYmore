@@ -8,7 +8,7 @@ namespace CLAYmore
     {
         [Min(1f)] public float baseInterval             = 8f;
         [Min(0f)] public float cooldownReductionPerLevel = 1f;
-        [Min(1)]  public int   damage                   = 1;
+        [Min(1)]  public int   damage                   = 99;
         [Min(0f)] public float impactDelay              = 0.4f;
 
         public override void Apply(Entity playerEntity, int newLevel)
@@ -26,7 +26,7 @@ namespace CLAYmore
         public override string GetDescription(int level)
         {
             float interval = Mathf.Max(1f, baseInterval - (level - 1) * cooldownReductionPerLevel);
-            return $"Every {interval:F0}s strikes a random pot for {damage} damage (cd -{cooldownReductionPerLevel:F0}s per level)";
+            return $"Every {interval:F0}s strikes a random pot (cd -{cooldownReductionPerLevel:F0}s per level)";
         }
     }
 }

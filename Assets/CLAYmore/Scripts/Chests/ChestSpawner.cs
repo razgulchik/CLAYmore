@@ -9,22 +9,26 @@ namespace CLAYmore
     /// </summary>
     public class ChestSpawner : MonoBehaviour
     {
-        [HideInInspector] public IslandGenerator islandGenerator;  // set by Bootstrap
+        [SerializeField] private float _initialInterval = 30f;
+        [SerializeField] private float _minInterval     = 20f;
 
-        [Header("Pool")]
-        [HideInInspector] public PrefabPool chestPool;              // set by Bootstrap
+        private IslandGenerator _islandGenerator;
+        private PrefabPool      _chestPool;
+        private Entity          _entity;
+        private bool            _isGameOver;
 
-        [Header("Config")]
-        public ChestConfig chestConfig;
-        public float initialInterval = 30f;
-        public float minInterval     = 20f;
-
-        private Entity _entity;
-        private bool   _isGameOver;
+        public void Init(IslandGenerator islandGenerator, PrefabPool chestPool,
+                         float initialInterval, float minInterval)
+        {
+            _islandGenerator  = islandGenerator;
+            _chestPool        = chestPool;
+            _initialInterval  = initialInterval;
+            _minInterval      = minInterval;
+        }
 
         private void Start()
         {
-            if (chestConfig == null || chestPool == null || islandGenerator == null)
+            if (_chestPool == null || _islandGenerator == null)
             {
                 Debug.LogWarning("ChestSpawner: missing references — disabled.");
                 enabled = false;
@@ -34,11 +38,11 @@ namespace CLAYmore
             _entity = gameObject.AddComponent<Entity>();
             _entity.Add(new SpawnerComponent
             {
-                InitialInterval           = initialInterval,
-                MinInterval               = minInterval,
-                IntervalDecreasePerSecond = 0f,   // chests don't accelerate
-                CurrentInterval           = initialInterval,
-                Timer                     = initialInterval,
+                InitialInterval           = _initialInterval,
+                MinInterval               = _minInterval,
+                IntervalDecreasePerSecond = 0f,
+                CurrentInterval           = _initialInterval,
+                Timer                     = _initialInterval,
             });
 
             World.Current?.RegisterEntity(_entity);
@@ -63,19 +67,19 @@ namespace CLAYmore
 
         private void SpawnChest()
         {
-            if (!islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 landPos, avoidPlayerNeighbours: true)) return;
-            if (!islandGenerator.TryMarkChestLanded(landPos)) return;
+            if (!_islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 landPos, avoidPlayerNeighbours: true)) return;
+            if (!_islandGenerator.TryMarkChestLanded(landPos)) return;
 
-            GameObject chestGO = chestPool.Get(landPos);
+            GameObject chestGO = _chestPool.Get(landPos);
             if (!chestGO.TryGetComponent<Chest>(out Chest chest))
             {
                 Debug.LogWarning("ChestSpawner: chest prefab is missing a Chest component.");
-                islandGenerator.ClearChest(landPos);
-                chestPool.Return(chestGO);
+                _islandGenerator.ClearChest(landPos);
+                _chestPool.Return(chestGO);
                 return;
             }
 
-            chest.Initialize(chestConfig, landPos, islandGenerator.tilemap, chestPool, islandGenerator);
+            chest.Initialize(landPos, _islandGenerator.tilemap, _chestPool, _islandGenerator);
         }
     }
 }

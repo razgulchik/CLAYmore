@@ -20,12 +20,15 @@ namespace CLAYmore
         public Button skipButton;
         public TextMeshProUGUI skipCoinsLabel;
 
-        [HideInInspector]
-        public ModifierConfig[] modifierPool;  // set by Bootstrap
-        [HideInInspector]
-        public int coinsOnSkip;                // set by Bootstrap
+        private ModifierConfig[] _modifierPool;
+        private int              _coinsOnSkip;
 
-        private ChestConfig _chestConfig;
+        public void Init(ModifierConfig[] modifierPool, int coinsOnSkip)
+        {
+            _modifierPool = modifierPool;
+            _coinsOnSkip  = coinsOnSkip;
+        }
+
         private List<ModifierConfig> _offered = new();
         private PlayerModifiersComponent _modifiers;
 
@@ -68,18 +71,17 @@ namespace CLAYmore
 
         private void OnChestActivated(ChestActivatedEvent evt)
         {
-            _chestConfig = evt.ChestEntity.Get<ChestComponent>().Config;
-            _modifiers   = GetPlayerModifiers();
+            _modifiers = GetPlayerModifiers();
 
             List<ModifierConfig> pool = BuildAvailablePool();
-            _offered = PickRandom(pool, _chestConfig != null ? _chestConfig.choiceCount : 3);
+            _offered = PickRandom(pool, 3);
 
             if (_offered.Count == 0)
             {
                 // Nothing to offer — give coins and skip automatically
                 World.Current?.Events.Publish(new ModifierSkippedEvent
                 {
-                    CoinsGiven = coinsOnSkip,
+                    CoinsGiven = _coinsOnSkip,
                 });
                 return;
             }
@@ -108,17 +110,11 @@ namespace CLAYmore
 
             // Skip button
             if (skipCoinsLabel != null)
-                skipCoinsLabel.text = coinsOnSkip > 0 ? $"+{coinsOnSkip}" : "Skip";
+                skipCoinsLabel.text = _coinsOnSkip > 0 ? $"+{_coinsOnSkip}" : "Skip";
             skipButton.onClick.RemoveAllListeners();
-            skipButton.onClick.AddListener(() => OnSkip(coinsOnSkip));
+            skipButton.onClick.AddListener(() => OnSkip(_coinsOnSkip));
 
             panel.SetActive(true);
-            StartCoroutine(EnableInputAfterDelay(0.25f));
-        }
-
-        private IEnumerator EnableInputAfterDelay(float delay)
-        {
-            yield return new WaitForSecondsRealtime(delay);
             _isOpen = true;
         }
 
@@ -162,11 +158,11 @@ namespace CLAYmore
         private List<ModifierConfig> BuildAvailablePool()
         {
             var result = new List<ModifierConfig>();
-            if (modifierPool == null) return result;
+            if (_modifierPool == null) return result;
 
             Entity player = GetPlayerEntity();
 
-            foreach (var mod in modifierPool)
+            foreach (var mod in _modifierPool)
             {
                 if (mod == null) continue;
                 _modifiers.Levels.TryGetValue(mod.name, out int currentLevel);

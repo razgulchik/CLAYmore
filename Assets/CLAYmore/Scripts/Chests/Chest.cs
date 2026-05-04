@@ -23,7 +23,7 @@ namespace CLAYmore
         /// <summary>
         /// Called by ChestSpawner on every spawn (including re-use from pool).
         /// </summary>
-        public void Initialize(ChestConfig config, Vector3 worldPos, Tilemap tilemap, PrefabPool chestPool, IslandGenerator islandGenerator)
+        public void Initialize(Vector3 worldPos, Tilemap tilemap, PrefabPool chestPool, IslandGenerator islandGenerator)
         {
             _chestPool        = chestPool;
             _islandGenerator  = islandGenerator;
@@ -35,15 +35,12 @@ namespace CLAYmore
             else
                 _chest = _entity.Add(new ChestComponent());
 
-            _chest.Config   = config;
             _chest.State    = ChestState.Active;
             _chest.LandPos  = worldPos;
             _chest.LandCell = tilemap.WorldToCell(worldPos);
 
             _renderer = GetComponent<SpriteRenderer>();
             _renderer.enabled = true;
-            if (config.sprite != null)
-                _renderer.sprite = config.sprite;
 
             World.Current?.RegisterEntity(_entity);
             World.Current?.Events.Subscribe<ChestActivatedEvent>(OnChestActivated);
