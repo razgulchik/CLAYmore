@@ -16,9 +16,16 @@ namespace CLAYmore
         [Tooltip("Difficulty waves sorted by startTime. Leave empty to skip wave progression.")]
         public WaveConfig[] waves;
 
-        [Header("Chest Spawner")]
+        [Header("Chests")]
         public float chestSpawnInitialInterval = 30f;
         public float chestSpawnMinInterval     = 20f;
+        [Tooltip("Coins awarded to the player when skipping a modifier choice")]
+        public int coinsOnSkip = 5;
+        public ModifierConfig[] modifierPool;
+
+        [Header("Starting State")]
+        public int startingCoins = 0;
+        public ModifierConfig[] startingModifiers;
 
         [Header("Scoring")]
         [Tooltip("Points awarded per second of play time")]

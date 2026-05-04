@@ -11,16 +11,13 @@ namespace CLAYmore
     /// </summary>
     public class PotSpawner : MonoBehaviour
     {
-        [Header("References")]
-        public IslandGenerator islandGenerator;
-        public PlayerMovement playerMovement;
-        public Economy economy;
-
-        [Header("Pools")]
-        public PrefabPool potPool;
-        public PrefabPool shadowPool;
-        public PrefabPool coinPool;
-        public PrefabPool shardsPool;
+        [HideInInspector] public IslandGenerator islandGenerator;  // set by Bootstrap
+        [HideInInspector] public PlayerMovement  playerMovement;   // set by Bootstrap
+        [HideInInspector] public Economy         economy;          // set by Bootstrap
+        [HideInInspector] public PrefabPool      potPool;          // set by Bootstrap
+        [HideInInspector] public PrefabPool      shadowPool;       // set by Bootstrap
+        [HideInInspector] public PrefabPool      coinPool;         // set by Bootstrap
+        [HideInInspector] public PrefabPool      shardsPool;       // set by Bootstrap
 
         [Header("Pot Configs")]
         [Tooltip("All pot types including rocks (isRock = true). Rocks are picked separately via wave rockSpawnChance.")]

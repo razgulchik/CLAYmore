@@ -10,7 +10,7 @@ namespace CLAYmore
     /// </summary>
     public class Economy : MonoBehaviour
     {
-        [Min(0)] public int startingCoins = 0;
+        [HideInInspector] public int startingCoins = 0;
 
         public int Coins => _system?.GetCoinCount() ?? 0;
 

@@ -22,6 +22,7 @@ namespace CLAYmore
         public StatsTracker     statsTracker;
         public LeaderboardService leaderboardService;
         public HUD              hud;
+        public Economy          economy;
 
         [Header("Camera")]
         public CinemachineCamera virtualCamera;
@@ -33,15 +34,11 @@ namespace CLAYmore
         public PrefabPool potPool;
         public PrefabPool shadowPool;
         public PrefabPool coinPool;
+        public PrefabPool shardsPool;
         public PrefabPool chestPool;
 
         [Header("Chest / Modifiers")]
-        [Tooltip("Coins awarded to the player when skipping a modifier choice")]
-        public int coinsOnSkip = 5;
-        public ModifierConfig[] modifierPool;
         public ModifierChoiceUI modifierChoiceUI;
-        [Tooltip("Modifiers applied to the player at game start (for testing / preset builds)")]
-        public ModifierConfig[] startingModifiers;
 
         public bool IsGameOver { get; private set; }
 
@@ -51,6 +48,9 @@ namespace CLAYmore
         private void Awake()
         {
             PauseManager.Instance.Reset();
+
+            if (economy != null && config != null)
+                economy.startingCoins = config.startingCoins;
 
             // ── Create World and register all systems ──────────────────────
             _world = new World();
@@ -134,10 +134,13 @@ namespace CLAYmore
 
             if (potSpawner != null)
             {
-                potSpawner.playerMovement = playerMovement;
-                potSpawner.potPool        = potPool;
-                potSpawner.shadowPool     = shadowPool;
-                potSpawner.coinPool       = coinPool;
+                potSpawner.islandGenerator = islandGenerator;
+                potSpawner.economy         = economy;
+                potSpawner.playerMovement  = playerMovement;
+                potSpawner.potPool         = potPool;
+                potSpawner.shadowPool      = shadowPool;
+                potSpawner.coinPool        = coinPool;
+                potSpawner.shardsPool      = shardsPool;
             }
 
             if (chestSpawner != null)
@@ -147,20 +150,20 @@ namespace CLAYmore
             }
 
 
-            if (modifierChoiceUI != null)
+            if (modifierChoiceUI != null && config != null)
             {
-                modifierChoiceUI.modifierPool = modifierPool;
-                modifierChoiceUI.coinsOnSkip  = coinsOnSkip;
+                modifierChoiceUI.modifierPool = config.modifierPool;
+                modifierChoiceUI.coinsOnSkip  = config.coinsOnSkip;
             }
 
             _world.RegisterSystem(new SessionTimerSystem(config?.waves));
 
             _playerEntity = playerEntity;
 
-            if (startingModifiers != null)
+            if (config != null && config.startingModifiers != null)
             {
                 var modLevels = new System.Collections.Generic.Dictionary<string, int>();
-                foreach (var mod in startingModifiers)
+                foreach (var mod in config.startingModifiers)
                 {
                     if (mod == null) continue;
                     modLevels.TryGetValue(mod.name, out int level);

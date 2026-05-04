@@ -88,7 +88,7 @@ namespace CLAYmore
         /// </summary>
         public bool CanExpand(Vector3 worldPos, Vector2Int direction)
             => IsBlockedByEdge(worldPos, direction)
-            && (economy == null || economy.Coins >= _currentExpansionCost);
+            && (economy == null || economy.Coins >= ExpansionCost);
 
         /// <summary>Returns the world center of a random empty walkable cell with no player.
         /// If avoidPlayerNeighbours is true, also excludes the 4 orthogonal neighbours of the player.
