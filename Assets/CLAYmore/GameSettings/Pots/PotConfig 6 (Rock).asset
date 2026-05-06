@@ -19,5 +19,9 @@ MonoBehaviour:
   fallEase: 5
   spawnHeight: 8
   sprite: {fileID: 21300000, guid: 4a13a6c465869aa44b5981b2af25a560, type: 3}
-  spawnWeight: 1
+  damageSprite1: {fileID: 0}
+  damageSprite2: {fileID: 0}
+  damageSprite3: {fileID: 0}
+  shardsSprite: {fileID: 0}
+  spawnWeight: 2
   isRock: 1

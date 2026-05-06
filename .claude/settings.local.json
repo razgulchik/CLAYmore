@@ -3,7 +3,8 @@
     "allow": [
       "Bash(xargs grep:*)",
       "Bash(grep -E \"\\\\.cs$\")",
-      "Bash(xargs wc *)"
+      "Bash(xargs wc *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Repos\\\\Unity2D\\\\CLAYmore\\\\Assets\\\\Scenes\" -Name)"
     ]
   }
 }
