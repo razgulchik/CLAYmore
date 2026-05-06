@@ -57,7 +57,8 @@ namespace CLAYmore
 
             if (_inUIMode)
             {
-                _inputActions.UI.Navigate.started -= HandleMoveStarted;
+                _inputActions.UI.Navigate.started  -= HandleMoveStarted;
+                _inputActions.UI.Navigate.canceled -= HandleMoveReleased;
                 _inUIMode = false;
             }
         }
@@ -72,7 +73,8 @@ namespace CLAYmore
         private void OnChestActivated(ChestActivatedEvent _)
         {
             _inputActions.Player.Disable();
-            _inputActions.UI.Navigate.started += HandleMoveStarted;
+            _inputActions.UI.Navigate.started  += HandleMoveStarted;
+            _inputActions.UI.Navigate.canceled += HandleMoveReleased;
             _inUIMode = true;
         }
 
@@ -82,7 +84,8 @@ namespace CLAYmore
         private void ExitUIMode()
         {
             if (!_inUIMode) return;
-            _inputActions.UI.Navigate.started -= HandleMoveStarted;
+            _inputActions.UI.Navigate.started  -= HandleMoveStarted;
+            _inputActions.UI.Navigate.canceled -= HandleMoveReleased;
             _inputActions.Player.Enable();
             _lastMoveDirection = Vector2Int.zero;
             _inUIMode = false;

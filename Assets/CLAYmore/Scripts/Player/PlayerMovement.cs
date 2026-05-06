@@ -28,6 +28,7 @@ namespace CLAYmore
         [Header("Whirlwind VFX")]
         [SerializeField] private WhirlVFXController _whirlVFX;
 
+
         public Vector2Int FacingDirection => _movement.FacingDirection;
 
         private IslandGenerator   _islandGenerator;
@@ -92,6 +93,8 @@ namespace CLAYmore
 
             if (evt.BounceReturnTime > 0f)
                 _bounceReturnTime = evt.BounceReturnTime;
+
+            _weapon?.SetReach(evt.LongSwordReach);
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -158,8 +161,8 @@ namespace CLAYmore
             bool facingUp = direction.y > 0;
             if (_playerSprite != null)
                 _playerSprite.sprite = facingUp ? _backSprite : _frontSprite;
-            if (_weaponSprite != null && _playerSprite != null)
-                _weaponSprite.sortingOrder = _playerSprite.sortingOrder + (facingUp ? -1 : 1);
+            if (_weapon != null && _playerSprite != null)
+                _weapon.SetSortingOrder(_playerSprite.sortingOrder + (facingUp ? -1 : 1));
         }
 
         private void UpdateWeaponOrientation(Vector2Int direction)

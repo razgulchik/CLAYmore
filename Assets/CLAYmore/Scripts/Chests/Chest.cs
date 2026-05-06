@@ -1,4 +1,5 @@
 using CLAYmore.ECS;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -41,6 +42,10 @@ namespace CLAYmore
 
             _renderer = GetComponent<SpriteRenderer>();
             _renderer.enabled = true;
+
+            transform.DOKill();
+            transform.localScale = Vector3.zero;
+            transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack);
 
             World.Current?.RegisterEntity(_entity);
             World.Current?.Events.Subscribe<ChestActivatedEvent>(OnChestActivated);

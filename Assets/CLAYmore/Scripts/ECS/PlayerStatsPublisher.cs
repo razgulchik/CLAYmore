@@ -20,6 +20,7 @@ namespace CLAYmore
                 MoveTime         = movement?.MoveTime ?? 0f,
                 BounceReturnTime = stats.BaseBounceReturnTime / stats.SpeedMultiplier,
                 HasWhirlwind     = stats.HasWhirlwind,
+                LongSwordReach   = stats.LongSwordReach,
             });
         }
     }

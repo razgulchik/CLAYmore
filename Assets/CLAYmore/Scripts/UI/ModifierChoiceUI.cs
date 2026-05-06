@@ -20,6 +20,23 @@ namespace CLAYmore
         public Button skipButton;
         public TextMeshProUGUI skipCoinsLabel;
 
+        [Header("Arrow Indicators")]
+        public Image arrowLeft;
+        public Image arrowUp;
+        public Image arrowRight;
+        public Image arrowDown;
+
+        [Header("Hold Fill")]
+        public Image holdFillImage; // Image type=Filled, FillMethod=Horizontal, FillOrigin=Left
+
+        private const float HoldDelay  = 0.5f;
+        private const float PulseMax   = 1.15f;
+        private const float PulseSpeed = 15f;
+
+        private Coroutine _holdCoroutine;
+        private Coroutine _pulseCoroutine;
+        private Image     _activeArrow;
+
         private ModifierConfig[] _modifierPool;
         private int              _coinsOnSkip;
 
@@ -43,28 +60,102 @@ namespace CLAYmore
         {
             World.Current?.Events.Subscribe<ChestActivatedEvent>(OnChestActivated);
             World.Current?.Events.Subscribe<PlayerMoveInputEvent>(OnMoveInput);
+            World.Current?.Events.Subscribe<PlayerMoveHeldEvent>(OnMoveHeld);
         }
 
         private void OnDisable()
         {
             World.Current?.Events.Unsubscribe<ChestActivatedEvent>(OnChestActivated);
             World.Current?.Events.Unsubscribe<PlayerMoveInputEvent>(OnMoveInput);
+            World.Current?.Events.Unsubscribe<PlayerMoveHeldEvent>(OnMoveHeld);
         }
 
         private void OnMoveInput(PlayerMoveInputEvent evt)
         {
             if (!_isOpen) return;
 
-            var dir = evt.Direction;
+            StopPending();
 
-            if (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
-                cards[0].button.onClick.Invoke();
-            else if (dir == new Vector2Int(0, 1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
-                cards[1].button.onClick.Invoke();
-            else if (dir == new Vector2Int(1, 0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
-                cards[2].button.onClick.Invoke();
+            var dir = evt.Direction;
+            System.Action action = null;
+            Image  arrow  = null;
+
+            if      (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
+                { action = () => cards[0].button.onClick.Invoke(); arrow = arrowLeft; }
+            else if (dir == new Vector2Int(0,  1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
+                { action = () => cards[1].button.onClick.Invoke(); arrow = arrowUp; }
+            else if (dir == new Vector2Int(1,  0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
+                { action = () => cards[2].button.onClick.Invoke(); arrow = arrowRight; }
             else if (dir == new Vector2Int(0, -1))
-                skipButton.onClick.Invoke();
+                { action = () => skipButton.onClick.Invoke();      arrow = arrowDown; }
+
+            if (action == null) return;
+
+            _holdCoroutine  = StartCoroutine(HoldAndSelect(action));
+            if (arrow != null)
+                _pulseCoroutine = StartCoroutine(PulseArrow(arrow));
+        }
+
+        private void OnMoveHeld(PlayerMoveHeldEvent evt)
+        {
+            if (!_isOpen) return;
+            if (evt.Direction == Vector2Int.zero)
+                StopPending();
+        }
+
+        private IEnumerator HoldAndSelect(System.Action action)
+        {
+            float elapsed = 0f;
+            while (elapsed < HoldDelay)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                SetMaskFill(elapsed / HoldDelay);
+                yield return null;
+            }
+            _holdCoroutine = null;
+            SetMaskFill(0f);
+            StopPulse();
+            action();
+        }
+
+        private void SetMaskFill(float t)
+        {
+            if (holdFillImage == null) return;
+            holdFillImage.fillAmount = Mathf.Clamp01(t);
+        }
+
+        private IEnumerator PulseArrow(Image arrow)
+        {
+            _activeArrow = arrow;
+            float t = 0f;
+            while (true)
+            {
+                t += Time.unscaledDeltaTime * PulseSpeed;
+                float s = 1f + (PulseMax - 1f) * (0.5f + 0.5f * Mathf.Sin(t));
+                arrow.transform.localScale = new Vector3(s, s, 1f);
+                yield return null;
+            }
+        }
+
+        private void StopPulse()
+        {
+            if (_pulseCoroutine != null)
+            {
+                StopCoroutine(_pulseCoroutine);
+                _pulseCoroutine = null;
+            }
+            if (_activeArrow != null)
+            {
+                _activeArrow.transform.localScale = Vector3.one;
+                _activeArrow = null;
+            }
+        }
+
+        private void StopPending()
+        {
+            if (_holdCoroutine != null) { StopCoroutine(_holdCoroutine); _holdCoroutine = null; }
+            SetMaskFill(0f);
+            StopPulse();
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -142,6 +233,7 @@ namespace CLAYmore
         private void Close()
         {
             _isOpen = false;
+            StopPending();
             panel.SetActive(false);
             StartCoroutine(UnpauseNextFrame());
         }

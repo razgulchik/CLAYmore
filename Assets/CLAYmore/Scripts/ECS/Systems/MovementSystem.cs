@@ -132,6 +132,18 @@ namespace CLAYmore
             Vector3Int targetCell  = currentCell + new Vector3Int(direction.x, direction.y, 0);
             Vector3    targetWorld = _island.GetCellCenter(targetCell);
 
+            // ── Long sword: hit extra cells behind target ─────────────────────
+            if (stats != null && stats.LongSwordReach > 0)
+            {
+                for (int i = 2; i <= stats.LongSwordReach + 1; i++)
+                {
+                    Vector3Int extraCell = currentCell + new Vector3Int(direction.x * i, direction.y * i, 0);
+                    Entity extraPot = GetLandedPotAt(extraCell);
+                    if (extraPot != null)
+                        _damageSystem.PlayerHitPot(extraPot);
+                }
+            }
+
             // ── Pot at target cell? → damage pot, then walk or bounce ─────────
             Entity potEntity = GetLandedPotAt(targetCell);
             if (potEntity != null)

@@ -7,5 +7,6 @@ namespace CLAYmore
         public float MoveTime;
         public float BounceReturnTime;
         public bool  HasWhirlwind;
+        public int   LongSwordReach;
     }
 }

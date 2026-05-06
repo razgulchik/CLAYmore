@@ -24,5 +24,6 @@ namespace CLAYmore.ECS
         public float LightningInterval    = 0f;
         public float LightningTimer      = 0f;
         public float LightningImpactDelay = 0f;
+        public int   LongSwordReach    = 0;
     }
 }
