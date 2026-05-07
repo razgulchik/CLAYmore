@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86a44f7425f5f3e44927dacaa2a19803, type: 3}
   m_Name: PotConfig 7 (Golden)
   m_EditorClassIdentifier: 
-  maxHp: 128
-  coinDropMin: 1
-  coinDropMax: 3
+  maxHp: 2
+  coinDropMin: 0
+  coinDropMax: 0
   fallDuration: 1.2
   fallEase: 5
   spawnHeight: 8
-  sprite: {fileID: 21300000, guid: 4a13a6c465869aa44b5981b2af25a560, type: 3}
-  damageSprite1: {fileID: 0}
-  damageSprite2: {fileID: 0}
-  damageSprite3: {fileID: 0}
-  shardsSprite: {fileID: 0}
-  spawnWeight: 2
-  isRock: 1
+  sprite: {fileID: -2481683750398007167, guid: 54d1c5a5737e01f4ab0d83b6dc0195bd, type: 3}
+  damageSprite1: {fileID: -6256806991141056964, guid: 54d1c5a5737e01f4ab0d83b6dc0195bd, type: 3}
+  damageSprite2: {fileID: -110873174163048575, guid: 54d1c5a5737e01f4ab0d83b6dc0195bd, type: 3}
+  damageSprite3: {fileID: -4598821299405433760, guid: 54d1c5a5737e01f4ab0d83b6dc0195bd, type: 3}
+  shardsSprite: {fileID: 5822064350094705644, guid: 54d1c5a5737e01f4ab0d83b6dc0195bd, type: 3}
+  spawnWeight: 0
+  isRock: 0
+  isGoldenUrn: 1

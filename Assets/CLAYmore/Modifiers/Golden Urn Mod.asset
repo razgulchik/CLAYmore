@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d19788ecb91f0a741a07edf5ad1d2295, type: 3}
   m_Name: Golden Urn Mod
   m_EditorClassIdentifier: 
-  displayName: 
+  displayName: Golden Urn
   description: 
-  icon: {fileID: 0}
-  maxLevel: 1
-  spawnWeight: 1
-  price: 0
-  priceMultiplier: 1.2
+  icon: {fileID: -2830267557705304140, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  maxLevel: 5
+  spawnWeight: 5
+  price: 15
+  priceMultiplier: 1.5
   chancePerLevel: 0.1
   goldPerLevel: 10
