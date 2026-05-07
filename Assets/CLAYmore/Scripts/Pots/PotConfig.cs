@@ -22,5 +22,6 @@ namespace CLAYmore
         [Min(0f)] public float spawnWeight = 1f;
         [Tooltip("Rocks are indestructible and permanently block the cell")]
         public bool isRock = false;
+        public bool isGoldenUrn = false;
     }
 }
