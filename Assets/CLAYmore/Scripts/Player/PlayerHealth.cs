@@ -33,6 +33,7 @@ namespace CLAYmore
             {
                 bus.Subscribe<EntityDamagedEvent>(OnEntityDamaged);
                 bus.Subscribe<EntityDiedEvent>(OnEntityDied);
+                bus.Subscribe<HearthCollectedEvent>(OnHearthCollected);
                 bus.Publish(new PlayerHpChangedEvent { Hp = _maxHp, MaxHp = _maxHp });
 
                 var movement = _entity.Has<MovementComponent>() ? _entity.Get<MovementComponent>() : null;
@@ -52,6 +53,7 @@ namespace CLAYmore
             {
                 bus.Unsubscribe<EntityDamagedEvent>(OnEntityDamaged);
                 bus.Unsubscribe<EntityDiedEvent>(OnEntityDied);
+                bus.Unsubscribe<HearthCollectedEvent>(OnHearthCollected);
             }
         }
 
@@ -63,6 +65,8 @@ namespace CLAYmore
             var h = _entity.Get<HealthComponent>();
             World.Current?.Events.Publish(new PlayerHpChangedEvent { Hp = h.Hp, MaxHp = h.MaxHp });
         }
+
+        private void OnHearthCollected(HearthCollectedEvent _) => Heal(1);
 
         private void OnEntityDamaged(EntityDamagedEvent evt)
         {

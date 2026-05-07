@@ -19,5 +19,5 @@ MonoBehaviour:
   spawnWeight: 5
   price: 15
   priceMultiplier: 1.5
-  baseChance: 0.05
-  chancePerLevel: 0.01
+  baseChance: 0.03
+  chancePerLevel: 0.005

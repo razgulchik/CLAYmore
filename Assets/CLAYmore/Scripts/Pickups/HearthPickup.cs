@@ -49,7 +49,7 @@ namespace CLAYmore
         {
             _collected = true;
             World.Current?.Events.Unsubscribe<PlayerTileChangedEvent>(OnPlayerMoved);
-            FindObjectOfType<PlayerHealth>()?.Heal(1);
+            World.Current?.Events.Publish(new HearthCollectedEvent());
             _islandGenerator?.ClearCell(transform.position);
             Destroy(gameObject);
         }
@@ -57,8 +57,8 @@ namespace CLAYmore
         private void OnDestroy()
         {
             World.Current?.Events.Unsubscribe<PlayerTileChangedEvent>(OnPlayerMoved);
-            if (_landed && !_collected)
-                _islandGenerator?.ClearCell(transform.position);
+            if (_landed && !_collected && _islandGenerator != null && _islandGenerator.tilemap != null)
+                _islandGenerator.ClearCell(transform.position);
         }
     }
 }
