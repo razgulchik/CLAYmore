@@ -14,6 +14,8 @@ namespace CLAYmore
         [Header("Pot Configs")]
         [Tooltip("All pot types including rocks (isRock = true). Rocks are picked separately via wave rockSpawnChance.")]
         public PotConfig[] potConfigs;
+        [Tooltip("Golden urn config — spawned independently via GoldenUrnModifier chance.")]
+        [SerializeField] private PotConfig _goldenUrnConfig;
 
         private IslandGenerator _islandGenerator;
         private PlayerMovement  _playerMovement;
@@ -123,6 +125,14 @@ namespace CLAYmore
 
         // ── Weight picking ────────────────────────────────────────────────────
 
+        private float GetGoldenUrnChance()
+        {
+            if (World.Current == null) return 0f;
+            foreach (Entity e in World.Current.Query<PlayerStatsComponent>())
+                return e.Get<PlayerStatsComponent>().GoldenUrnChance;
+            return 0f;
+        }
+
         private PotConfig PickWeightedRandom()
         {
             if (_currentWave?.potWeights != null && _currentWave.potWeights.Length > 0)
@@ -191,12 +201,20 @@ namespace CLAYmore
             }
             else
             {
-                if (_potOnlyConfigs.Length == 0)
+                float urnChance = _goldenUrnConfig != null ? GetGoldenUrnChance() : 0f;
+                if (urnChance > 0f && Random.value < urnChance)
                 {
-                    Debug.LogWarning("PotSpawner: no non-rock pot configs available.");
-                    return;
+                    config = _goldenUrnConfig;
                 }
-                config = PickWeightedRandom();
+                else
+                {
+                    if (_potOnlyConfigs.Length == 0)
+                    {
+                        Debug.LogWarning("PotSpawner: no non-rock pot configs available.");
+                        return;
+                    }
+                    config = PickWeightedRandom();
+                }
             }
 
             Vector3 landPos;
