@@ -39,6 +39,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7a414bc2b8904274ca73e61da16fed6f, type: 2}
   - {fileID: 11400000, guid: e8663d77cc891ce46be458cc63f05825, type: 2}
   - {fileID: 11400000, guid: 06ccc3fe4b0f3b140b14d0ae52cda169, type: 2}
+  - {fileID: 11400000, guid: 74d4007d476b37847add59a96a2642de, type: 2}
   startingCoins: 10
   startingModifiers: []
   pointsPerSecond: 5

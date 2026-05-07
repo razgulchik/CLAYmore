@@ -16,6 +16,8 @@ namespace CLAYmore
         public PotConfig[] potConfigs;
         [Tooltip("Golden urn config — spawned independently via GoldenUrnModifier chance.")]
         [SerializeField] private PotConfig _goldenUrnConfig;
+        [Tooltip("Heart pickup prefab — spawned independently via LuckyDayModifier chance.")]
+        [SerializeField] private GameObject _hearthPickupPrefab;
 
         private IslandGenerator _islandGenerator;
         private PlayerMovement  _playerMovement;
@@ -133,6 +135,14 @@ namespace CLAYmore
             return 0f;
         }
 
+        private float GetHearthChance()
+        {
+            if (World.Current == null) return 0f;
+            foreach (Entity e in World.Current.Query<PlayerStatsComponent>())
+                return e.Get<PlayerStatsComponent>().HearthChance;
+            return 0f;
+        }
+
         private PotConfig PickWeightedRandom()
         {
             if (_currentWave?.potWeights != null && _currentWave.potWeights.Length > 0)
@@ -193,6 +203,19 @@ namespace CLAYmore
                 && _currentWave.rockSpawnChance > 0f
                 && _rockOnlyConfigs.Length > 0
                 && Random.value < _currentWave.rockSpawnChance;
+
+            // ── Hearth chance (before rock/urn selection) ─────────────────────
+            float hearthChance = _hearthPickupPrefab != null ? GetHearthChance() : 0f;
+            if (!isTargeted && !spawnRock && hearthChance > 0f && Random.value < hearthChance)
+            {
+                if (!_islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 hearthLandPos)) return;
+                if (!_islandGenerator.TryReserveCell(hearthLandPos)) return;
+
+                GameObject hearthGO = Instantiate(_hearthPickupPrefab, hearthLandPos, Quaternion.identity);
+                if (hearthGO.TryGetComponent<HearthPickup>(out HearthPickup pickup))
+                    pickup.Initialize(hearthLandPos, _islandGenerator);
+                return;
+            }
 
             PotConfig config;
             if (spawnRock)

@@ -27,5 +27,6 @@ namespace CLAYmore.ECS
         public int   LongSwordReach    = 0;
         public float GoldenUrnChance    = 0f;
         public int   GoldenUrnGoldReward = 0;
+        public float HearthChance        = 0f;
     }
 }
