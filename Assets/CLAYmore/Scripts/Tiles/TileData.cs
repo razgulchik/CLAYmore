@@ -18,4 +18,5 @@ namespace CLAYmore
 
         public TileData(Vector2Int index) => Index = index;
     }
+    
 }
