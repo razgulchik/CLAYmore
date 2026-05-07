@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 using CLAYmore.ECS;
 
 namespace CLAYmore
 {
-    /// <summary>
-    /// Roguelike modifier choice screen.
-    /// Activated by ChestActivatedEvent. Shows N modifier cards + a skip option.
-    /// Publishes ModifierChosenEvent or ModifierSkippedEvent, then unpauses the game.
-    /// </summary>
     public class ModifierChoiceUI : MonoBehaviour
     {
         [Header("UI References")]
         public GameObject panel;
-        public ModifierCardUI[] cards;     // pre-built card slots (assign in inspector)
+        public ModifierCardUI[] cards;
         public Button skipButton;
         public TextMeshProUGUI skipCoinsLabel;
 
@@ -27,18 +23,24 @@ namespace CLAYmore
         public Image arrowDown;
 
         [Header("Hold Fill")]
-        public Image holdFillImage; // Image type=Filled, FillMethod=Horizontal, FillOrigin=Left
+        public Image holdFillImage;
 
         private const float HoldDelay  = 0.5f;
         private const float PulseMax   = 1.15f;
         private const float PulseSpeed = 15f;
 
         private Coroutine _holdCoroutine;
-        private Coroutine _pulseCoroutine;
-        private Image     _activeArrow;
+        private bool      _isOpen;
 
-        private ModifierConfig[] _modifierPool;
-        private int              _coinsOnSkip;
+        private Vector2 _arrowLeftOrigin;
+        private Vector2 _arrowUpOrigin;
+        private Vector2 _arrowRightOrigin;
+        private Vector2 _arrowDownOrigin;
+
+        private ModifierConfig[]      _modifierPool;
+        private int                   _coinsOnSkip;
+        private List<ModifierConfig>  _offered = new();
+        private PlayerModifiersComponent _modifiers;
 
         public void Init(ModifierConfig[] modifierPool, int coinsOnSkip)
         {
@@ -46,15 +48,14 @@ namespace CLAYmore
             _coinsOnSkip  = coinsOnSkip;
         }
 
-        private List<ModifierConfig> _offered = new();
-        private PlayerModifiersComponent _modifiers;
-
         private void Awake()
         {
             panel.SetActive(false);
+            if (arrowLeft  != null) _arrowLeftOrigin  = arrowLeft.rectTransform.anchoredPosition;
+            if (arrowUp    != null) _arrowUpOrigin    = arrowUp.rectTransform.anchoredPosition;
+            if (arrowRight != null) _arrowRightOrigin = arrowRight.rectTransform.anchoredPosition;
+            if (arrowDown  != null) _arrowDownOrigin  = arrowDown.rectTransform.anchoredPosition;
         }
-
-        private bool _isOpen;
 
         private void OnEnable()
         {
@@ -77,23 +78,55 @@ namespace CLAYmore
             StopPending();
 
             var dir = evt.Direction;
-            System.Action action = null;
-            Image  arrow  = null;
+            System.Action action    = null;
+            Image         arrow     = null;
+            bool          canAfford = true;
 
-            if      (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
-                { action = () => cards[0].button.onClick.Invoke(); arrow = arrowLeft; }
-            else if (dir == new Vector2Int(0,  1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
-                { action = () => cards[1].button.onClick.Invoke(); arrow = arrowUp; }
-            else if (dir == new Vector2Int(1,  0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
-                { action = () => cards[2].button.onClick.Invoke(); arrow = arrowRight; }
+            if (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
+            {
+                action = () => cards[0].button.onClick.Invoke();
+                arrow  = arrowLeft;
+                canAfford = cards[0].button.interactable;
+            }
+            else if (dir == new Vector2Int(0, 1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
+            {
+                action = () => cards[1].button.onClick.Invoke();
+                arrow  = arrowUp;
+                canAfford = cards[1].button.interactable;
+            }
+            else if (dir == new Vector2Int(1, 0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
+            {
+                action = () => cards[2].button.onClick.Invoke();
+                arrow  = arrowRight;
+                canAfford = cards[2].button.interactable;
+            }
             else if (dir == new Vector2Int(0, -1))
-                { action = () => skipButton.onClick.Invoke();      arrow = arrowDown; }
+            {
+                action = () => skipButton.onClick.Invoke();
+                arrow  = arrowDown;
+            }
 
             if (action == null) return;
 
-            _holdCoroutine  = StartCoroutine(HoldAndSelect(action));
+            if (!canAfford)
+            {
+                if (arrow != null)
+                {
+                    var origin = arrow == arrowLeft  ? _arrowLeftOrigin  :
+                                 arrow == arrowUp    ? _arrowUpOrigin    :
+                                 arrow == arrowRight ? _arrowRightOrigin :
+                                                       _arrowDownOrigin;
+                    arrow.rectTransform.DOShakeAnchorPos(0.5f, strength: 10f, vibrato: 20, randomness: 90f)
+                        .SetUpdate(true)
+                        .OnComplete(() => arrow.rectTransform.anchoredPosition = origin);
+                }
+                return;
+            }
+
+            _holdCoroutine = StartCoroutine(HoldAndSelect(action));
             if (arrow != null)
-                _pulseCoroutine = StartCoroutine(PulseArrow(arrow));
+                arrow.transform.DOScale(PulseMax, Mathf.PI / PulseSpeed)
+                    .SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetUpdate(true);
         }
 
         private void OnMoveHeld(PlayerMoveHeldEvent evt)
@@ -124,30 +157,14 @@ namespace CLAYmore
             holdFillImage.fillAmount = Mathf.Clamp01(t);
         }
 
-        private IEnumerator PulseArrow(Image arrow)
-        {
-            _activeArrow = arrow;
-            float t = 0f;
-            while (true)
-            {
-                t += Time.unscaledDeltaTime * PulseSpeed;
-                float s = 1f + (PulseMax - 1f) * (0.5f + 0.5f * Mathf.Sin(t));
-                arrow.transform.localScale = new Vector3(s, s, 1f);
-                yield return null;
-            }
-        }
-
         private void StopPulse()
         {
-            if (_pulseCoroutine != null)
+            Image[] arrows = { arrowLeft, arrowUp, arrowRight, arrowDown };
+            foreach (var a in arrows)
             {
-                StopCoroutine(_pulseCoroutine);
-                _pulseCoroutine = null;
-            }
-            if (_activeArrow != null)
-            {
-                _activeArrow.transform.localScale = Vector3.one;
-                _activeArrow = null;
+                if (a == null) continue;
+                DOTween.Kill(a.transform);
+                a.transform.localScale = Vector3.one;
             }
         }
 
@@ -156,6 +173,10 @@ namespace CLAYmore
             if (_holdCoroutine != null) { StopCoroutine(_holdCoroutine); _holdCoroutine = null; }
             SetMaskFill(0f);
             StopPulse();
+            if (arrowLeft  != null) { DOTween.Kill(arrowLeft.rectTransform);  arrowLeft.rectTransform.anchoredPosition  = _arrowLeftOrigin; }
+            if (arrowUp    != null) { DOTween.Kill(arrowUp.rectTransform);    arrowUp.rectTransform.anchoredPosition    = _arrowUpOrigin; }
+            if (arrowRight != null) { DOTween.Kill(arrowRight.rectTransform); arrowRight.rectTransform.anchoredPosition = _arrowRightOrigin; }
+            if (arrowDown  != null) { DOTween.Kill(arrowDown.rectTransform);  arrowDown.rectTransform.anchoredPosition  = _arrowDownOrigin; }
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -244,9 +265,6 @@ namespace CLAYmore
             PauseManager.Instance.Pop();
         }
 
-        /// <summary>
-        /// Filters out modifiers that have reached maxLevel or whose IsAvailable() returns false.
-        /// </summary>
         private List<ModifierConfig> BuildAvailablePool()
         {
             var result = new List<ModifierConfig>();
@@ -280,9 +298,6 @@ namespace CLAYmore
             return 0f;
         }
 
-        /// <summary>
-        /// Weighted random selection of up to 'count' distinct modifiers.
-        /// </summary>
         private List<ModifierConfig> PickRandom(List<ModifierConfig> pool, int count)
         {
             var result  = new List<ModifierConfig>();
