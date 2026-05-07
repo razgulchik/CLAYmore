@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMaxHp: 5
   moveTime: 0.4
-  bounceReturnTime: 0.4
+  bounceReturnTime: 0.2
   inputBufferWindow: 0.25
   waves:
   - {fileID: 11400000, guid: 3b673221f4759a947ae3906350429f49, type: 2}
@@ -25,8 +25,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e5a20b2c176f5b648a8d8483f37ffb5a, type: 2}
   - {fileID: 11400000, guid: ea6840a5a25c67f41a04269343305622, type: 2}
   - {fileID: 11400000, guid: 280b686ededbe36439dbd5853599219e, type: 2}
-  chestSpawnInitialInterval: 2
-  chestSpawnMinInterval: 5
+  chestSpawnInitialInterval: 20
+  chestSpawnMinInterval: 20
   coinsOnSkip: 25
   modifierPool:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
@@ -35,7 +35,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: eedef1356e1982540bf50b5a5edfbf9b, type: 2}
   - {fileID: 11400000, guid: 1e98175978fb2a044b162bb4fa28eca4, type: 2}
   - {fileID: 11400000, guid: 7394d3ec4a4828c4abe35d1aac144309, type: 2}
-  - {fileID: 11400000, guid: 2e93548b2769d894da44c0ef8200431d, type: 2}
   - {fileID: 11400000, guid: bed6cefaed1ae2046865c5778b5fa3de, type: 2}
   - {fileID: 11400000, guid: 7a414bc2b8904274ca73e61da16fed6f, type: 2}
   - {fileID: 11400000, guid: e8663d77cc891ce46be458cc63f05825, type: 2}

@@ -17,8 +17,8 @@ MonoBehaviour:
   icon: {fileID: -4913905520230432921, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 5
   spawnWeight: 5
-  price: 40
-  priceMultiplier: 1.3
+  price: 15
+  priceMultiplier: 1.5
   baseInterval: 10
   cooldownReductionPerLevel: 1
   damage: 99

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86a44f7425f5f3e44927dacaa2a19803, type: 3}
   m_Name: PotConfig 2
   m_EditorClassIdentifier: 
-  maxHp: 4
+  maxHp: 8
   coinDropMin: 3
   coinDropMax: 5
   fallDuration: 1
