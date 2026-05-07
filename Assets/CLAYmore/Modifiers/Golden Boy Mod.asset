@@ -15,8 +15,8 @@ MonoBehaviour:
   displayName: Golden Boy
   description: 
   icon: {fileID: -1988601373601522851, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 5
-  spawnWeight: 12
-  price: 8
-  priceMultiplier: 1.2
+  maxLevel: 10
+  spawnWeight: 5
+  price: 15
+  priceMultiplier: 1.5
   goldPerLevel: 1
