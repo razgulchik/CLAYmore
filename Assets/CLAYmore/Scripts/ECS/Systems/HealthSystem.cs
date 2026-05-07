@@ -28,7 +28,6 @@ namespace CLAYmore
         {
             var h = entity.Get<HealthComponent>();
             h.Hp = Mathf.Min(h.MaxHp, h.Hp + amount);
-            _world.Events.Publish(new EntityDamagedEvent { Entity = entity, Hp = h.Hp });
         }
 
         public int GetHp(Entity entity) => entity.Get<HealthComponent>().Hp;
