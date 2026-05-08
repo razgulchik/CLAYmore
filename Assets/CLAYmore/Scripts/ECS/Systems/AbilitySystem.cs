@@ -18,8 +18,17 @@ namespace CLAYmore
             public float  Timer;
         }
 
+        private struct BurningCell
+        {
+            public Vector2Int Cell;
+            public int        Damage;
+            public float      TimeRemaining;
+            public float      DamageCooldown;
+        }
+
         private readonly IslandGenerator       _island;
         private readonly System.Collections.Generic.List<PendingImpact> _pendingImpacts = new();
+        private readonly System.Collections.Generic.List<BurningCell>   _burningCells   = new();
         private World        _world;
         private HealthSystem _healthSystem;
         private DamageSystem _damageSystem;
@@ -65,6 +74,27 @@ namespace CLAYmore
                     stats.LightningTimer = stats.LightningInterval;
                     TriggerLightning();
                 }
+            }
+
+            // ── Fire trail ticks ──────────────────────────────────────────────
+            for (int i = _burningCells.Count - 1; i >= 0; i--)
+            {
+                var cell = _burningCells[i];
+                cell.TimeRemaining  -= deltaTime;
+                cell.DamageCooldown -= deltaTime;
+
+                if (cell.DamageCooldown <= 0f)
+                {
+                    cell.DamageCooldown += 1f;
+                    Entity pot = GetLandedPotAt(new Vector3Int(cell.Cell.x, cell.Cell.y, 0));
+                    if (pot != null)
+                        _damageSystem.PlayerHitPot(pot, cell.Damage);
+                }
+
+                if (cell.TimeRemaining <= 0f)
+                    _burningCells.RemoveAt(i);
+                else
+                    _burningCells[i] = cell;
             }
 
             // ── Pending lightning impacts ─────────────────────────────────────
@@ -116,6 +146,37 @@ namespace CLAYmore
                     Origin            = _island.GetCellCenter(originCell),
                     MovedHorizontally = movedHorizontally,
                 });
+            }
+
+            // ── Fire Trail ────────────────────────────────────────────────────
+            if (stats.HasFireTrail && evt.OldIndex.x != int.MinValue)
+            {
+                bool alreadyBurning = false;
+                for (int i = 0; i < _burningCells.Count; i++)
+                {
+                    if (_burningCells[i].Cell == evt.OldIndex)
+                    {
+                        alreadyBurning = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyBurning)
+                {
+                    _burningCells.Add(new BurningCell
+                    {
+                        Cell           = evt.OldIndex,
+                        Damage         = stats.FireTrailDamage,
+                        TimeRemaining  = 10f,
+                        DamageCooldown = 1f,
+                    });
+
+                    _world.Events.Publish(new ECS.FireTrailEvent
+                    {
+                        WorldPosition = _island.GetCellCenter(new Vector3Int(evt.OldIndex.x, evt.OldIndex.y, 0)),
+                        Cell          = evt.OldIndex,
+                    });
+                }
             }
 
             // ── Shockwave ─────────────────────────────────────────────────────

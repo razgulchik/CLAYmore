@@ -31,5 +31,7 @@ namespace CLAYmore.ECS
         public bool  HasShockwave        = false;
         public int   ShockwaveDamage     = 1;
         public int   ShockwaveStepCount  = 0;
+        public bool  HasFireTrail        = false;
+        public int   FireTrailDamage     = 1;
     }
 }
