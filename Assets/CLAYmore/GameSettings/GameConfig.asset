@@ -25,8 +25,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e5a20b2c176f5b648a8d8483f37ffb5a, type: 2}
   - {fileID: 11400000, guid: ea6840a5a25c67f41a04269343305622, type: 2}
   - {fileID: 11400000, guid: 280b686ededbe36439dbd5853599219e, type: 2}
-  chestSpawnInitialInterval: 5
-  chestSpawnMinInterval: 5
+  chestSpawnInitialInterval: 20
+  chestSpawnMinInterval: 20
   coinsOnSkip: 25
   modifierPool:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
