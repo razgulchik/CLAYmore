@@ -28,5 +28,8 @@ namespace CLAYmore.ECS
         public float GoldenUrnChance    = 0f;
         public int   GoldenUrnGoldReward = 0;
         public float HearthChance        = 0f;
+        public bool  HasShockwave        = false;
+        public int   ShockwaveDamage     = 1;
+        public int   ShockwaveStepCount  = 0;
     }
 }

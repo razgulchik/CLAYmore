@@ -92,28 +92,42 @@ namespace CLAYmore
             if (player == null) return;
 
             var stats = player.Get<PlayerStatsComponent>();
-            if (!stats.HasFireBalls) return;
 
-            Vector2Int move = evt.NewIndex - evt.OldIndex;
-            bool movedHorizontally = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
-
-            Vector3Int originCell = new Vector3Int(evt.OldIndex.x, evt.OldIndex.y, 0);
-            Vector3Int[] perpendicular = movedHorizontally
-                ? new[] { originCell + Vector3Int.up,   originCell + Vector3Int.down }
-                : new[] { originCell + Vector3Int.right, originCell + Vector3Int.left };
-
-            foreach (Vector3Int cell in perpendicular)
+            // ── FireBalls ─────────────────────────────────────────────────────
+            if (stats.HasFireBalls)
             {
-                Entity pot = GetLandedPotAt(cell);
-                if (pot != null)
-                    _damageSystem.PlayerHitPot(pot, stats.FireBallsDamage);
+                Vector2Int move = evt.NewIndex - evt.OldIndex;
+                bool movedHorizontally = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
+
+                Vector3Int originCell = new Vector3Int(evt.OldIndex.x, evt.OldIndex.y, 0);
+                Vector3Int[] perpendicular = movedHorizontally
+                    ? new[] { originCell + Vector3Int.up,    originCell + Vector3Int.down }
+                    : new[] { originCell + Vector3Int.right, originCell + Vector3Int.left };
+
+                foreach (Vector3Int cell in perpendicular)
+                {
+                    Entity pot = GetLandedPotAt(cell);
+                    if (pot != null)
+                        _damageSystem.PlayerHitPot(pot, stats.FireBallsDamage);
+                }
+
+                _world.Events.Publish(new OrthoStrikeEvent
+                {
+                    Origin            = _island.GetCellCenter(originCell),
+                    MovedHorizontally = movedHorizontally,
+                });
             }
 
-            _world.Events.Publish(new OrthoStrikeEvent
+            // ── Shockwave ─────────────────────────────────────────────────────
+            if (stats.HasShockwave)
             {
-                Origin            = _island.GetCellCenter(originCell),
-                MovedHorizontally = movedHorizontally,
-            });
+                stats.ShockwaveStepCount++;
+                if (stats.ShockwaveStepCount >= 3)
+                {
+                    stats.ShockwaveStepCount = 0;
+                    TriggerShockwave(stats, evt);
+                }
+            }
         }
 
         private void TriggerLightning()
@@ -141,6 +155,53 @@ namespace CLAYmore
                 _damageSystem.PlayerHitPot(target, dmg);
             else
                 _pendingImpacts.Add(new PendingImpact { Target = target, Damage = dmg, Timer = delay });
+        }
+
+        private const float ShockwaveFrameInterval = 0.1f;
+
+        private void TriggerShockwave(PlayerStatsComponent stats, PlayerTileChangedEvent evt)
+        {
+            Vector2Int move = evt.NewIndex - evt.OldIndex;
+            Vector2Int dir  = new Vector2Int(
+                move.x != 0 ? (int)Mathf.Sign(move.x) : 0,
+                move.y != 0 ? (int)Mathf.Sign(move.y) : 0);
+
+            if (dir == Vector2Int.zero) return;
+
+            var waveCells     = new System.Collections.Generic.List<Vector3Int>();
+            Vector3Int probe  = new Vector3Int(evt.NewIndex.x, evt.NewIndex.y, 0);
+
+            while (!_island.IsBlockedByEdge(_island.GetCellCenter(probe), dir))
+            {
+                probe += new Vector3Int(dir.x, dir.y, 0);
+                waveCells.Add(probe);
+            }
+
+            if (waveCells.Count == 0) return;
+
+            var positions = new Vector3[waveCells.Count];
+            var hadPot    = new bool[waveCells.Count];
+
+            for (int i = 0; i < waveCells.Count; i++)
+            {
+                positions[i] = _island.GetCellCenter(waveCells[i]);
+                Entity pot   = GetLandedPotAt(waveCells[i]);
+                hadPot[i]    = pot != null;
+                if (pot != null)
+                    _pendingImpacts.Add(new PendingImpact
+                    {
+                        Target = pot,
+                        Damage = stats.ShockwaveDamage,
+                        Timer  = i * ShockwaveFrameInterval,
+                    });
+            }
+
+            _world.Events.Publish(new ShockwaveEvent
+            {
+                TilePositions = positions,
+                HadPot        = hadPot,
+                Direction     = dir,
+            });
         }
 
         private Entity GetPlayerEntity() => _world.QueryFirst<PlayerStatsComponent>();

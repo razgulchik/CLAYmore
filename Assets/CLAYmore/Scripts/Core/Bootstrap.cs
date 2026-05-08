@@ -36,6 +36,7 @@ namespace CLAYmore
         public PrefabPool coinPool;
         public PrefabPool shardsPool;
         public PrefabPool chestPool;
+        public PrefabPool hearthPool;
 
         [Header("Chest / Modifiers")]
         public ModifierChoiceUI modifierChoiceUI;
@@ -119,7 +120,7 @@ namespace CLAYmore
             }
 
             if (potSpawner != null) potSpawner.Init(islandGenerator, economy, playerMovement,
-                                                    potPool, shadowPool, coinPool, shardsPool);
+                                                    potPool, shadowPool, coinPool, shardsPool, hearthPool);
 
             _world.RegisterSystem(new SessionTimerSystem(config?.waves));
 

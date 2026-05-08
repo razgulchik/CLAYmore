@@ -11,12 +11,14 @@ namespace CLAYmore
 
         private Vector2Int      _tileIndex;
         private IslandGenerator _islandGenerator;
+        private PrefabPool      _hearthPool;
         private bool            _landed;
         private bool            _collected;
 
-        public void Initialize(Vector3 landPos, IslandGenerator islandGenerator)
+        public void Initialize(Vector3 landPos, IslandGenerator islandGenerator, PrefabPool hearthPool)
         {
             _islandGenerator = islandGenerator;
+            _hearthPool      = hearthPool;
             _landed          = false;
             _collected       = false;
 
@@ -51,7 +53,7 @@ namespace CLAYmore
             World.Current?.Events.Unsubscribe<PlayerTileChangedEvent>(OnPlayerMoved);
             World.Current?.Events.Publish(new HearthCollectedEvent());
             _islandGenerator?.ClearCell(transform.position);
-            Destroy(gameObject);
+            _hearthPool?.Return(gameObject);
         }
 
         private void OnDestroy()
