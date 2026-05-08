@@ -11717,7 +11717,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fe7c43f1dec3b5242a1722fa094aea97, type: 2}
   - {fileID: 11400000, guid: 569b3c33284c65f49ba609a84f340448, type: 2}
   _goldenUrnConfig: {fileID: 11400000, guid: 5bbbd7fd231223944bf83b54c462a766, type: 2}
-  _hearthPool: {fileID: 0}
+  _hearthPool: {fileID: 737870465}
 --- !u!114 &835066384
 MonoBehaviour:
   m_ObjectHideFlags: 0
