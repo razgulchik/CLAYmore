@@ -16,8 +16,8 @@ namespace CLAYmore
         public PotConfig[] potConfigs;
         [Tooltip("Golden urn config — spawned independently via GoldenUrnModifier chance.")]
         [SerializeField] private PotConfig _goldenUrnConfig;
-        [Tooltip("Heart pickup prefab — spawned independently via LuckyDayModifier chance.")]
-        [SerializeField] private GameObject _hearthPickupPrefab;
+        [Tooltip("Heart pickup pool — spawned independently via LuckyDayModifier chance.")]
+        [SerializeField] private PrefabPool _hearthPool;
 
         private IslandGenerator _islandGenerator;
         private PlayerMovement  _playerMovement;
@@ -41,7 +41,8 @@ namespace CLAYmore
         private PotConfig[] _rockOnlyConfigs;
 
         public void Init(IslandGenerator islandGenerator, Economy economy, PlayerMovement playerMovement,
-                         PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool, PrefabPool shardsPool)
+                         PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool, PrefabPool shardsPool,
+                         PrefabPool hearthPool)
         {
             _islandGenerator = islandGenerator;
             _economy         = economy;
@@ -50,6 +51,7 @@ namespace CLAYmore
             _shadowPool      = shadowPool;
             _coinPool        = coinPool;
             _shardsPool      = shardsPool;
+            _hearthPool      = hearthPool;
         }
 
         private void Start()
@@ -205,15 +207,15 @@ namespace CLAYmore
                 && Random.value < _currentWave.rockSpawnChance;
 
             // ── Hearth chance (before rock/urn selection) ─────────────────────
-            float hearthChance = _hearthPickupPrefab != null ? GetHearthChance() : 0f;
+            float hearthChance = _hearthPool != null ? GetHearthChance() : 0f;
             if (!isTargeted && !spawnRock && hearthChance > 0f && Random.value < hearthChance)
             {
                 if (!_islandGenerator.TryGetRandomWalkableCellCenter(out Vector3 hearthLandPos)) return;
                 if (!_islandGenerator.TryReserveCell(hearthLandPos)) return;
 
-                GameObject hearthGO = Instantiate(_hearthPickupPrefab, hearthLandPos, Quaternion.identity);
+                GameObject hearthGO = _hearthPool.Get(hearthLandPos);
                 if (hearthGO.TryGetComponent<HearthPickup>(out HearthPickup pickup))
-                    pickup.Initialize(hearthLandPos, _islandGenerator);
+                    pickup.Initialize(hearthLandPos, _islandGenerator, _hearthPool);
                 return;
             }
 
