@@ -32,7 +32,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
   - {fileID: 11400000, guid: 9534ea2a1b7327d47b832e471b6a6d97, type: 2}
   - {fileID: 11400000, guid: 238fe5e4ea161864ca36ed7e8dbbd860, type: 2}
-  - {fileID: 11400000, guid: eedef1356e1982540bf50b5a5edfbf9b, type: 2}
   - {fileID: 11400000, guid: 1e98175978fb2a044b162bb4fa28eca4, type: 2}
   - {fileID: 11400000, guid: 7394d3ec4a4828c4abe35d1aac144309, type: 2}
   - {fileID: 11400000, guid: bed6cefaed1ae2046865c5778b5fa3de, type: 2}
@@ -41,6 +40,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 06ccc3fe4b0f3b140b14d0ae52cda169, type: 2}
   - {fileID: 11400000, guid: 74d4007d476b37847add59a96a2642de, type: 2}
   - {fileID: 11400000, guid: c36315f80f3dc564db5fc94f58c5e829, type: 2}
+  - {fileID: 11400000, guid: 9957d45e892d5d9409d552d202432a10, type: 2}
   startingCoins: 10
   startingModifiers: []
   pointsPerSecond: 5
