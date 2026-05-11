@@ -3038,7 +3038,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 245157428}
-  - {fileID: 691206987}
   - {fileID: 1363984195}
   - {fileID: 2081798954}
   - {fileID: 1628634296}
@@ -3651,6 +3650,7 @@ MonoBehaviour:
   ghostCannotAffordColor: {r: 1, g: 1, b: 1, a: 0.50980395}
   canAffordColor: {r: 1, g: 1, b: 1, a: 1}
   cannotAffordColor: {r: 1, g: 0.14171882, b: 0.051886797, a: 1}
+  labelSortingOrder: 2
   holdDuration: 1
   shakeStrength: 0.04
   shakeDuration: 0.3
@@ -10380,11 +10380,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f71e1e1555fe02448e41df04a31428c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &691206987 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 167883609119405052, guid: 326050a36c954d14b83e0b88139f4c91, type: 3}
-  m_PrefabInstance: {fileID: 3951991318835078411}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &706587173
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13137,7 +13132,7 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 5473580645866514549, guid: c9f243a2345b13446b923cd7647394bd, type: 2}
@@ -20168,7 +20163,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1578232023
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25356,7 +25351,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 196158024}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 167883609119405052, guid: 326050a36c954d14b83e0b88139f4c91, type: 3}
       propertyPath: m_LocalPosition.x
@@ -25402,10 +25397,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: IslandGenerator
       objectReference: {fileID: 0}
-    - target: {fileID: 7509860041863666883, guid: 326050a36c954d14b83e0b88139f4c91, type: 3}
-      propertyPath: economy
-      value: 
-      objectReference: {fileID: 835066384}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25625,6 +25616,7 @@ SceneRoots:
   - {fileID: 306947593}
   - {fileID: 619394802}
   - {fileID: 1578232024}
+  - {fileID: 3951991318835078411}
   - {fileID: 420133822}
   - {fileID: 100146727}
   - {fileID: 604574386}

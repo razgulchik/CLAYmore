@@ -51,7 +51,11 @@ namespace CLAYmore
             PauseManager.Instance.Reset();
 
             if (economy != null && config != null)
+            {
                 economy.Init(config.startingCoins);
+                if (islandGenerator != null)
+                    islandGenerator.economy = economy;
+            }
 
             // ── Create World and register all systems ──────────────────────
             _world = new World();

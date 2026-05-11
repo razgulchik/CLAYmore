@@ -10,7 +10,7 @@ namespace CLAYmore
         [Header("References")]
         public Tilemap tilemap;
         public IslandTileSet tileSet;
-        public Economy economy;
+        [HideInInspector] public Economy economy;
 
         [Header("Initial Size")]
         [Min(5)] public int islandWidth = 7;

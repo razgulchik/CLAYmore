@@ -25,6 +25,7 @@ namespace CLAYmore
         [Header("Price Label Colors")]
         public Color canAffordColor    = new Color(1f,   0.85f, 0f,   0.7f);
         public Color cannotAffordColor = new Color(0.4f, 0.4f,  0.4f, 0.5f);
+        public int   labelSortingOrder = 2;
 
         [Header("Expansion Hold")]
         [Min(0.1f)] public float holdDuration  = 3f;
@@ -218,8 +219,9 @@ namespace CLAYmore
                     center.y + dir.y * edgeOffset + perp.y * centerOffset,
                     z);
 
-                line.priceLabel.text  = cost.ToString();
-                line.priceLabel.color = labelColor;
+                line.priceLabel.text          = cost.ToString();
+                line.priceLabel.color         = labelColor;
+                line.priceLabel.sortingOrder  = labelSortingOrder;
             }
 
             return true;
