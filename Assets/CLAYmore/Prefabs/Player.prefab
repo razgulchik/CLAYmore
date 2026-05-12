@@ -193,8 +193,8 @@ MonoBehaviour:
   _shakeVibrato: 10
   _visualRoot: {fileID: 7850818615007577587}
   _playerSprite: {fileID: 7282965730197941598}
-  _frontSprite: {fileID: 21300000, guid: f782d40541d40aa459ce2b0d23d0ba2f, type: 3}
-  _backSprite: {fileID: 21300000, guid: a1e6ecb5705257b428b257dfe8fa128f, type: 3}
+  _frontSprite: {fileID: 21300000, guid: 2cb70d2b14819834e85e42ec42093cc2, type: 3}
+  _backSprite: {fileID: 21300000, guid: d57b357ab078f8444806c47ab5529c69, type: 3}
   _whirlVFX: {fileID: 8779121656640737950}
 --- !u!114 &3026447667191487381
 MonoBehaviour:
@@ -550,7 +550,7 @@ SpriteRenderer:
   m_SortingLayerID: -428061367
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: f782d40541d40aa459ce2b0d23d0ba2f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2cb70d2b14819834e85e42ec42093cc2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -732,7 +732,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8693851577002530960

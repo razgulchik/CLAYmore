@@ -16,6 +16,7 @@ namespace CLAYmore
             public Entity Target;
             public int    Damage;
             public float  Timer;
+            public bool   SpawnBallLightningOnKill;
         }
 
         private struct BurningCell
@@ -27,8 +28,9 @@ namespace CLAYmore
         }
 
         private readonly IslandGenerator       _island;
-        private readonly System.Collections.Generic.List<PendingImpact> _pendingImpacts = new();
-        private readonly System.Collections.Generic.List<BurningCell>   _burningCells   = new();
+        private readonly System.Collections.Generic.List<PendingImpact>         _pendingImpacts  = new();
+        private readonly System.Collections.Generic.List<BurningCell>           _burningCells    = new();
+        private readonly System.Collections.Generic.Dictionary<Vector2Int, Vector3> _ballLightnings = new();
         private World        _world;
         private HealthSystem _healthSystem;
         private DamageSystem _damageSystem;
@@ -44,6 +46,7 @@ namespace CLAYmore
             _healthSystem  = world.GetSystem<HealthSystem>();
             _damageSystem  = world.GetSystem<DamageSystem>();
             world.Events.Subscribe<PlayerTileChangedEvent>(OnPlayerTileChanged);
+            world.Events.Subscribe<BallLightningExpiredEvent>(OnBallLightningExpired);
         }
 
         public void Tick(float deltaTime)
@@ -89,6 +92,7 @@ namespace CLAYmore
                     Entity pot = GetLandedPotAt(new Vector3Int(cell.Cell.x, cell.Cell.y, 0));
                     if (pot != null)
                         _damageSystem.PlayerHitPot(pot, cell.Damage);
+                    CheckBallLightningAt(cell.Cell);
                 }
 
                 if (cell.TimeRemaining <= 0f)
@@ -104,7 +108,12 @@ namespace CLAYmore
                 p.Timer -= deltaTime;
                 if (p.Timer <= 0f)
                 {
-                    _damageSystem.PlayerHitPot(p.Target, p.Damage);
+                    bool killed = _damageSystem.PlayerHitPot(p.Target, p.Damage);
+                    if (killed && p.SpawnBallLightningOnKill)
+                    {
+                        Vector3Int lc = p.Target.Get<PotComponent>().LandCell;
+                        SpawnBallLightning(new Vector2Int(lc.x, lc.y), _island.GetCellCenter(lc));
+                    }
                     _pendingImpacts.RemoveAt(i);
                 }
                 else
@@ -139,6 +148,7 @@ namespace CLAYmore
                     Entity pot = GetLandedPotAt(cell);
                     if (pot != null)
                         _damageSystem.PlayerHitPot(pot, stats.FireBallsDamage);
+                    CheckBallLightningAt(new Vector2Int(cell.x, cell.y));
                 }
 
                 _world.Events.Publish(new OrthoStrikeEvent
@@ -183,12 +193,15 @@ namespace CLAYmore
             if (stats.HasShockwave)
             {
                 stats.ShockwaveStepCount++;
-                if (stats.ShockwaveStepCount >= 3)
+                if (stats.ShockwaveStepCount >= stats.ShockwaveStepsRequired)
                 {
                     stats.ShockwaveStepCount = 0;
                     TriggerShockwave(stats, evt);
                 }
             }
+
+            // ── Ball lightning — player steps onto cell ───────────────────────
+            CheckBallLightningAt(evt.NewIndex);
         }
 
         private void TriggerLightning()
@@ -212,10 +225,26 @@ namespace CLAYmore
 
             _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
 
+            bool spawnBall = stats != null && stats.HasBallLightning;
             if (delay <= 0f)
-                _damageSystem.PlayerHitPot(target, dmg);
+            {
+                bool killed = _damageSystem.PlayerHitPot(target, dmg);
+                if (killed && spawnBall)
+                {
+                    Vector3Int lc = target.Get<PotComponent>().LandCell;
+                    SpawnBallLightning(new Vector2Int(lc.x, lc.y), worldPos);
+                }
+            }
             else
-                _pendingImpacts.Add(new PendingImpact { Target = target, Damage = dmg, Timer = delay });
+            {
+                _pendingImpacts.Add(new PendingImpact
+                {
+                    Target                 = target,
+                    Damage                 = dmg,
+                    Timer                  = delay,
+                    SpawnBallLightningOnKill = spawnBall,
+                });
+            }
         }
 
         private const float ShockwaveFrameInterval = 0.1f;
@@ -255,6 +284,7 @@ namespace CLAYmore
                         Damage = stats.ShockwaveDamage,
                         Timer  = i * ShockwaveFrameInterval,
                     });
+                CheckBallLightningAt(new Vector2Int(waveCells[i].x, waveCells[i].y));
             }
 
             _world.Events.Publish(new ShockwaveEvent
@@ -276,6 +306,53 @@ namespace CLAYmore
                     return e;
             }
             return null;
+        }
+
+        // ── Ball Lightning ────────────────────────────────────────────────────
+
+        public void SpawnBallLightning(Vector2Int cell, Vector3 worldPos)
+        {
+            if (_ballLightnings.ContainsKey(cell)) return;
+            if (!_island.MarkBallLightning(worldPos)) return;
+            _ballLightnings[cell] = worldPos;
+            _world.Events.Publish(new BallLightningSpawnedEvent { Cell = cell, WorldPosition = worldPos });
+        }
+
+        public void CheckBallLightningAt(Vector2Int cell)
+        {
+            if (!_ballLightnings.TryGetValue(cell, out Vector3 worldPos)) return;
+            TriggerBallLightningExplosion(cell, worldPos);
+        }
+
+        private void TriggerBallLightningExplosion(Vector2Int cell, Vector3 worldPos)
+        {
+            _ballLightnings.Remove(cell);
+            _island.ClearBallLightning(worldPos);
+
+            _world.Events.Publish(new BallLightningExplodedEvent { Cell = cell, WorldPosition = worldPos });
+
+            Entity player = GetPlayerEntity();
+            PlayerStatsComponent stats = player != null ? player.Get<PlayerStatsComponent>() : null;
+            int dmg    = stats != null ? stats.BallLightningDamage : 1;
+            int radius = stats != null ? stats.BallLightningRadius : 1;
+
+            for (int dx = -radius; dx <= radius; dx++)
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                var target = new Vector2Int(cell.x + dx, cell.y + dy);
+                Entity pot = GetLandedPotAt(new Vector3Int(target.x, target.y, 0));
+                if (pot != null)
+                    _damageSystem.PlayerHitPot(pot, dmg);
+
+                // Chain reaction: other ball lightnings in blast radius also explode
+                CheckBallLightningAt(target);
+            }
+        }
+
+        private void OnBallLightningExpired(BallLightningExpiredEvent evt)
+        {
+            if (_ballLightnings.TryGetValue(evt.Cell, out Vector3 worldPos))
+                TriggerBallLightningExplosion(evt.Cell, worldPos);
         }
     }
 }

@@ -246,11 +246,32 @@ namespace CLAYmore
             tile.State = CellState.Empty;
         }
 
+        /// <summary>Marks a cell as occupied by a ball lightning orb. Returns false if already occupied.</summary>
+        public bool MarkBallLightning(Vector3 worldPos)
+        {
+            var key = ToAbsKey(worldPos);
+            if (!_tiles.TryGetValue(key, out TileData tile)) return false;
+            // Accept Empty or HasPot — pot may have just died but its ClearCell hasn't fired yet
+            if (tile.State != CellState.Empty && tile.State != CellState.HasPot) return false;
+            tile.State = CellState.HasBallLightning;
+            return true;
+        }
+
+        /// <summary>Frees the cell when a ball lightning orb explodes or expires.</summary>
+        public void ClearBallLightning(Vector3 worldPos)
+        {
+            var key = ToAbsKey(worldPos);
+            if (!_tiles.TryGetValue(key, out TileData tile) || tile.State != CellState.HasBallLightning) return;
+            tile.State = CellState.Empty;
+        }
+
         /// <summary>Frees the cell (pot was broken or removed).</summary>
         public void ClearCell(Vector3 worldPos)
         {
             var key = ToAbsKey(worldPos);
             if (!_tiles.TryGetValue(key, out TileData tile)) return;
+            // Ball lightning manages its own lifecycle — don't overwrite it
+            if (tile.State == CellState.HasBallLightning) return;
             var old = tile.State;
             tile.State = CellState.Empty;
             World.Current?.Events.Publish(new TilePotStateChangedEvent { Index = key, OldState = old, NewState = CellState.Empty });

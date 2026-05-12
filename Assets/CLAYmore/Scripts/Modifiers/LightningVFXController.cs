@@ -33,6 +33,12 @@ namespace CLAYmore
             StartCoroutine(ReturnAfterDelay(vfx));
         }
 
+        private IEnumerator ReturnAfterDelay(GameObject vfx)
+        {
+            yield return new WaitForSeconds(vfxDuration);
+            lightningPool.Return(vfx);
+        }
+
         // Сдвигает VFX так, чтобы нижний край спрайта совпал с нижним краем клетки
         private void AlignBottomToCell(GameObject vfx, Vector3 cellCenter)
         {
@@ -43,12 +49,6 @@ namespace CLAYmore
             float cellBottom   = cellCenter.y - islandGenerator.tilemap.cellSize.y * 0.5f;
             float spriteBottom = sr.bounds.min.y;
             vfx.transform.position += new Vector3(positionOffset.x, cellBottom - spriteBottom + positionOffset.y, 0f);
-        }
-
-        private IEnumerator ReturnAfterDelay(GameObject vfx)
-        {
-            yield return new WaitForSeconds(vfxDuration);
-            lightningPool.Return(vfx);
         }
     }
 }

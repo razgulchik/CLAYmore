@@ -2506,7 +2506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightningPool: {fileID: 494338877}
   islandGenerator: {fileID: 691206984}
-  vfxDuration: 1
+  vfxDuration: 1.2
   positionOffset: {x: -0.05, y: 0.25}
 --- !u!1 &174131280
 GameObject:
@@ -3719,8 +3719,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3458335421968341803, guid: 48508d93f077fdd4e9857dbb77493bb3, type: 3}
-  defaultCapacity: 10
-  maxSize: 30
+  defaultCapacity: 15
+  maxSize: 100
 --- !u!1 &293586043
 GameObject:
   m_ObjectHideFlags: 0
@@ -4138,17 +4138,19 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1208649178}
+  - {fileID: 1914308103}
   - {fileID: 293585206}
   - {fileID: 1614387246}
+  - {fileID: 494338878}
+  - {fileID: 710894625}
   - {fileID: 623306694}
   - {fileID: 1613540909}
-  - {fileID: 13356602}
-  - {fileID: 494338878}
-  - {fileID: 800199679}
-  - {fileID: 710894625}
-  - {fileID: 1495994593}
   - {fileID: 914765715}
+  - {fileID: 1495994593}
+  - {fileID: 13356602}
   - {fileID: 737870464}
+  - {fileID: 800199679}
   m_Father: {fileID: 196158024}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &315398430
@@ -9117,6 +9119,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586601340}
   m_CullTransparentMesh: 1
+--- !u!1 &595656526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 595656527}
+  - component: {fileID: 595656528}
+  m_Layer: 0
+  m_Name: BallLightningVFXController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &595656527
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595656526}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1661553613}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &595656528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595656526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53cce68d4a4c7f245bc26718985219f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballLightningPool: {fileID: 1208649179}
+  explosionPool: {fileID: 1914308104}
+  lifetime: 0
+  explosionDuration: 1
 --- !u!1 &601561236
 GameObject:
   m_ObjectHideFlags: 0
@@ -15709,6 +15759,53 @@ RectTransform:
   m_AnchoredPosition: {x: -0.78, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1208649177
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1208649178}
+  - component: {fileID: 1208649179}
+  m_Layer: 0
+  m_Name: BallLightningPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1208649178
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208649177}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 310186816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1208649179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208649177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82d2fbdbc63931341821c49bd63a450d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 5577561509012785228, guid: 6208f8b2001f9724192334a2df87e015, type: 3}
+  defaultCapacity: 10
+  maxSize: 50
 --- !u!1 &1222032275
 GameObject:
   m_ObjectHideFlags: 0
@@ -20146,7 +20243,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7d9f401d2f230454aacd1b35e695196a, type: 3}
   - {fileID: 21300000, guid: e9e4842ca22f68d42bb3d490c447ca25, type: 3}
   - {fileID: 21300000, guid: 7d9f401d2f230454aacd1b35e695196a, type: 3}
-  frameInterval: 0.1
+  frameInterval: 0.18
 --- !u!1 &1578232022
 GameObject:
   m_ObjectHideFlags: 0
@@ -20865,10 +20962,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 409390038}
   - {fileID: 574725735}
-  - {fileID: 168914943}
   - {fileID: 1571373495}
+  - {fileID: 409390038}
+  - {fileID: 168914943}
+  - {fileID: 595656527}
   m_Father: {fileID: 196158024}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1666993614
@@ -22889,6 +22987,53 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1914308102
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1914308103}
+  - component: {fileID: 1914308104}
+  m_Layer: 0
+  m_Name: BallLightningExplosionPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1914308103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914308102}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 310186816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1914308104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914308102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82d2fbdbc63931341821c49bd63a450d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2939271929555055536, guid: e854b56788b335b4f9ada473e632f083, type: 3}
+  defaultCapacity: 10
+  maxSize: 50
 --- !u!224 &1924181446 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7878103521669841844, guid: 17e1eb7e66a60834ebbd82ffb1b7c9b8, type: 3}
@@ -25420,7 +25565,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1136662103254256023, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 428.4519
+      value: 442.19748
       objectReference: {fileID: 0}
     - target: {fileID: 1136662103254256023, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -25516,7 +25661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4938606453197149434, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 39.6908
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4938606453197149434, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -25532,7 +25677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6615826434064268117, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 852.59204
+      value: 859.46484
       objectReference: {fileID: 0}
     - target: {fileID: 6615826434064268117, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -25541,10 +25686,6 @@ PrefabInstance:
     - target: {fileID: 8271779565902881679, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
       propertyPath: m_Name
       value: BestScore Row
-      objectReference: {fileID: 0}
-    - target: {fileID: 8271779565902881679, guid: cd5c47e1f46f92941b329b3d4ab81a60, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

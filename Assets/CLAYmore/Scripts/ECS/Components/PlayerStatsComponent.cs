@@ -28,10 +28,14 @@ namespace CLAYmore.ECS
         public float GoldenUrnChance    = 0f;
         public int   GoldenUrnGoldReward = 0;
         public float HearthChance        = 0f;
-        public bool  HasShockwave        = false;
-        public int   ShockwaveDamage     = 1;
-        public int   ShockwaveStepCount  = 0;
+        public bool  HasShockwave           = false;
+        public int   ShockwaveDamage        = 1;
+        public int   ShockwaveStepCount     = 0;
+        public int   ShockwaveStepsRequired = 3;
         public bool  HasFireTrail        = false;
         public int   FireTrailDamage     = 1;
+        public bool  HasBallLightning    = false;
+        public int   BallLightningDamage = 1;
+        public int   BallLightningRadius = 1;
     }
 }

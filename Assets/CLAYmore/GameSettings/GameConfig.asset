@@ -25,8 +25,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e5a20b2c176f5b648a8d8483f37ffb5a, type: 2}
   - {fileID: 11400000, guid: ea6840a5a25c67f41a04269343305622, type: 2}
   - {fileID: 11400000, guid: 280b686ededbe36439dbd5853599219e, type: 2}
-  chestSpawnInitialInterval: 10
-  chestSpawnMinInterval: 20
+  chestSpawnInitialInterval: 5
+  chestSpawnMinInterval: 5
   coinsOnSkip: 25
   modifierPool:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
@@ -42,8 +42,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c36315f80f3dc564db5fc94f58c5e829, type: 2}
   - {fileID: 11400000, guid: 9957d45e892d5d9409d552d202432a10, type: 2}
   - {fileID: 11400000, guid: f10430dc6579ed742b470c25b0697d4d, type: 2}
+  - {fileID: 11400000, guid: d37d19f6ce08de946b05fa67862c3521, type: 2}
   startingCoins: 10
-  startingModifiers: []
+  startingModifiers:
+  - {fileID: 11400000, guid: 7394d3ec4a4828c4abe35d1aac144309, type: 2}
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20

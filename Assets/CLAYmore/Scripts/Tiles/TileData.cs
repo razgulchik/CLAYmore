@@ -5,9 +5,10 @@ namespace CLAYmore
     public enum CellState
     {
         Empty,
-        PotInFlight,  // reserved — pot spawned but not yet landed
-        HasPot,       // pot has landed and is sitting on the cell
-        HasChest,     // chest is standing on the cell
+        PotInFlight,      // reserved — pot spawned but not yet landed
+        HasPot,           // pot has landed and is sitting on the cell
+        HasChest,         // chest is standing on the cell
+        HasBallLightning, // ball lightning orb occupies the cell
     }
 
     public class TileData

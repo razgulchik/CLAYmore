@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5216a605289ef4f92d941c11fae320, type: 3}
+  m_Name: Ball Lightning Mod
+  m_EditorClassIdentifier: 
+  displayName: Ball Lightning
+  description: 
+  icon: {fileID: -5701095125207934900, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  maxLevel: 2
+  spawnWeight: 100
+  price: 5
+  priceMultiplier: 2
+  damagePerLevel: 5
+  explosionRadius: 1
