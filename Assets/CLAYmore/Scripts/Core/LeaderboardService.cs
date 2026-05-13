@@ -18,7 +18,7 @@ namespace CLAYmore
     {
         [Tooltip("Must match the Leaderboard ID created in the Unity Dashboard")]
         public string leaderboardId = "best_score";
-        public int    fetchLimit    = 10;
+        public int    fetchLimit    = 100;
 
         /// <summary>Cached top scores after the last submit. Null until first fetch completes.</summary>
         public List<LeaderboardEntry> CachedScores { get; private set; }

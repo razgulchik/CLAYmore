@@ -47,6 +47,7 @@ namespace CLAYmore
             _damageSystem  = world.GetSystem<DamageSystem>();
             world.Events.Subscribe<PlayerTileChangedEvent>(OnPlayerTileChanged);
             world.Events.Subscribe<BallLightningExpiredEvent>(OnBallLightningExpired);
+            world.Events.Subscribe<BallLightningDetonateEvent>(OnBallLightningDetonate);
         }
 
         public void Tick(float deltaTime)
@@ -328,9 +329,11 @@ namespace CLAYmore
         {
             _ballLightnings.Remove(cell);
             _island.ClearBallLightning(worldPos);
-
             _world.Events.Publish(new BallLightningExplodedEvent { Cell = cell, WorldPosition = worldPos });
+        }
 
+        private void OnBallLightningDetonate(BallLightningDetonateEvent evt)
+        {
             Entity player = GetPlayerEntity();
             PlayerStatsComponent stats = player != null ? player.Get<PlayerStatsComponent>() : null;
             int dmg    = stats != null ? stats.BallLightningDamage : 1;
@@ -339,12 +342,11 @@ namespace CLAYmore
             for (int dx = -radius; dx <= radius; dx++)
             for (int dy = -radius; dy <= radius; dy++)
             {
-                var target = new Vector2Int(cell.x + dx, cell.y + dy);
+                var target = new Vector2Int(evt.Cell.x + dx, evt.Cell.y + dy);
                 Entity pot = GetLandedPotAt(new Vector3Int(target.x, target.y, 0));
                 if (pot != null)
                     _damageSystem.PlayerHitPot(pot, dmg);
 
-                // Chain reaction: other ball lightnings in blast radius also explode
                 CheckBallLightningAt(target);
             }
         }

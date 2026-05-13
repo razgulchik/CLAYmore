@@ -16,8 +16,8 @@ MonoBehaviour:
   description: 
   icon: {fileID: -5701095125207934900, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
   maxLevel: 2
-  spawnWeight: 100
-  price: 5
+  spawnWeight: 5
+  price: 25
   priceMultiplier: 2
   damagePerLevel: 5
   explosionRadius: 1

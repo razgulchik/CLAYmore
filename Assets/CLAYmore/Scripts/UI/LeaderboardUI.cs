@@ -1,24 +1,38 @@
 using System.Collections;
+using System.Collections.Generic;
 using CLAYmore.ECS;
 using TMPro;
 using Unity.Services.Authentication;
+using Unity.Services.Leaderboards.Models;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CLAYmore
 {
     /// <summary>
     /// Leaderboard panel. Uses scores pre-fetched by LeaderboardService after submit.
     /// Falls back to polling if fetch is still in progress.
-    /// Assign in Inspector: panel, rowPrefab, listRoot, leaderboardService, loadingLabel.
+    /// Assign in Inspector: panel, rowPrefab, listRoot, leaderboardService, loadingLabel,
+    /// prevButton, nextButton, pageLabel.
     /// </summary>
     public class LeaderboardUI : MonoBehaviour
     {
         [Header("References")]
-        public GameObject      panel;
-        public ScoreRowUI      rowPrefab;
-        public Transform       listRoot;
+        public GameObject         panel;
+        public ScoreRowUI         rowPrefab;
+        public Transform          listRoot;
         public LeaderboardService leaderboardService;
-        public TextMeshProUGUI loadingLabel;
+        public TextMeshProUGUI    loadingLabel;
+
+        [Header("Pagination")]
+        public Button          prevButton;
+        public Button          nextButton;
+        public TextMeshProUGUI pageLabel;
+        [SerializeField] private int pageSize = 10;
+
+        private List<LeaderboardEntry> _entries;
+        private string                 _currentPlayerId;
+        private int                    _currentPage;
 
         private void Awake()
         {
@@ -51,7 +65,11 @@ namespace CLAYmore
             StopAllCoroutines();
             panel.SetActive(false);
             ClearRows();
+            _entries = null;
         }
+
+        public void NextPage() => ShowPage(_currentPage + 1);
+        public void PrevPage() => ShowPage(_currentPage - 1);
 
         // ── Private ───────────────────────────────────────────────────────────
 
@@ -63,7 +81,6 @@ namespace CLAYmore
                 loadingLabel.text = "Server Request...";
             }
 
-            // Wait until LeaderboardService finishes submit + fetch
             while (leaderboardService != null && !leaderboardService.HasFetchCompleted)
                 yield return null;
 
@@ -76,18 +93,38 @@ namespace CLAYmore
                 yield break;
             }
 
-            string currentPlayerId = AuthenticationService.Instance.IsSignedIn
+            _entries = leaderboardService.CachedScores;
+            _currentPlayerId = AuthenticationService.Instance.IsSignedIn
                 ? AuthenticationService.Instance.PlayerId
                 : null;
 
-            foreach (var entry in leaderboardService.CachedScores)
-            {
-                var row = Instantiate(rowPrefab, listRoot);
-                row.Setup(entry.Rank + 1, entry.PlayerName, (int)entry.Score);
+            ShowPage(0);
+        }
 
-                if (currentPlayerId != null && entry.PlayerId == currentPlayerId)
+        private void ShowPage(int page)
+        {
+            _currentPage = page;
+            ClearRows();
+
+            int total = _entries?.Count ?? 0;
+            int pages = Mathf.CeilToInt((float)total / pageSize);
+            int from  = page * pageSize;
+            int to    = Mathf.Min(from + pageSize, total);
+
+            for (int i = from; i < to; i++)
+            {
+                var entry = _entries[i];
+                var row   = Instantiate(rowPrefab, listRoot);
+                row.Setup(entry.Rank + 1, entry.PlayerName, (int)entry.Score);
+                if (_currentPlayerId != null && entry.PlayerId == _currentPlayerId)
                     row.Highlight(Color.yellow);
             }
+
+            if (pageLabel != null)
+                pageLabel.text = pages > 0 ? $"{page + 1} / {pages}" : "";
+
+            if (prevButton != null) prevButton.interactable = page > 0;
+            if (nextButton != null) nextButton.interactable = page < pages - 1;
         }
 
         private void ClearRows()

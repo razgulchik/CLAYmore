@@ -14,6 +14,13 @@ namespace CLAYmore
         public Vector3    WorldPosition;
     }
 
+    // Published by BallLightningVFXController after explosionDelay — signals AbilitySystem to apply damage
+    public struct BallLightningDetonateEvent
+    {
+        public Vector2Int Cell;
+        public Vector3    WorldPosition;
+    }
+
     // Published by BallLightningVFXController when lifetime expires (if lifetime > 0)
     public struct BallLightningExpiredEvent
     {
