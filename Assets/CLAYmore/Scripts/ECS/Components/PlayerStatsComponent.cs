@@ -21,9 +21,8 @@ namespace CLAYmore.ECS
         public float ShieldCooldownMax = 10f;
         public bool  HasLightning      = false;
         public int   LightningDamage   = 1;
-        public float LightningInterval    = 0f;
-        public float LightningTimer      = 0f;
-        public float LightningImpactDelay = 0f;
+        public float LightningInterval = 0f;
+        public float LightningTimer    = 0f;
         public int   LongSwordReach    = 0;
         public float GoldenUrnChance    = 0f;
         public int   GoldenUrnGoldReward = 0;

@@ -13,7 +13,7 @@ namespace CLAYmore
         public Transform       content;
         public GameObject      cardPrefab;
 
-        private void Start()
+        private void Awake()
         {
             World.Current?.Events.Subscribe<ModifierChosenEvent>(OnModifierChosen);
         }

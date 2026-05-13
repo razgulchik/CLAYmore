@@ -30,6 +30,14 @@ namespace CLAYmore
             if (lightningPool == null) return;
             GameObject vfx = lightningPool.Get(evt.WorldPosition);
             AlignBottomToCell(vfx, evt.WorldPosition);
+
+            var bridge = vfx.GetComponent<LightningImpactBridge>();
+            if (bridge != null)
+            {
+                bridge.Target        = evt.Target;
+                bridge.WorldPosition = evt.WorldPosition;
+            }
+
             StartCoroutine(ReturnAfterDelay(vfx));
         }
 

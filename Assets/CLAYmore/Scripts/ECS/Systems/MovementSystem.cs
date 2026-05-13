@@ -20,7 +20,6 @@ namespace CLAYmore
         private readonly IslandGenerator _island;
         private World _world;
         private DamageSystem _damageSystem;
-        private AbilitySystem _abilitySystem;
         private bool _isPaused;
         private Vector2Int _heldDirection;
         private bool _wasMoving;
@@ -37,9 +36,8 @@ namespace CLAYmore
 
         public void Initialize(World world)
         {
-            _world         = world;
-            _damageSystem  = world.GetSystem<DamageSystem>();
-            _abilitySystem = world.GetSystem<AbilitySystem>();
+            _world        = world;
+            _damageSystem = world.GetSystem<DamageSystem>();
             world.Events.Subscribe<PlayerMoveInputEvent>(OnMoveInput);
             world.Events.Subscribe<PlayerMoveHeldEvent>(OnMoveHeld);
             world.Events.Subscribe<GamePausedEvent>(OnGamePaused);
@@ -90,7 +88,7 @@ namespace CLAYmore
                 Entity pot = GetLandedPotAt(cell);
                 if (pot != null)
                     _damageSystem.PlayerHitPot(pot, stats.WhirlwindDamage);
-                _abilitySystem?.CheckBallLightningAt(new Vector2Int(cell.x, cell.y));
+                _world.Events.Publish(new CellStrikeEvent { Cell = new Vector2Int(cell.x, cell.y) });
             }
         }
 

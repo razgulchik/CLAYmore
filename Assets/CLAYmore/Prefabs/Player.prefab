@@ -724,7 +724,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1646847669312375486, guid: a0d3e41408779ce41b6aff43ecc998e6, type: 3}
+  m_Sprite: {fileID: -3840087118372246910, guid: 62d1a822dbadf6b4daa8aaf91187abee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -732,7 +732,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &8693851577002530960
@@ -917,6 +917,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slash Whirl
       objectReference: {fileID: 0}
+    - target: {fileID: 2939271929555055536, guid: e854b56788b335b4f9ada473e632f083, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4037533783592872152, guid: e854b56788b335b4f9ada473e632f083, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.009
@@ -1029,6 +1033,10 @@ PrefabInstance:
     - target: {fileID: 3838572043314610182, guid: 565da71fe40ae2643b36523792050dab, type: 3}
       propertyPath: m_Name
       value: Slash-Anim
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838572043314610182, guid: 565da71fe40ae2643b36523792050dab, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5546288364718630152, guid: 565da71fe40ae2643b36523792050dab, type: 3}
       propertyPath: m_SortingOrder

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Golden Urn
   description: 
-  icon: {fileID: -2830267557705304140, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  icon: {fileID: 21300000, guid: 69f9e23be05cb2f4f9f6c397573c3a8a, type: 3}
   maxLevel: 5
   spawnWeight: 5
   price: 15
   priceMultiplier: 1.5
-  chancePerLevel: 0.1
+  chance: 0.1
   goldPerLevel: 10

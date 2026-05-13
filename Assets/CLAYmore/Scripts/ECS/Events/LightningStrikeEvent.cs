@@ -8,4 +8,10 @@ namespace CLAYmore
         public Entity  Target;
         public Vector3 WorldPosition;
     }
+
+    public struct LightningImpactEvent
+    {
+        public Entity  Target;
+        public Vector3 WorldPosition;
+    }
 }

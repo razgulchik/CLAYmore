@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Ball Lightning
   description: 
-  icon: {fileID: -5701095125207934900, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  icon: {fileID: 21300000, guid: b82a2d4c9d37ff847b372e270d418816, type: 3}
   maxLevel: 2
   spawnWeight: 5
   price: 25

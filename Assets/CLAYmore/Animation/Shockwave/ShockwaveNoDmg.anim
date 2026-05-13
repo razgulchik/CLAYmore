@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LightningIdle
+  m_Name: ShockwaveNoDmg
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,29 +21,17 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: f5c85993e592f874ba7692ce896e6917, type: 3}
-    - time: 0.125
-      value: {fileID: 21300000, guid: 6e2afb4737c75dc4fb6a96d1ac0d1319, type: 3}
-    - time: 0.25
-      value: {fileID: 21300000, guid: 84d955fab55d43c46b2f4202bc1c6c05, type: 3}
-    - time: 0.375
-      value: {fileID: 21300000, guid: d61567c5a3d9ddb49b4423be2e1066bb, type: 3}
-    - time: 0.5
-      value: {fileID: 21300000, guid: 0b97a53a1d1c6c5449dbcd558707a0cc, type: 3}
-    - time: 0.625
-      value: {fileID: 21300000, guid: e924480788ff3ce49aefbca8d875395c, type: 3}
-    - time: 0.75
-      value: {fileID: 21300000, guid: 041f7fae38ca9bc428045ebbbfd3c623, type: 3}
-    - time: 0.875
-      value: {fileID: 21300000, guid: 16f9ee9c73546ae4f8bc69d290fe73f8, type: 3}
-    - time: 1
-      value: {fileID: 21300000, guid: 744f9243da45bee48b31cb5d2d49d779, type: 3}
+      value: {fileID: 21300000, guid: e86313edb734839419266de36002f807, type: 3}
+    - time: 0.16666667
+      value: {fileID: 21300000, guid: 339a8a91b6a14b44a82e846be56a6e3a, type: 3}
+    - time: 0.33333334
+      value: {fileID: 21300000, guid: 87240e054cd3b724db8873826d68f453, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 8
+  m_SampleRate: 6
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -60,21 +48,15 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: f5c85993e592f874ba7692ce896e6917, type: 3}
-    - {fileID: 21300000, guid: 6e2afb4737c75dc4fb6a96d1ac0d1319, type: 3}
-    - {fileID: 21300000, guid: 84d955fab55d43c46b2f4202bc1c6c05, type: 3}
-    - {fileID: 21300000, guid: d61567c5a3d9ddb49b4423be2e1066bb, type: 3}
-    - {fileID: 21300000, guid: 0b97a53a1d1c6c5449dbcd558707a0cc, type: 3}
-    - {fileID: 21300000, guid: e924480788ff3ce49aefbca8d875395c, type: 3}
-    - {fileID: 21300000, guid: 041f7fae38ca9bc428045ebbbfd3c623, type: 3}
-    - {fileID: 21300000, guid: 16f9ee9c73546ae4f8bc69d290fe73f8, type: 3}
-    - {fileID: 21300000, guid: 744f9243da45bee48b31cb5d2d49d779, type: 3}
+    - {fileID: 21300000, guid: e86313edb734839419266de36002f807, type: 3}
+    - {fileID: 21300000, guid: 339a8a91b6a14b44a82e846be56a6e3a, type: 3}
+    - {fileID: 21300000, guid: 87240e054cd3b724db8873826d68f453, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.125
+    m_StopTime: 0.5
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -94,7 +76,7 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.5
+  - time: 0.33333334
     functionName: OnImpact
     data: 
     objectReferenceParameter: {fileID: 0}

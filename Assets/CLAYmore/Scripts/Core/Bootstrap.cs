@@ -139,7 +139,7 @@ namespace CLAYmore
                     modLevels.TryGetValue(mod.name, out int level);
                     if (level >= mod.maxLevel) continue;
                     modLevels[mod.name] = level + 1;
-                    _world.Events.Publish(new ModifierChosenEvent { Modifier = mod });
+                    _world.Events.Publish(new ModifierChosenEvent { Modifier = mod, NewLevel = modLevels[mod.name] });
                 }
             }
 

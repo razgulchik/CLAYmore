@@ -7,9 +7,8 @@ namespace CLAYmore
     public class ShockwaveVFXController : MonoBehaviour
     {
         [SerializeField] private PrefabPool tilePool;
-        [SerializeField] private Sprite[]   emptyFrames;
-        [SerializeField] private Sprite[]   potFrames;
-        [SerializeField] private float      frameInterval = 0.1f;
+        [SerializeField] private float      staggerInterval = 0.1f;
+        [SerializeField] private float      spikeReturnDelay = 0.5f;
 
         private void OnEnable()
             => World.Current?.Events.Subscribe<ShockwaveEvent>(OnShockwave);
@@ -22,29 +21,28 @@ namespace CLAYmore
             if (tilePool == null) return;
 
             for (int i = 0; i < evt.TilePositions.Length; i++)
-            {
-                Sprite[] frames = evt.HadPot[i] ? potFrames : emptyFrames;
-                StartCoroutine(PlaySpike(evt.TilePositions[i], frames, i * frameInterval));
-            }
+                StartCoroutine(PlaySpike(evt.TilePositions[i], evt.Cells[i], evt.HadPot[i], i * staggerInterval));
         }
 
-        private IEnumerator PlaySpike(Vector3 pos, Sprite[] frames, float delay)
+        private IEnumerator PlaySpike(Vector3 pos, Vector2Int cell, bool hadPot, float delay)
         {
             if (delay > 0f)
                 yield return new WaitForSeconds(delay);
 
             GameObject tile = tilePool.Get(pos);
-            var sr = tile.GetComponent<SpriteRenderer>();
 
-            if (sr != null && frames != null)
+            var bridge = tile.GetComponent<ShockwaveCellBridge>();
+            if (bridge != null)
             {
-                foreach (Sprite frame in frames)
-                {
-                    sr.sprite = frame;
-                    yield return new WaitForSeconds(frameInterval);
-                }
+                bridge.Cell          = cell;
+                bridge.WorldPosition = pos;
             }
 
+            var animator = tile.GetComponent<Animator>();
+            if (animator != null)
+                animator.Play(hadPot ? "ShockwaveDmg" : "ShockwaveNoDmg", 0, 0f);
+
+            yield return new WaitForSeconds(spikeReturnDelay);
             tilePool.Return(tile);
         }
     }

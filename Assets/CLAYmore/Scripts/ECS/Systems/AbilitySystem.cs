@@ -11,14 +11,6 @@ namespace CLAYmore
     /// </summary>
     public class AbilitySystem : ISystem
     {
-        private struct PendingImpact
-        {
-            public Entity Target;
-            public int    Damage;
-            public float  Timer;
-            public bool   SpawnBallLightningOnKill;
-        }
-
         private struct BurningCell
         {
             public Vector2Int Cell;
@@ -28,11 +20,9 @@ namespace CLAYmore
         }
 
         private readonly IslandGenerator       _island;
-        private readonly System.Collections.Generic.List<PendingImpact>         _pendingImpacts  = new();
         private readonly System.Collections.Generic.List<BurningCell>           _burningCells    = new();
         private readonly System.Collections.Generic.Dictionary<Vector2Int, Vector3> _ballLightnings = new();
         private World        _world;
-        private HealthSystem _healthSystem;
         private DamageSystem _damageSystem;
 
         public AbilitySystem(IslandGenerator island)
@@ -42,12 +32,14 @@ namespace CLAYmore
 
         public void Initialize(World world)
         {
-            _world         = world;
-            _healthSystem  = world.GetSystem<HealthSystem>();
-            _damageSystem  = world.GetSystem<DamageSystem>();
+            _world        = world;
+            _damageSystem = world.GetSystem<DamageSystem>();
             world.Events.Subscribe<PlayerTileChangedEvent>(OnPlayerTileChanged);
+            world.Events.Subscribe<LightningImpactEvent>(OnLightningImpact);
             world.Events.Subscribe<BallLightningExpiredEvent>(OnBallLightningExpired);
             world.Events.Subscribe<BallLightningDetonateEvent>(OnBallLightningDetonate);
+            world.Events.Subscribe<ShockwaveCellImpactEvent>(OnShockwaveCellImpact);
+            world.Events.Subscribe<CellStrikeEvent>(OnCellStrike);
         }
 
         public void Tick(float deltaTime)
@@ -93,7 +85,7 @@ namespace CLAYmore
                     Entity pot = GetLandedPotAt(new Vector3Int(cell.Cell.x, cell.Cell.y, 0));
                     if (pot != null)
                         _damageSystem.PlayerHitPot(pot, cell.Damage);
-                    CheckBallLightningAt(cell.Cell);
+                    _world.Events.Publish(new CellStrikeEvent { Cell = cell.Cell });
                 }
 
                 if (cell.TimeRemaining <= 0f)
@@ -102,26 +94,6 @@ namespace CLAYmore
                     _burningCells[i] = cell;
             }
 
-            // ── Pending lightning impacts ─────────────────────────────────────
-            for (int i = _pendingImpacts.Count - 1; i >= 0; i--)
-            {
-                var p = _pendingImpacts[i];
-                p.Timer -= deltaTime;
-                if (p.Timer <= 0f)
-                {
-                    bool killed = _damageSystem.PlayerHitPot(p.Target, p.Damage);
-                    if (killed && p.SpawnBallLightningOnKill)
-                    {
-                        Vector3Int lc = p.Target.Get<PotComponent>().LandCell;
-                        SpawnBallLightning(new Vector2Int(lc.x, lc.y), _island.GetCellCenter(lc));
-                    }
-                    _pendingImpacts.RemoveAt(i);
-                }
-                else
-                {
-                    _pendingImpacts[i] = p;
-                }
-            }
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -149,7 +121,7 @@ namespace CLAYmore
                     Entity pot = GetLandedPotAt(cell);
                     if (pot != null)
                         _damageSystem.PlayerHitPot(pot, stats.FireBallsDamage);
-                    CheckBallLightningAt(new Vector2Int(cell.x, cell.y));
+                    _world.Events.Publish(new CellStrikeEvent { Cell = new Vector2Int(cell.x, cell.y) });
                 }
 
                 _world.Events.Publish(new OrthoStrikeEvent
@@ -197,12 +169,12 @@ namespace CLAYmore
                 if (stats.ShockwaveStepCount >= stats.ShockwaveStepsRequired)
                 {
                     stats.ShockwaveStepCount = 0;
-                    TriggerShockwave(stats, evt);
+                    TriggerShockwave(evt);
                 }
             }
 
             // ── Ball lightning — player steps onto cell ───────────────────────
-            CheckBallLightningAt(evt.NewIndex);
+            _world.Events.Publish(new CellStrikeEvent { Cell = evt.NewIndex });
         }
 
         private void TriggerLightning()
@@ -219,38 +191,11 @@ namespace CLAYmore
 
             Entity  target   = candidates[Random.Range(0, candidates.Count)];
             Vector3 worldPos = _island.GetCellCenter(target.Get<PotComponent>().LandCell);
-            Entity               player = GetPlayerEntity();
-            PlayerStatsComponent stats  = player != null ? player.Get<PlayerStatsComponent>() : null;
-            int   dmg   = stats != null ? stats.LightningDamage    : 1;
-            float delay = stats != null ? stats.LightningImpactDelay : 0f;
 
             _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
-
-            bool spawnBall = stats != null && stats.HasBallLightning;
-            if (delay <= 0f)
-            {
-                bool killed = _damageSystem.PlayerHitPot(target, dmg);
-                if (killed && spawnBall)
-                {
-                    Vector3Int lc = target.Get<PotComponent>().LandCell;
-                    SpawnBallLightning(new Vector2Int(lc.x, lc.y), worldPos);
-                }
-            }
-            else
-            {
-                _pendingImpacts.Add(new PendingImpact
-                {
-                    Target                 = target,
-                    Damage                 = dmg,
-                    Timer                  = delay,
-                    SpawnBallLightningOnKill = spawnBall,
-                });
-            }
         }
 
-        private const float ShockwaveFrameInterval = 0.1f;
-
-        private void TriggerShockwave(PlayerStatsComponent stats, PlayerTileChangedEvent evt)
+        private void TriggerShockwave(PlayerTileChangedEvent evt)
         {
             Vector2Int move = evt.NewIndex - evt.OldIndex;
             Vector2Int dir  = new Vector2Int(
@@ -259,8 +204,8 @@ namespace CLAYmore
 
             if (dir == Vector2Int.zero) return;
 
-            var waveCells     = new System.Collections.Generic.List<Vector3Int>();
-            Vector3Int probe  = new Vector3Int(evt.NewIndex.x, evt.NewIndex.y, 0);
+            var waveCells    = new System.Collections.Generic.List<Vector3Int>();
+            Vector3Int probe = new Vector3Int(evt.NewIndex.x, evt.NewIndex.y, 0);
 
             while (!_island.IsBlockedByEdge(_island.GetCellCenter(probe), dir))
             {
@@ -271,29 +216,36 @@ namespace CLAYmore
             if (waveCells.Count == 0) return;
 
             var positions = new Vector3[waveCells.Count];
+            var cells     = new Vector2Int[waveCells.Count];
             var hadPot    = new bool[waveCells.Count];
 
             for (int i = 0; i < waveCells.Count; i++)
             {
                 positions[i] = _island.GetCellCenter(waveCells[i]);
-                Entity pot   = GetLandedPotAt(waveCells[i]);
-                hadPot[i]    = pot != null;
-                if (pot != null)
-                    _pendingImpacts.Add(new PendingImpact
-                    {
-                        Target = pot,
-                        Damage = stats.ShockwaveDamage,
-                        Timer  = i * ShockwaveFrameInterval,
-                    });
-                CheckBallLightningAt(new Vector2Int(waveCells[i].x, waveCells[i].y));
+                cells[i]     = new Vector2Int(waveCells[i].x, waveCells[i].y);
+                hadPot[i]    = GetLandedPotAt(waveCells[i]) != null;
             }
 
             _world.Events.Publish(new ShockwaveEvent
             {
                 TilePositions = positions,
+                Cells         = cells,
                 HadPot        = hadPot,
                 Direction     = dir,
             });
+        }
+
+        private void OnShockwaveCellImpact(ShockwaveCellImpactEvent evt)
+        {
+            Entity               player = GetPlayerEntity();
+            PlayerStatsComponent stats  = player != null ? player.Get<PlayerStatsComponent>() : null;
+            int dmg = stats != null ? stats.ShockwaveDamage : 1;
+
+            Entity pot = GetLandedPotAt(new Vector3Int(evt.Cell.x, evt.Cell.y, 0));
+            if (pot != null)
+                _damageSystem.PlayerHitPot(pot, dmg);
+
+            _world.Events.Publish(new CellStrikeEvent { Cell = evt.Cell });
         }
 
         private Entity GetPlayerEntity() => _world.QueryFirst<PlayerStatsComponent>();
@@ -319,10 +271,10 @@ namespace CLAYmore
             _world.Events.Publish(new BallLightningSpawnedEvent { Cell = cell, WorldPosition = worldPos });
         }
 
-        public void CheckBallLightningAt(Vector2Int cell)
+        private void OnCellStrike(CellStrikeEvent evt)
         {
-            if (!_ballLightnings.TryGetValue(cell, out Vector3 worldPos)) return;
-            TriggerBallLightningExplosion(cell, worldPos);
+            if (!_ballLightnings.TryGetValue(evt.Cell, out Vector3 worldPos)) return;
+            TriggerBallLightningExplosion(evt.Cell, worldPos);
         }
 
         private void TriggerBallLightningExplosion(Vector2Int cell, Vector3 worldPos)
@@ -330,6 +282,20 @@ namespace CLAYmore
             _ballLightnings.Remove(cell);
             _island.ClearBallLightning(worldPos);
             _world.Events.Publish(new BallLightningExplodedEvent { Cell = cell, WorldPosition = worldPos });
+        }
+
+        private void OnLightningImpact(LightningImpactEvent evt)
+        {
+            Entity               player = GetPlayerEntity();
+            PlayerStatsComponent stats  = player != null ? player.Get<PlayerStatsComponent>() : null;
+            int dmg = stats != null ? stats.LightningDamage : 1;
+
+            bool killed = _damageSystem.PlayerHitPot(evt.Target, dmg);
+            if (killed && stats != null && stats.HasBallLightning)
+            {
+                Vector3Int lc = evt.Target.Get<PotComponent>().LandCell;
+                SpawnBallLightning(new Vector2Int(lc.x, lc.y), evt.WorldPosition);
+            }
         }
 
         private void OnBallLightningDetonate(BallLightningDetonateEvent evt)
@@ -347,7 +313,7 @@ namespace CLAYmore
                 if (pot != null)
                     _damageSystem.PlayerHitPot(pot, dmg);
 
-                CheckBallLightningAt(target);
+                _world.Events.Publish(new CellStrikeEvent { Cell = target });
             }
         }
 
