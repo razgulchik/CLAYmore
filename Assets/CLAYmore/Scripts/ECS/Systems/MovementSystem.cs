@@ -53,7 +53,7 @@ namespace CLAYmore
 
             if (_wasMoving && !isMoving)
             {
-                OnPlayerLanded(playerEntity);
+                OnPlayerLanded();
                 if (!_isPaused && _bufferedDirection != Vector2Int.zero
                     && Time.time - _bufferTimestamp <= _bufferWindow)
                 {
@@ -76,20 +76,20 @@ namespace CLAYmore
             OnMoveInput(new PlayerMoveInputEvent { Direction = _heldDirection });
         }
 
-        private void OnPlayerLanded(Entity playerEntity)
+        private void OnPlayerLanded()
         {
-            if (!playerEntity.Has<PlayerStatsComponent>()) return;
-            var stats = playerEntity.Get<PlayerStatsComponent>();
-            if (!stats.HasWhirlwind) return;
+            Vector3Int c      = _island.GetPlayerCell();
+            Entity     player = GetPlayerEntity();
+            Vector2Int facing = player != null
+                ? player.Get<MovementComponent>().FacingDirection
+                : Vector2Int.down;
 
-            Vector3Int center = _island.GetPlayerCell();
-            foreach (Vector3Int cell in GetCellsInRadius(center, stats.WhirlwindRadius))
+            _world.Events.Publish(new PlayerLandedEvent
             {
-                Entity pot = GetLandedPotAt(cell);
-                if (pot != null)
-                    _damageSystem.PlayerHitPot(pot, stats.WhirlwindDamage);
-                _world.Events.Publish(new CellStrikeEvent { Cell = new Vector2Int(cell.x, cell.y) });
-            }
+                Cell            = new Vector2Int(c.x, c.y),
+                WorldPosition   = _island.GetCellCenter(c),
+                FacingDirection = facing,
+            });
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -141,7 +141,10 @@ namespace CLAYmore
                     Vector3Int extraCell = currentCell + new Vector3Int(direction.x * i, direction.y * i, 0);
                     Entity extraPot = GetLandedPotAt(extraCell);
                     if (extraPot != null)
+                    {
                         _damageSystem.PlayerHitPot(extraPot);
+                        _world.Events.Publish(new CellStrikeEvent { Cell = new Vector2Int(extraCell.x, extraCell.y) });
+                    }
                 }
             }
 

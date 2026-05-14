@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Whirlwind
   description: On landing, hit all cells in radius 1.
-  icon: {fileID: -4653318599284180464, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  icon: {fileID: 21300000, guid: a8f099171b75e0d4f8c374bbe980951d, type: 3}
   maxLevel: 10
   spawnWeight: 5
   price: 45

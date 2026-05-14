@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Land Lord
   description: 
-  icon: {fileID: -7452033042806375050, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  icon: {fileID: 21300000, guid: 5ef5615e0afc1ac4086c07ab47759f4a, type: 3}
   maxLevel: 5
   spawnWeight: 5
   price: 15

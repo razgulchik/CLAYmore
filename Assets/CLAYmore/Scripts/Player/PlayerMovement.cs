@@ -25,10 +25,6 @@ namespace CLAYmore
         [SerializeField] private Sprite         _frontSprite;
         [SerializeField] private Sprite         _backSprite;
 
-        [Header("Whirlwind VFX")]
-        [SerializeField] private WhirlVFXController _whirlVFX;
-
-
         public Vector2Int FacingDirection => _movement.FacingDirection;
 
         private IslandGenerator   _islandGenerator;
@@ -116,9 +112,6 @@ namespace CLAYmore
                         {
                             if (_islandGenerator != null)
                                 _islandGenerator.SetPlayerTileFromWorldPos(transform.position);
-                            if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
-                                && _whirlVFX != null)
-                                _whirlVFX.Play();
                             HideWeapon();
                             _movement.IsMoving = false;
                         });
@@ -139,9 +132,6 @@ namespace CLAYmore
                                 {
                                     if (_islandGenerator != null)
                                         _islandGenerator.SetPlayerTileFromWorldPos(transform.position);
-                                    if (_entity.Has<PlayerStatsComponent>() && _entity.Get<PlayerStatsComponent>().HasWhirlwind
-                                        && _whirlVFX != null)
-                                        _whirlVFX.Play();
                                     _movement.IsMoving = false;
                                 });
                         });

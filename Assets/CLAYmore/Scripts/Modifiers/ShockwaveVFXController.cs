@@ -8,7 +8,6 @@ namespace CLAYmore
     {
         [SerializeField] private PrefabPool tilePool;
         [SerializeField] private float      staggerInterval = 0.1f;
-        [SerializeField] private float      spikeReturnDelay = 0.5f;
 
         private void OnEnable()
             => World.Current?.Events.Subscribe<ShockwaveEvent>(OnShockwave);
@@ -31,19 +30,16 @@ namespace CLAYmore
 
             GameObject tile = tilePool.Get(pos);
 
-            var bridge = tile.GetComponent<ShockwaveCellBridge>();
+            var bridge = tile.GetComponent<VFXBridge>();
             if (bridge != null)
             {
-                bridge.Cell          = cell;
-                bridge.WorldPosition = pos;
+                bridge.OnImpact   = () => World.Current?.Events.Publish(new ShockwaveCellImpactEvent { Cell = cell, WorldPosition = pos });
+                bridge.OnComplete = () => tilePool.Return(tile);
             }
 
             var animator = tile.GetComponent<Animator>();
             if (animator != null)
                 animator.Play(hadPot ? "ShockwaveDmg" : "ShockwaveNoDmg", 0, 0f);
-
-            yield return new WaitForSeconds(spikeReturnDelay);
-            tilePool.Return(tile);
         }
     }
 }

@@ -1,23 +1,13 @@
-using System.Collections;
 using CLAYmore.ECS;
 using UnityEngine;
 
 namespace CLAYmore
 {
-    /// <summary>
-    /// Listens to LightningStrikeEvent and plays the lightning VFX prefab
-    /// from a pool at the struck pot's world position.
-    /// Attach to any scene GameObject and assign lightningPool in the Inspector.
-    /// </summary>
     public class LightningVFXController : MonoBehaviour
     {
         public PrefabPool      lightningPool;
         public IslandGenerator islandGenerator;
-
-        [Tooltip("How long to wait before returning the VFX to the pool (match animation clip length)")]
-        public float vfxDuration = 1f;
-
-        public Vector2 positionOffset;
+        public Vector2         positionOffset;
 
         private void OnEnable()
             => World.Current?.Events.Subscribe<LightningStrikeEvent>(OnLightningStrike);
@@ -31,23 +21,14 @@ namespace CLAYmore
             GameObject vfx = lightningPool.Get(evt.WorldPosition);
             AlignBottomToCell(vfx, evt.WorldPosition);
 
-            var bridge = vfx.GetComponent<LightningImpactBridge>();
+            var bridge = vfx.GetComponent<VFXBridge>();
             if (bridge != null)
             {
-                bridge.Target        = evt.Target;
-                bridge.WorldPosition = evt.WorldPosition;
+                bridge.OnImpact   = () => World.Current?.Events.Publish(new LightningImpactEvent { Target = evt.Target, WorldPosition = evt.WorldPosition });
+                bridge.OnComplete = () => lightningPool.Return(vfx);
             }
-
-            StartCoroutine(ReturnAfterDelay(vfx));
         }
 
-        private IEnumerator ReturnAfterDelay(GameObject vfx)
-        {
-            yield return new WaitForSeconds(vfxDuration);
-            lightningPool.Return(vfx);
-        }
-
-        // Сдвигает VFX так, чтобы нижний край спрайта совпал с нижним краем клетки
         private void AlignBottomToCell(GameObject vfx, Vector3 cellCenter)
         {
             if (islandGenerator == null) return;

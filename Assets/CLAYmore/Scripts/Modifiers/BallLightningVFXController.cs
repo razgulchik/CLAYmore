@@ -50,14 +50,12 @@ namespace CLAYmore
             if (explosionPool == null) return;
             GameObject explosion = explosionPool.Get(evt.WorldPosition);
 
-            var bridge = explosion.GetComponent<BallLightningDetonateBridge>();
+            var bridge = explosion.GetComponent<VFXBridge>();
             if (bridge != null)
             {
-                bridge.Cell          = evt.Cell;
-                bridge.WorldPosition = evt.WorldPosition;
+                bridge.OnImpact   = () => World.Current?.Events.Publish(new BallLightningDetonateEvent { Cell = evt.Cell, WorldPosition = evt.WorldPosition });
+                bridge.OnComplete = () => explosionPool.Return(explosion);
             }
-
-            StartCoroutine(ReturnExplosionAfterDelay(explosion));
         }
 
         private IEnumerator LifetimeCoroutine(Vector2Int cell)
@@ -65,15 +63,6 @@ namespace CLAYmore
             yield return new WaitForSeconds(lifetime);
             if (!_activeOrbs.ContainsKey(cell)) yield break;
             World.Current?.Events.Publish(new BallLightningExpiredEvent { Cell = cell });
-        }
-
-        [Tooltip("How long to wait before returning the explosion VFX to the pool (match animation clip length)")]
-        [SerializeField] private float explosionDuration = 1f;
-
-        private IEnumerator ReturnExplosionAfterDelay(GameObject vfx)
-        {
-            yield return new WaitForSeconds(explosionDuration);
-            if (explosionPool != null) explosionPool.Return(vfx);
         }
     }
 }

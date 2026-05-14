@@ -40,6 +40,9 @@ namespace CLAYmore
             world.Events.Subscribe<BallLightningDetonateEvent>(OnBallLightningDetonate);
             world.Events.Subscribe<ShockwaveCellImpactEvent>(OnShockwaveCellImpact);
             world.Events.Subscribe<CellStrikeEvent>(OnCellStrike);
+            world.Events.Subscribe<PlayerLandedEvent>(OnPlayerLanded);
+            world.Events.Subscribe<WhirlwindDetonateEvent>(OnWhirlwindDetonate);
+            world.Events.Subscribe<FireBlazeImpactEvent>(OnFireBlazeImpact);
         }
 
         public void Tick(float deltaTime)
@@ -104,32 +107,6 @@ namespace CLAYmore
             if (player == null) return;
 
             var stats = player.Get<PlayerStatsComponent>();
-
-            // ── FireBalls ─────────────────────────────────────────────────────
-            if (stats.HasFireBalls)
-            {
-                Vector2Int move = evt.NewIndex - evt.OldIndex;
-                bool movedHorizontally = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
-
-                Vector3Int originCell = new Vector3Int(evt.OldIndex.x, evt.OldIndex.y, 0);
-                Vector3Int[] perpendicular = movedHorizontally
-                    ? new[] { originCell + Vector3Int.up,    originCell + Vector3Int.down }
-                    : new[] { originCell + Vector3Int.right, originCell + Vector3Int.left };
-
-                foreach (Vector3Int cell in perpendicular)
-                {
-                    Entity pot = GetLandedPotAt(cell);
-                    if (pot != null)
-                        _damageSystem.PlayerHitPot(pot, stats.FireBallsDamage);
-                    _world.Events.Publish(new CellStrikeEvent { Cell = new Vector2Int(cell.x, cell.y) });
-                }
-
-                _world.Events.Publish(new OrthoStrikeEvent
-                {
-                    Origin            = _island.GetCellCenter(originCell),
-                    MovedHorizontally = movedHorizontally,
-                });
-            }
 
             // ── Fire Trail ────────────────────────────────────────────────────
             if (stats.HasFireTrail && evt.OldIndex.x != int.MinValue)
@@ -321,6 +298,66 @@ namespace CLAYmore
         {
             if (_ballLightnings.TryGetValue(evt.Cell, out Vector3 worldPos))
                 TriggerBallLightningExplosion(evt.Cell, worldPos);
+        }
+
+        private void OnPlayerLanded(PlayerLandedEvent evt)
+        {
+            Entity player = GetPlayerEntity();
+            if (player == null) return;
+            var stats = player.Get<PlayerStatsComponent>();
+
+            if (stats.HasWhirlwind)
+                _world.Events.Publish(new WhirlwindActivatedEvent { Cell = evt.Cell, WorldPosition = evt.WorldPosition });
+
+            if (stats.HasFireBlaze)
+            {
+                Vector2Int d = evt.FacingDirection;
+                Vector2Int diag1 = d.x != 0
+                    ? new Vector2Int(d.x,  1)
+                    : new Vector2Int( 1, d.y);
+                Vector2Int diag2 = d.x != 0
+                    ? new Vector2Int(d.x, -1)
+                    : new Vector2Int(-1, d.y);
+
+                _world.Events.Publish(new FireBlazeActivatedEvent
+                {
+                    Origin   = evt.WorldPosition,
+                    DiagDir1 = diag1,
+                    DiagDir2 = diag2,
+                    Cell1    = evt.Cell + diag1,
+                    Cell2    = evt.Cell + diag2,
+                });
+            }
+        }
+
+        private void OnFireBlazeImpact(FireBlazeImpactEvent evt)
+        {
+            Entity player = GetPlayerEntity();
+            if (player == null) return;
+            var stats = player.Get<PlayerStatsComponent>();
+
+            Entity pot = GetLandedPotAt(new Vector3Int(evt.Cell.x, evt.Cell.y, 0));
+            if (pot != null)
+                _damageSystem.PlayerHitPot(pot, stats.FireBlazeDamage);
+            _world.Events.Publish(new CellStrikeEvent { Cell = evt.Cell });
+        }
+
+        private void OnWhirlwindDetonate(WhirlwindDetonateEvent evt)
+        {
+            Entity player = GetPlayerEntity();
+            if (player == null) return;
+            var stats = player.Get<PlayerStatsComponent>();
+
+            for (int dx = -stats.WhirlwindRadius; dx <= stats.WhirlwindRadius; dx++)
+            for (int dy = -stats.WhirlwindRadius; dy <= stats.WhirlwindRadius; dy++)
+            {
+                if (dx == 0 && dy == 0) continue;
+                var cell = new Vector2Int(evt.Cell.x + dx, evt.Cell.y + dy);
+                Entity pot = GetLandedPotAt(new Vector3Int(cell.x, cell.y, 0));
+                if (pot != null)
+                    _damageSystem.PlayerHitPot(pot, stats.WhirlwindDamage);
+                _world.Events.Publish(new CellStrikeEvent { Cell = cell });
+            }
         }
     }
 }

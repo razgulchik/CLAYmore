@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d282bd8e611f26645826dffbbd633eb6, type: 3}
-  m_Name: Fire Balls Mod
+  m_Script: {fileID: 11500000, guid: 79bc92da916d01140a8775f8bcb0e1da, type: 3}
+  m_Name: Fire Blaze Mod
   m_EditorClassIdentifier: 
-  displayName: Fire Balls
-  description: Shoot fire balls sideways when moving.
-  icon: {fileID: 1878486588829640458, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
-  maxLevel: 5
-  spawnWeight: 4
+  displayName: Fire Blaze
+  description: 
+  icon: {fileID: 21300000, guid: 4c9a3e8120a30d04f999877928296877, type: 3}
+  maxLevel: 3
+  spawnWeight: 1
   price: 15
-  priceMultiplier: 1.5
+  priceMultiplier: 1.6
   damagePerLevel: 1

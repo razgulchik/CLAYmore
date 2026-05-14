@@ -31,7 +31,7 @@ MonoBehaviour:
   modifierPool:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
   - {fileID: 11400000, guid: 9534ea2a1b7327d47b832e471b6a6d97, type: 2}
-  - {fileID: 11400000, guid: 238fe5e4ea161864ca36ed7e8dbbd860, type: 2}
+  - {fileID: 11400000, guid: b7649a2d85948eb49a1ef800184349e5, type: 2}
   - {fileID: 11400000, guid: 1e98175978fb2a044b162bb4fa28eca4, type: 2}
   - {fileID: 11400000, guid: 7394d3ec4a4828c4abe35d1aac144309, type: 2}
   - {fileID: 11400000, guid: bed6cefaed1ae2046865c5778b5fa3de, type: 2}
@@ -44,7 +44,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f10430dc6579ed742b470c25b0697d4d, type: 2}
   - {fileID: 11400000, guid: d37d19f6ce08de946b05fa67862c3521, type: 2}
   startingCoins: 10
-  startingModifiers: []
+  startingModifiers:
+  - {fileID: 11400000, guid: b7649a2d85948eb49a1ef800184349e5, type: 2}
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20

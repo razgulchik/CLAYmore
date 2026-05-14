@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5364226741442716901}
   - component: {fileID: 3942764695767633383}
   - component: {fileID: 2376613840224547631}
-  - component: {fileID: 4012007963047986190}
+  - component: {fileID: 2056502900511022854}
   m_Layer: 0
   m_Name: ShockwaveTile
   m_TagString: Untagged
@@ -111,7 +111,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4012007963047986190
+--- !u!114 &2056502900511022854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,8 +120,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3458335421968341803}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0dbd49925ce67043b7fdf1c9460830a, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f35a9bcaf9626541b3e4c4e37b30dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cell: {x: 0, y: 0}
-  WorldPosition: {x: 0, y: 0, z: 0}

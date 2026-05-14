@@ -13,8 +13,8 @@ namespace CLAYmore.ECS
         public bool  HasWhirlwind      = false;
         public int   WhirlwindRadius   = 1;
         public int   WhirlwindDamage   = 1;
-        public bool  HasFireBalls    = false;
-        public int   FireBallsDamage = 1;
+        public bool  HasFireBlaze    = false;
+        public int   FireBlazeDamage = 1;
         public int   ShieldCurrent     = 0;
         public int   ShieldMax         = 0;
         public float ShieldCooldown    = 0f;
