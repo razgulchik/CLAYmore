@@ -41,6 +41,7 @@ namespace CLAYmore
             world.Events.Subscribe<ShockwaveCellImpactEvent>(OnShockwaveCellImpact);
             world.Events.Subscribe<CellStrikeEvent>(OnCellStrike);
             world.Events.Subscribe<PlayerLandedEvent>(OnPlayerLanded);
+            world.Events.Subscribe<PlayerMoveResultEvent>(OnPlayerMoveResult);
             world.Events.Subscribe<WhirlwindDetonateEvent>(OnWhirlwindDetonate);
             world.Events.Subscribe<FireBlazeImpactEvent>(OnFireBlazeImpact);
         }
@@ -300,32 +301,43 @@ namespace CLAYmore
                 TriggerBallLightningExplosion(evt.Cell, worldPos);
         }
 
-        private void OnPlayerLanded(PlayerLandedEvent evt)
+        private void OnPlayerLanded(PlayerLandedEvent evt) { }
+
+        private void OnPlayerMoveResult(PlayerMoveResultEvent evt)
         {
+            if (evt.MoveType == MoveType.Blocked) return;
+
             Entity player = GetPlayerEntity();
             if (player == null) return;
             var stats = player.Get<PlayerStatsComponent>();
 
+            if (!stats.HasWhirlwind && !stats.HasFireBlaze) return;
+
+            var dest3    = _island.tilemap.WorldToCell(evt.Target);
+            var destCell = new Vector2Int(dest3.x, dest3.y);
+
             if (stats.HasWhirlwind)
-                _world.Events.Publish(new WhirlwindActivatedEvent { Cell = evt.Cell, WorldPosition = evt.WorldPosition });
+                _world.Events.Publish(new WhirlwindActivatedEvent { Cell = destCell, WorldPosition = evt.Target });
 
             if (stats.HasFireBlaze)
             {
-                Vector2Int d = evt.FacingDirection;
-                Vector2Int diag1 = d.x != 0
-                    ? new Vector2Int(d.x,  1)
-                    : new Vector2Int( 1, d.y);
-                Vector2Int diag2 = d.x != 0
-                    ? new Vector2Int(d.x, -1)
-                    : new Vector2Int(-1, d.y);
+                Vector2Int d = evt.Direction;
+
+                // Вариант А — перпендикулярно движению:
+                // Vector2Int dir1 = d.x != 0 ? new Vector2Int(0,  1) : new Vector2Int( 1, 0);
+                // Vector2Int dir2 = d.x != 0 ? new Vector2Int(0, -1) : new Vector2Int(-1, 0);
+
+                // Вариант Б — по диагонали вперёд:
+                Vector2Int dir1 = d.x != 0 ? new Vector2Int(d.x,  1) : new Vector2Int( 1, d.y);
+                Vector2Int dir2 = d.x != 0 ? new Vector2Int(d.x, -1) : new Vector2Int(-1, d.y);
 
                 _world.Events.Publish(new FireBlazeActivatedEvent
                 {
-                    Origin   = evt.WorldPosition,
-                    DiagDir1 = diag1,
-                    DiagDir2 = diag2,
-                    Cell1    = evt.Cell + diag1,
-                    Cell2    = evt.Cell + diag2,
+                    Origin   = evt.Target,
+                    DiagDir1 = dir1,
+                    DiagDir2 = dir2,
+                    Cell1    = destCell + dir1,
+                    Cell2    = destCell + dir2,
                 });
             }
         }
