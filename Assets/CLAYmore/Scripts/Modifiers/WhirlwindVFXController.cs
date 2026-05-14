@@ -24,7 +24,6 @@ namespace CLAYmore
                 bridge.OnImpact   = () => World.Current?.Events.Publish(new WhirlwindDetonateEvent { Cell = evt.Cell });
                 bridge.OnComplete = () => vfxPool.Return(vfx);
             }
-
         }
     }
 }

@@ -30,6 +30,7 @@ namespace CLAYmore
 
         private int _hitCount;
         private GameObject _currentShadow;
+        private bool _landedEventFired;
 
         // ── Init ─────────────────────────────────────────────────────────────
 
@@ -63,7 +64,8 @@ namespace CLAYmore
             _pot.State    = PotState.InFlight;
             _pot.LandPos  = landPos;
             _pot.LandCell = tilemap.WorldToCell(landPos);
-            _hitCount     = 0;
+            _hitCount           = 0;
+            _landedEventFired   = false;
 
             if (_entity.Has<HealthComponent>())
             {
@@ -89,6 +91,7 @@ namespace CLAYmore
 
             transform.DOMove(landPos, config.fallDuration * fallDurationMultiplier)
                 .SetEase(config.fallEase)
+                .OnUpdate(CheckLandThreshold)
                 .OnComplete(OnTweenLanded);
         }
 
@@ -116,25 +119,19 @@ namespace CLAYmore
 
         // ── Private ───────────────────────────────────────────────────────────
 
-        private void Update()
+        private void CheckLandThreshold()
         {
-            if (_pot == null || _pot.State != PotState.InFlight) return;
-            if (transform.position.y - _pot.LandPos.y <= CellHalfSize)
-                RegisterLanded();
+            if (_landedEventFired || _pot == null || _pot.State != PotState.InFlight) return;
+            if (transform.position.y - _pot.LandPos.y <= 0.9f)
+            {
+                _landedEventFired = true;
+                _pot.State        = PotState.Landed;
+                World.Current?.Events.Publish(new PotLandedEvent { PotEntity = _entity });
+            }
         }
 
         /// <summary>
-        /// Горшок пересёк границу клетки — регистрируем как Landed и публикуем событие.
-        /// </summary>
-        private void RegisterLanded()
-        {
-            _pot.State = PotState.Landed;
-            World.Current?.Events.Publish(new PotLandedEvent { PotEntity = _entity });
-        }
-
-        /// <summary>
-        /// DOTween OnComplete — горшок долетел до позиции.
-        /// Синхронизируем position, меняем слой, убираем тень.
+        /// DOTween OnComplete — горшок физически на земле.
         /// </summary>
         private void OnTweenLanded()
         {

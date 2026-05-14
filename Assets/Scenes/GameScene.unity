@@ -4608,6 +4608,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb60dc1fe590fc14cbad509efe4efded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hitstopDuration: 0.05
 --- !u!114 &306947596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20126,7 +20127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74b0e23b319f3a44af2540538a38db2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vfxPool: {fileID: 1784929291}
+  vfxPool: {fileID: 0}
 --- !u!224 &1411893545 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7878103521669841844, guid: 17e1eb7e66a60834ebbd82ffb1b7c9b8, type: 3}

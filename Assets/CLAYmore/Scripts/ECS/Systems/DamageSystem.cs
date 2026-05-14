@@ -26,6 +26,7 @@ namespace CLAYmore
             _healthSystem = world.GetSystem<HealthSystem>();
             world.Events.Subscribe<PotLandedEvent>(OnPotLanded);
             world.Events.Subscribe<PlayerTileChangedEvent>(OnPlayerTileChanged);
+            world.Events.Subscribe<PlayerLandedEvent>(OnPlayerLanded);
         }
 
         public void Tick(float deltaTime) { }
@@ -67,7 +68,13 @@ namespace CLAYmore
 
             // Player is on the landing cell — deal damage and force-break the pot
             Entity playerEntity = GetPlayerEntity();
-            if (playerEntity != null && !TryAbsorbWithShield(playerEntity))
+            if (playerEntity == null) return;
+
+            // If the player started moving away before the pot landed, let them escape.
+            // OnPlayerTileChanged handles the inverse case (player walks into a pot that already landed).
+            if (playerEntity.Get<MovementComponent>().IsMoving) return;
+
+            if (!TryAbsorbWithShield(playerEntity))
                 _healthSystem.TakeDamage(playerEntity, 1);
 
             // Drain remaining HP to trigger EntityDiedEvent → Pot.BreakVisual (skip rocks)
@@ -78,7 +85,13 @@ namespace CLAYmore
             }
         }
 
-        private void OnPlayerTileChanged(PlayerTileChangedEvent evt)
+        private void OnPlayerTileChanged(PlayerTileChangedEvent evt) => CheckPotOnPlayerCell();
+
+        // Fires when movement animation ends, including Bounce (player returns to the same cell).
+        // PlayerTileChangedEvent is NOT published for Bounce, so this catches the gap.
+        private void OnPlayerLanded(PlayerLandedEvent evt) => CheckPotOnPlayerCell();
+
+        private void CheckPotOnPlayerCell()
         {
             Vector3Int playerCell = _island.GetPlayerCell();
             foreach (Entity entity in _world.Query<PotComponent>())
@@ -86,7 +99,6 @@ namespace CLAYmore
                 var pot = entity.Get<PotComponent>();
                 if (pot.State != PotState.Landed || pot.LandCell != playerCell) continue;
 
-                // Pot was already on the cell when player arrived — damage player, force-break pot
                 Entity playerEntity = GetPlayerEntity();
                 if (playerEntity != null && !TryAbsorbWithShield(playerEntity))
                     _healthSystem.TakeDamage(playerEntity, 1);
