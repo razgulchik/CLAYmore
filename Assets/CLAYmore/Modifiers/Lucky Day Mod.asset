@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Lucky Day
   description: 
-  icon: {fileID: -1703105030114360677, guid: e0e79e5bbcfc86c459ece72dbcbac45b, type: 3}
+  icon: {fileID: 21300000, guid: 48ae3292aca22a64ca7beac1bef2902b, type: 3}
   maxLevel: 6
   spawnWeight: 5
   price: 15

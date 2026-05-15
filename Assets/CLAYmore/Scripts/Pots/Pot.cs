@@ -29,6 +29,7 @@ namespace CLAYmore
         private PrefabPool _shardsPool;
 
         private int _hitCount;
+        private Tween _scaleTween;
         private GameObject _currentShadow;
         private bool _landedEventFired;
 
@@ -52,6 +53,7 @@ namespace CLAYmore
 
             transform.DOKill();
             transform.localScale = Vector3.one;
+            _scaleTween = null;
 
             _entity = GetComponent<Entity>() ?? gameObject.AddComponent<Entity>();
 
@@ -114,7 +116,8 @@ namespace CLAYmore
         /// </summary>
         public void HitVisual()
         {
-            transform.DOPunchScale(Vector3.one * 0.2f, 0.15f, vibrato: 8);
+            if (_scaleTween != null && _scaleTween.IsActive()) return;
+            _scaleTween = transform.DOPunchScale(Vector3.one * 0.2f, 0.15f, vibrato: 8);
         }
 
         // ── Private ───────────────────────────────────────────────────────────
