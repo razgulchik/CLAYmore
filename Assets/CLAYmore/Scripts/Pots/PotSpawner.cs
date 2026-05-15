@@ -11,6 +11,10 @@ namespace CLAYmore
     /// </summary>
     public class PotSpawner : MonoBehaviour
     {
+        [Header("Startup Pots")]
+        [Tooltip("Pots to spawn on the ground at game start. Add configs in any order.")]
+        public PotConfig[] startupPotConfigs;
+
         [Header("Pot Configs")]
         [Tooltip("All pot types including rocks (isRock = true). Rocks are picked separately via wave rockSpawnChance.")]
         public PotConfig[] potConfigs;
@@ -125,6 +129,44 @@ namespace CLAYmore
             if (evt.SpawnerEntity != _entity) return;
             if (_isGameOver) return;
             SpawnPot();
+        }
+
+        // ── Startup ───────────────────────────────────────────────────────────
+
+        public void SpawnStartupPots(Vector3 playerPos)
+        {
+            if (startupPotConfigs == null || startupPotConfigs.Length == 0) return;
+            if (_islandGenerator == null || _potPool == null) return;
+
+            Vector3Int playerCell = _islandGenerator.GetCell(playerPos);
+
+            foreach (var config in startupPotConfigs)
+            {
+                if (config == null) continue;
+
+                Vector3 landPos;
+                int attempts = 0;
+                do
+                {
+                    if (!_islandGenerator.TryGetRandomWalkableCellCenter(out landPos)) break;
+                    attempts++;
+                }
+                while (_islandGenerator.GetCell(landPos) == playerCell && attempts < 20);
+
+                if (!_islandGenerator.TryReserveCell(landPos)) continue;
+
+                GameObject potGO = _potPool.Get(landPos);
+                if (!potGO.TryGetComponent(out Pot pot))
+                {
+                    _potPool.Return(potGO);
+                    continue;
+                }
+
+                pot.Initialize(config, landPos, _islandGenerator.tilemap,
+                               _economy, _islandGenerator,
+                               _potPool, _shadowPool, _coinPool, _shardsPool,
+                               fallDurationMultiplier: 0f);
+            }
         }
 
         // ── Weight picking ────────────────────────────────────────────────────

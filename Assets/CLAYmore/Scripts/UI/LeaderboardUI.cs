@@ -30,6 +30,13 @@ namespace CLAYmore
         public TextMeshProUGUI pageLabel;
         [SerializeField] private int pageSize = 10;
 
+        [Header("Rename Panel")]
+        [SerializeField] private bool debugAllowRename;
+        public GameObject      renamePanel;
+        public TMP_InputField  nameInput;
+        public Button          confirmNameButton;
+        public TextMeshProUGUI nameStatusLabel;
+
         private List<LeaderboardEntry> _entries;
         private string                 _currentPlayerId;
         private int                    _currentPage;
@@ -37,6 +44,7 @@ namespace CLAYmore
         private void Awake()
         {
             panel.SetActive(false);
+            if (renamePanel != null) renamePanel.SetActive(false);
         }
 
         private void OnEnable()
@@ -64,8 +72,83 @@ namespace CLAYmore
         {
             StopAllCoroutines();
             panel.SetActive(false);
+            if (renamePanel != null) renamePanel.SetActive(false);
             ClearRows();
             _entries = null;
+        }
+
+        public void OnRenameClicked()
+        {
+            if (renamePanel == null) return;
+            if (nameInput != null)
+                nameInput.text = PlayerPrefs.GetString("player_name", "");
+            if (nameStatusLabel != null) nameStatusLabel.text = "";
+            renamePanel.SetActive(true);
+        }
+
+        public void OnCancelRenameClicked()
+        {
+            if (renamePanel != null) renamePanel.SetActive(false);
+        }
+
+        public async void OnConfirmNameClicked()
+        {
+            if (nameInput == null || leaderboardService == null) return;
+            string name = nameInput.text.Trim();
+            if (!IsValidName(name))
+            {
+                if (nameStatusLabel != null) nameStatusLabel.text = "Letters, digits, _ only (max 12)";
+                return;
+            }
+
+            if (confirmNameButton != null) confirmNameButton.interactable = false;
+            if (nameStatusLabel != null) nameStatusLabel.text = "Updating...";
+
+            await leaderboardService.UpdateNameAndRefreshAsync(name);
+
+            _entries         = leaderboardService.CachedScores;
+            _currentPlayerId = AuthenticationService.Instance.PlayerId;
+            ShowPage(_currentPage);
+
+            PlayerPrefs.SetInt("name_changed", 1);
+            if (confirmNameButton != null) confirmNameButton.interactable = true;
+            if (renamePanel != null) renamePanel.SetActive(false);
+        }
+
+        private bool CanRename() => debugAllowRename || PlayerPrefs.GetInt("name_changed", 0) == 0;
+
+        private static bool IsValidName(string name)
+        {
+            if (string.IsNullOrEmpty(name) || name.Length > 12) return false;
+            foreach (char c in name)
+                if (!char.IsLetterOrDigit(c) && c != '_') return false;
+            string lower = name.ToLowerInvariant();
+            foreach (var w in new[] {
+                "fuck", "f4ck", "fvck", "phuck",
+                "shit", "sh1t", "5hit",
+                "bitch", "b1tch",
+                "dick", "d1ck",
+                "cunt", "cvnt",
+                "cock", "c0ck",
+                "pussy", "pu55y",
+                "nigger", "n1gger", "nigga", "n1gga",
+                "faggot", "f4ggot", "fag",
+                "retard", "r3tard",
+                "whore", "wh0re",
+                "slut", "bastard", "piss", "crap",
+                "asshole",
+                "хуй", "х0й", "хуйло",
+                "пизда", "п1зда",
+                "блядь", "бл4дь",
+                "сука", "еблан",
+                "ебать", "еб4ть",
+                "мудак", "мудило",
+                "пидор", "п1дор", "пидрила",
+                "залупа", "ублюдок",
+                "шлюха", "дрочить"
+            })
+                if (lower.Contains(w)) return false;
+            return true;
         }
 
         public void NextPage() => ShowPage(_currentPage + 1);
@@ -117,7 +200,11 @@ namespace CLAYmore
                 var row   = Instantiate(rowPrefab, listRoot);
                 row.Setup(entry.Rank + 1, entry.PlayerName, (int)entry.Score);
                 if (_currentPlayerId != null && entry.PlayerId == _currentPlayerId)
+                {
                     row.Highlight(Color.yellow);
+                    if (CanRename())
+                        row.ShowRenameButton(OnRenameClicked);
+                }
             }
 
             if (pageLabel != null)

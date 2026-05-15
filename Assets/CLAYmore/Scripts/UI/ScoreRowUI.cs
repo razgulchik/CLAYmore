@@ -1,5 +1,7 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace CLAYmore
 {
@@ -12,6 +14,7 @@ namespace CLAYmore
         public TextMeshProUGUI rankLabel;
         public TextMeshProUGUI playerLabel;
         public TextMeshProUGUI scoreLabel;
+        public Button          renameButton;
 
         public void Setup(int rank, string playerName, int score)
         {
@@ -25,6 +28,13 @@ namespace CLAYmore
             if (rankLabel   != null) rankLabel.color   = color;
             if (playerLabel != null) playerLabel.color = color;
             if (scoreLabel  != null) scoreLabel.color  = color;
+        }
+
+        public void ShowRenameButton(UnityAction callback)
+        {
+            if (renameButton == null) return;
+            renameButton.gameObject.SetActive(true);
+            renameButton.onClick.AddListener(callback);
         }
     }
 }

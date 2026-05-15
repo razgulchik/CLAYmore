@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PotConfig 7 (Golden)
   m_EditorClassIdentifier: 
   maxHp: 2
-  coinDropMin: 0
-  coinDropMax: 0
+  coinDropMin: 10
+  coinDropMax: 10
   fallDuration: 1.2
   fallEase: 5
   spawnHeight: 8

@@ -27,6 +27,7 @@ namespace CLAYmore
 
         private StatsTracker _statsTracker;
         private bool         _isReady;
+        private int          _lastSubmittedScore;
 
         public void Init(StatsTracker statsTracker) => _statsTracker = statsTracker;
 
@@ -65,8 +66,19 @@ namespace CLAYmore
             await SubmitAndFetchAsync(e.Score);
         }
 
+        public async Task UpdateNameAndRefreshAsync(string newName)
+        {
+            try { await AuthenticationService.Instance.UpdatePlayerNameAsync(newName); }
+            catch (Exception e) { Debug.LogWarning($"[LeaderboardService] Name update failed: {e.Message}"); return; }
+
+            PlayerPrefs.SetString("player_name", newName);
+            HasFetchCompleted = false;
+            await SubmitAndFetchAsync(_lastSubmittedScore);
+        }
+
         private async Task SubmitAndFetchAsync(int score)
         {
+            _lastSubmittedScore = score;
             // Submit first so our score is included in the fetch
             try
             {

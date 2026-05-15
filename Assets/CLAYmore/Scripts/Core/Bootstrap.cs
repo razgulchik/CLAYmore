@@ -123,8 +123,12 @@ namespace CLAYmore
                 if (modifierChoiceUI != null) modifierChoiceUI.Init(config.modifierPool, config.coinsOnSkip);
             }
 
-            if (potSpawner != null) potSpawner.Init(islandGenerator, economy, playerMovement,
-                                                    potPool, shadowPool, coinPool, shardsPool, hearthPool);
+            if (potSpawner != null)
+            {
+                potSpawner.Init(islandGenerator, economy, playerMovement,
+                                potPool, shadowPool, coinPool, shardsPool, hearthPool);
+                potSpawner.SpawnStartupPots(spawnPos);
+            }
 
             _world.RegisterSystem(new SessionTimerSystem(config?.waves));
 

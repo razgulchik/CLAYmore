@@ -25,7 +25,7 @@ namespace CLAYmore.ECS
         public float LightningTimer    = 0f;
         public int   LongSwordReach    = 0;
         public float GoldenUrnChance    = 0f;
-        public int   GoldenUrnGoldReward = 0;
+        public int   GoldenUrnGoldReward = 10;
         public float HearthChance        = 0f;
         public bool  HasShockwave           = false;
         public int   ShockwaveDamage        = 1;
