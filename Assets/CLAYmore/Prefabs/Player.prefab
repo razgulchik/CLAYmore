@@ -104,8 +104,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2925250203985134134}
   - {fileID: 962587872053258201}
-  - {fileID: 4422931552575058763}
   - {fileID: 5592258540745142696}
   - {fileID: 8540080203061954145}
   m_Father: {fileID: 4201080403525410097}
@@ -144,7 +144,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2925250203985134134}
+  - {fileID: 4422931552575058763}
   - {fileID: 7850818615007577587}
   - {fileID: 338308279738508865}
   m_Father: {fileID: 0}
@@ -328,7 +328,7 @@ Transform:
   m_LocalScale: {x: 1.418155, y: 1.418155, z: 1.418155}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 7850818615007577587}
+  m_Father: {fileID: 4201080403525410097}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3188779002144291419
 SpriteRenderer:
@@ -498,7 +498,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2925250203985134134}
   - component: {fileID: 4104074438911736454}
-  - component: {fileID: 641049673857810625}
+  - component: {fileID: 7699425598445989113}
   m_Layer: 0
   m_Name: ShieldVisual
   m_TagString: Untagged
@@ -514,12 +514,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6954110606267779002}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.0312, y: 0.4188, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 4201080403525410097}
+  m_Father: {fileID: 7850818615007577587}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4104074438911736454
 SpriteRenderer:
@@ -576,7 +576,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &641049673857810625
+--- !u!114 &7699425598445989113
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -585,7 +585,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6954110606267779002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44ed01687ee959e408141fe04457a13d, type: 3}
+  m_Script: {fileID: 11500000, guid: f2b860dc54d4fe94783bf31d9f37c0ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   appearDuration: 0.4

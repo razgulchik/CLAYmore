@@ -164,6 +164,7 @@ Assets/CLAYmore/
    PlayerMovement.cs
    ShieldVisualController.cs
    SwipeInputHandler.cs
+   UmbrellaShieldController.cs
    Weapon.cs
   Pool/PrefabPool.cs
   Pots/
