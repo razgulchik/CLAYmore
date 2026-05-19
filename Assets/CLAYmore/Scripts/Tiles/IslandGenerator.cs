@@ -22,6 +22,7 @@ namespace CLAYmore
         [Header("Expansion Cost")]
         public int initialExpansionCost = 5;
         [Min(1f)] public float expansionCostMultiplier = 1.5f;
+        [Min(1)] public int expansionRowCount = 1;
 
         // Runtime state
         private Vector3Int _originCell;
@@ -327,10 +328,10 @@ namespace CLAYmore
                 return false;
             }
 
-            if (dir.x < 0)      { _originCell.x--; _width++; }
-            else if (dir.x > 0) { _width++; }
-            else if (dir.y < 0) { _originCell.y--; _height++; }
-            else                { _height++; }
+            if (dir.x < 0)      { _originCell.x -= expansionRowCount; _width  += expansionRowCount; }
+            else if (dir.x > 0) { _width  += expansionRowCount; }
+            else if (dir.y < 0) { _originCell.y -= expansionRowCount; _height += expansionRowCount; }
+            else                { _height += expansionRowCount; }
 
             _currentExpansionCost = Mathf.RoundToInt(_currentExpansionCost * expansionCostMultiplier);
             RedrawAll();
@@ -470,32 +471,32 @@ namespace CLAYmore
             int newWidth   = _width;
             int newHeight  = _height;
 
-            if      (dir.x < 0) { newOriginX--; newWidth++; }
-            else if (dir.x > 0) { newWidth++; }
-            else if (dir.y < 0) { newOriginY--; newHeight++; }
-            else                { newHeight++; }
+            if      (dir.x < 0) { newOriginX -= expansionRowCount; newWidth  += expansionRowCount; }
+            else if (dir.x > 0) { newWidth  += expansionRowCount; }
+            else if (dir.y < 0) { newOriginY -= expansionRowCount; newHeight += expansionRowCount; }
+            else                { newHeight += expansionRowCount; }
 
-            if (dir.y > 0) // UP — 1 row at the new top
+            if (dir.y > 0) // UP — N rows at the new top
             {
-                int relY = newHeight - 1;
-                for (int relX = 0; relX < newWidth; relX++)
-                    AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
+                for (int relY = newHeight - expansionRowCount; relY < newHeight; relY++)
+                    for (int relX = 0; relX < newWidth; relX++)
+                        AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
             }
             else if (dir.y < 0) // DOWN — 2 rows: outer water border (relY=0) + inner cliff (relY=1)
             {
-                for (int relY = 0; relY <= 1; relY++)
+                for (int relY = 0; relY <= expansionRowCount; relY++)
                     for (int relX = 0; relX < newWidth; relX++)
                         AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
             }
             else if (dir.x < 0) // LEFT — 2 cols: outer water (relX=0) + inner cliff (relX=1)
             {
-                for (int relX = 0; relX <= 1; relX++)
+                for (int relX = 0; relX <= expansionRowCount; relX++)
                     for (int relY = 0; relY < newHeight; relY++)
                         AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
             }
-            else // RIGHT — 2 cols: inner cliff (relX=newWidth-2) + outer water (relX=newWidth-1)
+            else // RIGHT — N+1 cols: N inner cols + outer water
             {
-                for (int relX = newWidth - 2; relX <= newWidth - 1; relX++)
+                for (int relX = newWidth - expansionRowCount - 1; relX < newWidth; relX++)
                     for (int relY = 0; relY < newHeight; relY++)
                         AddGhostCell(result, newOriginX + relX, newOriginY + relY, relX, relY, newWidth, newHeight);
             }
