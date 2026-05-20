@@ -9,5 +9,6 @@ namespace CLAYmore
         public float IntervalDecreasePerSecond;
         public float CurrentInterval;
         public float Timer;
+        public bool  Paused;
     }
 }

@@ -21,6 +21,8 @@ namespace CLAYmore
             foreach (var entity in _world.Query<SpawnerComponent>())
             {
                 var s = entity.Get<SpawnerComponent>();
+                if (s.Paused) continue;
+
                 s.CurrentInterval = Mathf.Max(s.MinInterval,
                     s.CurrentInterval - s.IntervalDecreasePerSecond * deltaTime);
 

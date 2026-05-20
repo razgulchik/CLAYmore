@@ -30,6 +30,9 @@ namespace CLAYmore
         public TextMeshProUGUI pageLabel;
         [SerializeField] private int pageSize = 10;
 
+        [Header("Result Title")]
+        [SerializeField] private TextMeshProUGUI resultTitleLabel;
+
         [Header("Rename Panel")]
         [SerializeField] private bool debugAllowRename;
         public GameObject      renamePanel;
@@ -57,7 +60,12 @@ namespace CLAYmore
             World.Current?.Events.Unsubscribe<GameOverEvent>(OnGameOver);
         }
 
-        private void OnGameOver(GameOverEvent _) => Show();
+        private void OnGameOver(GameOverEvent e)
+        {
+            if (resultTitleLabel != null)
+                resultTitleLabel.text = e.IsVictory ? "You Win!" : "Game Over";
+            Show();
+        }
 
         // ── Public ────────────────────────────────────────────────────────────
 

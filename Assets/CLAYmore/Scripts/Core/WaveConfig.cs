@@ -12,13 +12,13 @@ namespace CLAYmore
 
     /// <summary>
     /// Parameters for one difficulty wave.
-    /// Assign in GameConfig.waves[] sorted by startTime.
+    /// Waves execute sequentially in the order they appear in GameConfig.waves[].
     /// </summary>
     [CreateAssetMenu(fileName = "WaveConfig", menuName = "CLAYmore/Wave Config")]
     public class WaveConfig : ScriptableObject
     {
-        [Tooltip("Session time in seconds when this wave activates")]
-        public float startTime = 0f;
+        [Tooltip("Duration of this wave in seconds. 0 = no time limit (use for the last wave).")]
+        public float waveDuration = 30f;
 
         [Header("Spawn Timing")]
         [Tooltip("Spawn interval at the start of this wave")]
@@ -45,5 +45,13 @@ namespace CLAYmore
         [Header("Rocks")]
         [Tooltip("Probability (0-1) that a spawn event produces a rock instead of a pot")]
         [Range(0f, 1f)] public float rockSpawnChance = 0f;
+
+        [Header("Simultaneous Spawn")]
+        [Tooltip("Spawn all wave pots at once in a left-to-right sweep instead of gradually")]
+        public bool useSimultaneousSpawn = false;
+        [Tooltip("Fraction of free island cells to cover with pots (0-1)")]
+        [Range(0f, 1f)] public float coveragePercent = 0.3f;
+        [Tooltip("Pause (seconds) before next wave when player clears all non-rock pots")]
+        [Min(0f)] public float clearancePauseDuration = 3f;
     }
 }

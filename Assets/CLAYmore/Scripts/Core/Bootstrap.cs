@@ -63,6 +63,7 @@ namespace CLAYmore
             _world.RegisterSystem(new DamageSystem(islandGenerator));
             _world.RegisterSystem(new EconomySystem());
             _world.RegisterSystem(new SpawnerSystem());
+            _world.RegisterSystem(new BurstWaveSystem());
             _world.RegisterSystem(new MovementSystem(islandGenerator, config != null ? config.inputBufferWindow : 0.15f));
             _world.RegisterSystem(new ChestSystem(islandGenerator));
             _world.RegisterSystem(new ModifierSystem());
@@ -126,7 +127,7 @@ namespace CLAYmore
             if (potSpawner != null)
             {
                 potSpawner.Init(islandGenerator, economy, playerMovement,
-                                potPool, shadowPool, coinPool, shardsPool, hearthPool);
+                                potPool, shadowPool, coinPool, shardsPool, hearthPool, config);
                 potSpawner.SpawnStartupPots(spawnPos);
             }
 
@@ -148,6 +149,7 @@ namespace CLAYmore
             }
 
             _world.Events.Subscribe<EntityDiedEvent>(OnEntityDied);
+            _world.Events.Subscribe<GameWonEvent>(OnGameWon);
         }
 
         private void Update()
@@ -158,6 +160,7 @@ namespace CLAYmore
         private void OnDestroy()
         {
             _world?.Events.Unsubscribe<EntityDiedEvent>(OnEntityDied);
+            _world?.Events.Unsubscribe<GameWonEvent>(OnGameWon);
             _world?.Destroy();
         }
 
@@ -172,8 +175,19 @@ namespace CLAYmore
             if (IsGameOver) return;
             IsGameOver = true;
             PauseManager.Instance.Push();
-            _world?.Events.Publish(new GameOverEvent());
+            _world?.Events.Publish(new GameOverEvent { IsVictory = false });
             Debug.Log("Game Over!");
+        }
+
+        private void OnGameWon(GameWonEvent _) => TriggerVictory();
+
+        private void TriggerVictory()
+        {
+            if (IsGameOver) return;
+            IsGameOver = true;
+            PauseManager.Instance.Push();
+            _world?.Events.Publish(new GameOverEvent { IsVictory = true });
+            Debug.Log("You Survived!");
         }
 
         public void Restart()

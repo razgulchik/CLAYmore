@@ -4,5 +4,6 @@ namespace CLAYmore
     {
         public int        WaveIndex;
         public WaveConfig Config;
+        public bool       IsLastWave;
     }
 }

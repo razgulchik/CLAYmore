@@ -117,6 +117,21 @@ namespace CLAYmore
             return true;
         }
 
+        /// <summary>Returns world centers of all empty walkable cells (excluding the player's cell).
+        /// Used by burst-wave spawning to select and sort target positions.</summary>
+        public List<Vector3> GetFreeWalkableCellCenters()
+        {
+            var result = new List<Vector3>();
+            foreach (var key in _walkableCells)
+            {
+                if (_tiles.TryGetValue(key, out TileData tile)
+                    && tile.State == CellState.Empty
+                    && !tile.HasPlayer)
+                    result.Add(tilemap.GetCellCenterWorld(new Vector3Int(key.x, key.y, 0)));
+            }
+            return result;
+        }
+
         /// <summary>Current cost to expand the island by one tile in any direction, after player discounts.</summary>
         public int ExpansionCost => GetDiscountedExpansionCost();
 

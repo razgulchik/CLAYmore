@@ -1,4 +1,6 @@
 using CLAYmore.ECS;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
@@ -30,6 +32,7 @@ namespace CLAYmore
         private PrefabPool      _shadowPool;
         private PrefabPool      _coinPool;
         private PrefabPool      _shardsPool;
+        private GameConfig      _gameConfig;
 
         private int targetedSpawnEveryMin;
         private int targetedSpawnEveryMax;
@@ -46,7 +49,7 @@ namespace CLAYmore
 
         public void Init(IslandGenerator islandGenerator, Economy economy, PlayerMovement playerMovement,
                          PrefabPool potPool, PrefabPool shadowPool, PrefabPool coinPool, PrefabPool shardsPool,
-                         PrefabPool hearthPool)
+                         PrefabPool hearthPool, GameConfig gameConfig = null)
         {
             _islandGenerator = islandGenerator;
             _economy         = economy;
@@ -56,6 +59,7 @@ namespace CLAYmore
             _coinPool        = coinPool;
             _shardsPool      = shardsPool;
             _hearthPool      = hearthPool;
+            _gameConfig      = gameConfig;
         }
 
         private void Start()
@@ -76,6 +80,7 @@ namespace CLAYmore
             World.Current?.RegisterEntity(_entity);
             World.Current?.Events.Subscribe<SpawnRequestedEvent>(OnSpawnRequested);
             World.Current?.Events.Subscribe<WaveChangedEvent>(OnWaveChanged);
+            World.Current?.Events.Subscribe<FinalCleanupEvent>(OnFinalCleanup);
             World.Current?.Events.Subscribe<GameOverEvent>(OnGameOver);
             LogWeights();
         }
@@ -98,7 +103,14 @@ namespace CLAYmore
         {
             World.Current?.Events.Unsubscribe<SpawnRequestedEvent>(OnSpawnRequested);
             World.Current?.Events.Unsubscribe<WaveChangedEvent>(OnWaveChanged);
+            World.Current?.Events.Unsubscribe<FinalCleanupEvent>(OnFinalCleanup);
             World.Current?.Events.Unsubscribe<GameOverEvent>(OnGameOver);
+        }
+
+        private void OnFinalCleanup(FinalCleanupEvent _)
+        {
+            var s = _entity?.Get<SpawnerComponent>();
+            if (s != null) s.Paused = true;
         }
 
         private void OnGameOver(GameOverEvent e) => _isGameOver = true;
@@ -107,21 +119,32 @@ namespace CLAYmore
         {
             _currentWave            = evt.Config;
             _fallDurationMultiplier = evt.Config.fallDurationMultiplier;
-            targetedSpawnEveryMin = evt.Config.targetedSpawnEveryMin;
-            targetedSpawnEveryMax = evt.Config.targetedSpawnEveryMax;
+            targetedSpawnEveryMin   = evt.Config.targetedSpawnEveryMin;
+            targetedSpawnEveryMax   = evt.Config.targetedSpawnEveryMax;
 
             if (evt.WaveIndex == 0)
                 _nextTargetedAt = Random.Range(targetedSpawnEveryMin, targetedSpawnEveryMax + 1);
 
             var s = _entity.Get<SpawnerComponent>();
-            s.CurrentInterval           = evt.Config.spawnInterval;
-            s.MinInterval               = evt.Config.minSpawnInterval;
-            s.IntervalDecreasePerSecond = evt.Config.spawnDecreasePerSecond;
-            s.Timer                     = evt.Config.spawnInterval;
 
-            Debug.Log($"[PotSpawner] Wave {evt.WaveIndex}: interval={evt.Config.spawnInterval:F2}s, " +
-                      $"fall×{evt.Config.fallDurationMultiplier:F2}, " +
-                      $"rockChance={evt.Config.rockSpawnChance:P0}");
+            if (evt.Config.useSimultaneousSpawn)
+            {
+                s.Paused = true;
+                StartCoroutine(BurstSpawnCoroutine(evt.Config));
+                Debug.Log($"[PotSpawner] Wave {evt.WaveIndex}: BURST, coverage={evt.Config.coveragePercent:P0}, " +
+                          $"fall×{evt.Config.fallDurationMultiplier:F2}");
+            }
+            else
+            {
+                s.Paused                    = false;
+                s.CurrentInterval           = evt.Config.spawnInterval;
+                s.MinInterval               = evt.Config.minSpawnInterval;
+                s.IntervalDecreasePerSecond = evt.Config.spawnDecreasePerSecond;
+                s.Timer                     = evt.Config.spawnInterval;
+                Debug.Log($"[PotSpawner] Wave {evt.WaveIndex}: interval={evt.Config.spawnInterval:F2}s, " +
+                          $"fall×{evt.Config.fallDurationMultiplier:F2}, " +
+                          $"rockChance={evt.Config.rockSpawnChance:P0}");
+            }
         }
 
         private void OnSpawnRequested(SpawnRequestedEvent evt)
@@ -166,6 +189,84 @@ namespace CLAYmore
                                _economy, _islandGenerator,
                                _potPool, _shadowPool, _coinPool, _shardsPool,
                                fallDurationMultiplier: 0f);
+            }
+        }
+
+        // ── Burst spawn ───────────────────────────────────────────────────────
+
+        private IEnumerator BurstSpawnCoroutine(WaveConfig wave)
+        {
+            List<Vector3> freeCells = _islandGenerator.GetFreeWalkableCellCenters();
+
+            int n = Mathf.RoundToInt(freeCells.Count * wave.coveragePercent);
+            n = Mathf.Min(n, freeCells.Count);
+
+            if (n <= 0) yield break;
+
+            Shuffle(freeCells);
+            if (freeCells.Count > n)
+                freeCells.RemoveRange(n, freeCells.Count - n);
+
+            freeCells.Sort((a, b) => a.x.CompareTo(b.x));
+
+            float sweepDuration = _gameConfig != null ? _gameConfig.burstSweepDuration : 1.5f;
+            float delay = n > 1 ? sweepDuration / n : 0f;
+
+            foreach (var landPos in freeCells)
+            {
+                if (_isGameOver) yield break;
+
+                if (!_islandGenerator.TryReserveCell(landPos))
+                    continue;
+
+                PotConfig config = PickBurstPotConfig(wave);
+                SpawnBurstPot(config, landPos);
+                World.Current?.Events.Publish(new BurstPotSpawnedEvent { IsRock = config.isRock });
+
+                if (delay > 0f)
+                    yield return new WaitForSeconds(delay);
+            }
+        }
+
+        private PotConfig PickBurstPotConfig(WaveConfig wave)
+        {
+            bool spawnRock = wave.rockSpawnChance > 0f
+                && _rockOnlyConfigs.Length > 0
+                && Random.value < wave.rockSpawnChance;
+
+            if (spawnRock)
+                return _rockOnlyConfigs[Random.Range(0, _rockOnlyConfigs.Length)];
+
+            float urnChance = _goldenUrnConfig != null ? GetGoldenUrnChance() : 0f;
+            if (urnChance > 0f && Random.value < urnChance)
+                return _goldenUrnConfig;
+
+            return _potOnlyConfigs.Length > 0
+                ? PickWeightedRandom()
+                : potConfigs[Random.Range(0, potConfigs.Length)];
+        }
+
+        private void SpawnBurstPot(PotConfig config, Vector3 landPos)
+        {
+            GameObject potGO = _potPool.Get(landPos + Vector3.up * config.spawnHeight);
+            if (!potGO.TryGetComponent<Pot>(out Pot pot))
+            {
+                Debug.LogWarning("PotSpawner: pot prefab is missing a Pot component.");
+                _potPool.Return(potGO);
+                return;
+            }
+            pot.Initialize(config, landPos, _islandGenerator.tilemap,
+                           _economy, _islandGenerator,
+                           _potPool, _shadowPool, _coinPool, _shardsPool,
+                           _fallDurationMultiplier);
+        }
+
+        private static void Shuffle<T>(List<T> list)
+        {
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
             }
         }
 

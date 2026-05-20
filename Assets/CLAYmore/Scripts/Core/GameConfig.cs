@@ -15,8 +15,10 @@ namespace CLAYmore
         [Min(0)] public float inputBufferWindow = 0.15f;
 
         [Header("Session")]
-        [Tooltip("Difficulty waves sorted by startTime. Leave empty to skip wave progression.")]
+        [Tooltip("Difficulty waves in order (sequential). Leave empty to skip wave progression.")]
         public WaveConfig[] waves;
+        [Tooltip("Time (seconds) from first to last pot during a simultaneous-spawn sweep")]
+        [Min(0.1f)] public float burstSweepDuration = 1.5f;
 
         [Header("Chests")]
         public float chestSpawnInitialInterval = 30f;
