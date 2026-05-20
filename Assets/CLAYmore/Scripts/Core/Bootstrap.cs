@@ -63,7 +63,7 @@ namespace CLAYmore
             _world.RegisterSystem(new DamageSystem(islandGenerator));
             _world.RegisterSystem(new EconomySystem());
             _world.RegisterSystem(new SpawnerSystem());
-            _world.RegisterSystem(new BurstWaveSystem());
+            _world.RegisterSystem(new WaveClearanceSystem());
             _world.RegisterSystem(new MovementSystem(islandGenerator, config != null ? config.inputBufferWindow : 0.15f));
             _world.RegisterSystem(new ChestSystem(islandGenerator));
             _world.RegisterSystem(new ModifierSystem());

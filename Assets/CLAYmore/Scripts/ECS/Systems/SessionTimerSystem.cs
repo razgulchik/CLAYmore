@@ -32,6 +32,7 @@ namespace CLAYmore
         {
             _world = world;
             world.Events.Subscribe<GameOverEvent>(OnGameOver);
+            world.Events.Subscribe<WaveClearedEvent>(OnWaveCleared);
         }
 
         public void Tick(float deltaTime)
@@ -55,7 +56,7 @@ namespace CLAYmore
                 AdvanceWave();
         }
 
-        public void ForceAdvanceWave()
+        private void OnWaveCleared(WaveClearedEvent _)
         {
             if (!_active) return;
             AdvanceWave();

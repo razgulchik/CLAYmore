@@ -5,14 +5,13 @@ namespace CLAYmore
 {
     /// <summary>
     /// Two responsibilities:
-    ///   1. Burst waves — tracks non-rock pot count, starts clearance pause, then calls ForceAdvanceWave.
+    ///   1. Burst waves — tracks non-rock pot count, starts clearance pause, then publishes WaveClearedEvent.
     ///   2. Final cleanup — triggered by FinalCleanupEvent (all waves done). Counts remaining live
     ///      non-rock pots; when zero, publishes GameWonEvent.
     /// </summary>
-    public class BurstWaveSystem : ISystem
+    public class WaveClearanceSystem : ISystem
     {
-        private World              _world;
-        private SessionTimerSystem _sessionTimer;
+        private World _world;
 
         private bool  _inBurstMode;
         private bool  _inFinalCleanup;
@@ -40,7 +39,7 @@ namespace CLAYmore
 
             _pauseTimer  = -1f;
             _inBurstMode = false;
-            (_sessionTimer ??= _world.GetSystem<SessionTimerSystem>())?.ForceAdvanceWave();
+            _world.Events.Publish(new WaveClearedEvent());
         }
 
         // ── Burst wave ────────────────────────────────────────────────────────
@@ -66,7 +65,7 @@ namespace CLAYmore
                     _remainingNonRockPots++;
             }
 
-            Debug.Log($"[BurstWave] Wave {e.WaveIndex} — existing non-rock pots: {_remainingNonRockPots}");
+            Debug.Log($"[WaveClearance] Wave {e.WaveIndex} — existing non-rock pots: {_remainingNonRockPots}");
         }
 
         private void OnBurstPotSpawned(BurstPotSpawnedEvent e)
@@ -93,7 +92,7 @@ namespace CLAYmore
                     _remainingNonRockPots++;
             }
 
-            Debug.Log($"[BurstWave] FinalCleanup — live non-rock pots: {_remainingNonRockPots}");
+            Debug.Log($"[WaveClearance] FinalCleanup — live non-rock pots: {_remainingNonRockPots}");
 
             if (_remainingNonRockPots == 0)
             {
@@ -124,7 +123,7 @@ namespace CLAYmore
             else if (_inBurstMode && _pauseTimer < 0f)
             {
                 _pauseTimer = _clearancePauseDuration;
-                Debug.Log($"[BurstWave] All burst pots cleared — pause {_clearancePauseDuration:F1}s");
+                Debug.Log($"[WaveClearance] All burst pots cleared — pause {_clearancePauseDuration:F1}s");
             }
         }
 
