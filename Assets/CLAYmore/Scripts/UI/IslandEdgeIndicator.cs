@@ -35,7 +35,7 @@ namespace CLAYmore
 
         // ── Internal state ────────────────────────────────────────────────────
 
-        private int        _coinBalance;
+        private int        _expanderBalance;
         private Vector2Int _heldDirection;
         private float      _holdTimer;
         private bool       _holdActive;
@@ -47,7 +47,7 @@ namespace CLAYmore
         private void OnEnable()
         {
             World.Current?.Events.Subscribe<PlayerTileChangedEvent>(OnPlayerTileChanged);
-            World.Current?.Events.Subscribe<CoinBalanceChangedEvent>(OnCoinBalanceChanged);
+            World.Current?.Events.Subscribe<ExpanderBalanceChangedEvent>(OnExpanderBalanceChanged);
             World.Current?.Events.Subscribe<PlayerMoveHeldEvent>(OnMoveHeld);
             HideAll();
         }
@@ -55,7 +55,7 @@ namespace CLAYmore
         private void OnDisable()
         {
             World.Current?.Events.Unsubscribe<PlayerTileChangedEvent>(OnPlayerTileChanged);
-            World.Current?.Events.Unsubscribe<CoinBalanceChangedEvent>(OnCoinBalanceChanged);
+            World.Current?.Events.Unsubscribe<ExpanderBalanceChangedEvent>(OnExpanderBalanceChanged);
             World.Current?.Events.Unsubscribe<PlayerMoveHeldEvent>(OnMoveHeld);
             CancelHold();
             HideAll();
@@ -74,8 +74,8 @@ namespace CLAYmore
 
         // ── Event handlers ────────────────────────────────────────────────────
 
-        private void OnPlayerTileChanged(PlayerTileChangedEvent _)    => Refresh();
-        private void OnCoinBalanceChanged(CoinBalanceChangedEvent e) { _coinBalance = e.NewBalance; Refresh(); }
+        private void OnPlayerTileChanged(PlayerTileChangedEvent _)          => Refresh();
+        private void OnExpanderBalanceChanged(ExpanderBalanceChangedEvent e) { _expanderBalance = e.NewBalance; Refresh(); }
 
         private void OnMoveHeld(PlayerMoveHeldEvent evt)
         {
@@ -171,7 +171,7 @@ namespace CLAYmore
 
             Vector3 playerWorld = islandGenerator.GetCellCenter(islandGenerator.GetPlayerCell());
             int     cost        = islandGenerator.ExpansionCost;
-            bool    canAfford   = _coinBalance >= cost;
+            bool    canAfford   = _expanderBalance >= cost;
             Color   labelColor  = canAfford ? canAffordColor : cannotAffordColor;
 
             bool anyActive = false;

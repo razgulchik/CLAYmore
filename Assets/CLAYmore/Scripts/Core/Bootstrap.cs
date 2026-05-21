@@ -62,6 +62,7 @@ namespace CLAYmore
             _world.RegisterSystem(new HealthSystem());
             _world.RegisterSystem(new DamageSystem(islandGenerator));
             _world.RegisterSystem(new EconomySystem());
+            _world.RegisterSystem(new ExpanderSystem());
             _world.RegisterSystem(new SpawnerSystem());
             _world.RegisterSystem(new WaveClearanceSystem());
             _world.RegisterSystem(new MovementSystem(islandGenerator, config != null ? config.inputBufferWindow : 0.15f));
@@ -120,8 +121,13 @@ namespace CLAYmore
                 }
 
                 if (chestSpawner    != null) chestSpawner.Init(islandGenerator, chestPool,
-                                                               config.chestSpawnInitialInterval, config.chestSpawnMinInterval);
-                if (modifierChoiceUI != null) modifierChoiceUI.Init(config.modifierPool, config.coinsOnSkip);
+                                                               config.chestFirstThreshold, config.chestThresholdMultiplier, config.chestThresholdAdditive);
+                if (modifierChoiceUI != null) modifierChoiceUI.Init(config.modifierPool, config.expandersOnSkip);
+                if (islandGenerator  != null)
+                {
+                    islandGenerator.expansionCostMultiplier = config.expansionCostMultiplier;
+                    islandGenerator.expansionCostAdditive   = config.expansionCostAdditive;
+                }
             }
 
             if (potSpawner != null)

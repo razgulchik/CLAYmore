@@ -3,27 +3,29 @@ using UnityEngine;
 
 namespace CLAYmore
 {
-    /// <summary>
-    /// MonoBehaviour facade over SpawnerSystem + SpawnerComponent.
-    /// Spawns chests on random walkable cells at a fixed (non-accelerating) interval.
-    /// </summary>
     public class ChestSpawner : MonoBehaviour
     {
-        [SerializeField] private float _initialInterval = 30f;
-        [SerializeField] private float _minInterval     = 20f;
-
         private IslandGenerator _islandGenerator;
         private PrefabPool      _chestPool;
-        private Entity          _entity;
-        private bool            _isGameOver;
+
+        private int   _firstThreshold;
+        private float _multiplier;
+        private int   _additive;
+
+        private int _coinsCollected;
+        private int _currentThreshold;
+
+        private bool _isGameOver;
 
         public void Init(IslandGenerator islandGenerator, PrefabPool chestPool,
-                         float initialInterval, float minInterval)
+                         int firstThreshold, float multiplier, int additive)
         {
             _islandGenerator  = islandGenerator;
             _chestPool        = chestPool;
-            _initialInterval  = initialInterval;
-            _minInterval      = minInterval;
+            _firstThreshold   = firstThreshold;
+            _multiplier       = multiplier;
+            _additive         = additive;
+            _currentThreshold = firstThreshold;
         }
 
         private void Start()
@@ -35,34 +37,37 @@ namespace CLAYmore
                 return;
             }
 
-            _entity = gameObject.AddComponent<Entity>();
-            _entity.Add(new SpawnerComponent
-            {
-                InitialInterval           = _initialInterval,
-                MinInterval               = _minInterval,
-                IntervalDecreasePerSecond = 0f,
-                CurrentInterval           = _initialInterval,
-                Timer                     = _initialInterval,
-            });
-
-            World.Current?.RegisterEntity(_entity);
-            World.Current?.Events.Subscribe<SpawnRequestedEvent>(OnSpawnRequested);
+            World.Current?.Events.Subscribe<CoinsAddedEvent>(OnCoinsAdded);
             World.Current?.Events.Subscribe<GameOverEvent>(OnGameOver);
+
+            Debug.Log($"[Chest] До первого сундука: {_currentThreshold} монет");
         }
 
         private void OnDestroy()
         {
-            World.Current?.Events.Unsubscribe<SpawnRequestedEvent>(OnSpawnRequested);
+            World.Current?.Events.Unsubscribe<CoinsAddedEvent>(OnCoinsAdded);
             World.Current?.Events.Unsubscribe<GameOverEvent>(OnGameOver);
         }
 
         private void OnGameOver(GameOverEvent e) => _isGameOver = true;
 
-        private void OnSpawnRequested(SpawnRequestedEvent evt)
+        private void OnCoinsAdded(CoinsAddedEvent e)
         {
-            if (evt.SpawnerEntity != _entity) return;
             if (_isGameOver) return;
-            SpawnChest();
+
+            _coinsCollected += e.Amount;
+
+            if (_coinsCollected >= _currentThreshold)
+            {
+                _coinsCollected -= _currentThreshold;
+                _currentThreshold = Mathf.RoundToInt(_currentThreshold * _multiplier) + _additive;
+                SpawnChest();
+                Debug.Log($"[Chest] Сундук! До следующего: {_currentThreshold - _coinsCollected} / {_currentThreshold}");
+            }
+            else
+            {
+                Debug.Log($"[Chest] До сундука: {_currentThreshold - _coinsCollected} / {_currentThreshold}");
+            }
         }
 
         private void SpawnChest()

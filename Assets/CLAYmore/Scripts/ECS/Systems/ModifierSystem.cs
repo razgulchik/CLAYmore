@@ -9,12 +9,12 @@ namespace CLAYmore
     public class ModifierSystem : ISystem
     {
         private World _world;
-        private EconomySystem _economy;
+        private ExpanderSystem _expanders;
 
         public void Initialize(World world)
         {
-            _world   = world;
-            _economy = world.GetSystem<EconomySystem>();
+            _world     = world;
+            _expanders = world.GetSystem<ExpanderSystem>();
             world.Events.Subscribe<ModifierChosenEvent>(OnModifierChosen);
             world.Events.Subscribe<ModifierSkippedEvent>(OnModifierSkipped);
         }
@@ -41,7 +41,7 @@ namespace CLAYmore
 
         private void OnModifierSkipped(ModifierSkippedEvent evt)
         {
-            _economy.Add(evt.CoinsGiven);
+            _expanders?.Add(evt.ExpandersGiven);
         }
 
         private Entity GetPlayerEntity() => _world.QueryFirst<PlayerStatsComponent>();

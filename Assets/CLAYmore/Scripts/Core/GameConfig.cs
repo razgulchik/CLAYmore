@@ -21,10 +21,20 @@ namespace CLAYmore
         [Min(0.1f)] public float burstSweepDuration = 1.5f;
 
         [Header("Chests")]
-        public float chestSpawnInitialInterval = 30f;
-        public float chestSpawnMinInterval     = 20f;
-        [Tooltip("Coins awarded to the player when skipping a modifier choice")]
-        public int coinsOnSkip = 5;
+        [Tooltip("Coins needed to spawn the first chest")]
+        public int chestFirstThreshold = 15;
+        [Tooltip("Multiplier applied to the threshold after each chest spawn")]
+        public float chestThresholdMultiplier = 1f;
+        [Tooltip("Flat coins added to the threshold after each chest spawn")]
+        public int chestThresholdAdditive = 5;
+        [Tooltip("Expanders awarded to the player when skipping a modifier choice")]
+        public int expandersOnSkip = 1;
+
+        [Header("Island Expansion")]
+        [Tooltip("Multiplier applied to expansion cost after each expansion")]
+        public float expansionCostMultiplier = 1f;
+        [Tooltip("Flat expanders added to expansion cost after each expansion")]
+        public int expansionCostAdditive = 1;
         public ModifierConfig[] modifierPool;
 
         [Header("Starting State")]

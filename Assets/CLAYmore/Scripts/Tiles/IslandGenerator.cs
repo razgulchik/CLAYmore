@@ -21,7 +21,8 @@ namespace CLAYmore
 
         [Header("Expansion Cost")]
         public int initialExpansionCost = 5;
-        [Min(1f)] public float expansionCostMultiplier = 1.5f;
+        [HideInInspector] public float expansionCostMultiplier = 1f;
+        [HideInInspector] public int   expansionCostAdditive   = 1;
         [Min(1)] public int expansionRowCount = 1;
 
         // Runtime state
@@ -89,7 +90,7 @@ namespace CLAYmore
         /// </summary>
         public bool CanExpand(Vector3 worldPos, Vector2Int direction)
             => IsBlockedByEdge(worldPos, direction)
-            && (economy == null || economy.Coins >= ExpansionCost);
+            && (economy == null || economy.Expanders >= ExpansionCost);
 
         /// <summary>Returns the world center of a random empty walkable cell with no player.
         /// If avoidPlayerNeighbours is true, also excludes the 4 orthogonal neighbours of the player.
@@ -339,9 +340,9 @@ namespace CLAYmore
         public bool TryExpand(Vector2Int dir)
         {
             int cost = GetDiscountedExpansionCost();
-            if (economy != null && !economy.TrySpend(cost))
+            if (economy != null && !economy.TrySpendExpanders(cost))
             {
-                Debug.Log($"IslandGenerator: cannot expand — need {cost} coins (have {economy.Coins}).");
+                Debug.Log($"IslandGenerator: cannot expand — need {cost} expanders (have {economy.Expanders}).");
                 return false;
             }
 
@@ -350,7 +351,7 @@ namespace CLAYmore
             else if (dir.y < 0) { _originCell.y -= expansionRowCount; _height += expansionRowCount; }
             else                { _height += expansionRowCount; }
 
-            _currentExpansionCost = Mathf.RoundToInt(_currentExpansionCost * expansionCostMultiplier);
+            _currentExpansionCost = Mathf.RoundToInt(_currentExpansionCost * expansionCostMultiplier) + expansionCostAdditive;
             RedrawAll();
             return true;
         }

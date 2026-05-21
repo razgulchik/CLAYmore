@@ -38,14 +38,14 @@ namespace CLAYmore
         private Vector2 _arrowDownOrigin;
 
         private ModifierConfig[]      _modifierPool;
-        private int                   _coinsOnSkip;
+        private int                   _expandersOnSkip;
         private List<ModifierConfig>  _offered = new();
         private PlayerModifiersComponent _modifiers;
 
-        public void Init(ModifierConfig[] modifierPool, int coinsOnSkip)
+        public void Init(ModifierConfig[] modifierPool, int expandersOnSkip)
         {
-            _modifierPool = modifierPool;
-            _coinsOnSkip  = coinsOnSkip;
+            _modifierPool    = modifierPool;
+            _expandersOnSkip = expandersOnSkip;
         }
 
         private void Awake()
@@ -190,10 +190,10 @@ namespace CLAYmore
 
             if (_offered.Count == 0)
             {
-                // Nothing to offer — give coins and skip automatically
+                // Nothing to offer — give expanders and skip automatically
                 World.Current?.Events.Publish(new ModifierSkippedEvent
                 {
-                    CoinsGiven = _coinsOnSkip,
+                    ExpandersGiven = _expandersOnSkip,
                 });
                 return;
             }
@@ -222,9 +222,9 @@ namespace CLAYmore
 
             // Skip button
             if (skipCoinsLabel != null)
-                skipCoinsLabel.text = _coinsOnSkip > 0 ? $"+{_coinsOnSkip}" : "Skip";
+                skipCoinsLabel.text = _expandersOnSkip > 0 ? $"+{_expandersOnSkip}" : "Skip";
             skipButton.onClick.RemoveAllListeners();
-            skipButton.onClick.AddListener(() => OnSkip(_coinsOnSkip));
+            skipButton.onClick.AddListener(() => OnSkip(_expandersOnSkip));
 
             panel.SetActive(true);
             _isOpen = true;
@@ -245,9 +245,9 @@ namespace CLAYmore
             Close();
         }
 
-        private void OnSkip(int coins)
+        private void OnSkip(int expanders)
         {
-            World.Current?.Events.Publish(new ModifierSkippedEvent { CoinsGiven = coins });
+            World.Current?.Events.Publish(new ModifierSkippedEvent { ExpandersGiven = expanders });
             Close();
         }
 
