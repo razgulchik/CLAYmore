@@ -29215,8 +29215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d648c2d8d8b7e84da190e7befb81da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialInterval: 30
-  _minInterval: 20
 --- !u!4 &2081798954
 Transform:
   m_ObjectHideFlags: 0
@@ -30542,6 +30540,10 @@ PrefabInstance:
     - target: {fileID: 7509860041863666883, guid: 326050a36c954d14b83e0b88139f4c91, type: 3}
       propertyPath: expansionRowCount
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7509860041863666883, guid: 326050a36c954d14b83e0b88139f4c91, type: 3}
+      propertyPath: initialExpansionCost
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
