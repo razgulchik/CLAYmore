@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33706aa759ffdbe408d2929e5f8689e4, type: 3}
+  m_Name: Burst wave 3a
+  m_EditorClassIdentifier: 
+  waveDuration: 7
+  spawnInterval: 4
+  minSpawnInterval: 0.9
+  spawnDecreasePerSecond: 0.12
+  fallDurationMultiplier: 1.3
+  targetedSpawnEveryMin: 15
+  targetedSpawnEveryMax: 20
+  potWeights:
+  - config: {fileID: 11400000, guid: 379fd2a7acec7af4590d2d5ca96c9e88, type: 2}
+    weight: 8
+  - config: {fileID: 11400000, guid: ab72deec00c5ee9428d3b838120894fe, type: 2}
+    weight: 2
+  rockSpawnChance: 0.01
+  useSimultaneousSpawn: 1
+  coveragePercent: 0.4
+  clearancePauseDuration: 1

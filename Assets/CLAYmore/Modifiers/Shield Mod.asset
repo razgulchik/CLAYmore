@@ -16,8 +16,8 @@ MonoBehaviour:
   description: Defend from 1 damage
   icon: {fileID: 21300000, guid: c87972df198024249b185f84d0c133bc, type: 3}
   maxLevel: 5
-  spawnWeight: 5
-  price: 15
+  spawnWeight: 2
+  price: 0
   priceMultiplier: 2
   baseCooldown: 10
   cooldownReductionPerLevel: 1

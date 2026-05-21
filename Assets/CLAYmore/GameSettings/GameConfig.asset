@@ -18,7 +18,27 @@ MonoBehaviour:
   inputBufferWindow: 0.25
   waves:
   - {fileID: 11400000, guid: bef5eb383858ffb47860cd1934f5baeb, type: 2}
-  - {fileID: 11400000, guid: 3b673221f4759a947ae3906350429f49, type: 2}
+  - {fileID: 11400000, guid: ff243089f2d598443a389353b5c94911, type: 2}
+  - {fileID: 11400000, guid: 2c18eba7fd8632c43b5229ef0e00b726, type: 2}
+  - {fileID: 11400000, guid: ee781a2209cfefe48b60b45e1c0c0833, type: 2}
+  - {fileID: 11400000, guid: 6ea146c660d0c104d9d619ceb0fd6056, type: 2}
+  - {fileID: 11400000, guid: 4b0c754097b664046832f4c2f7dc046f, type: 2}
+  - {fileID: 11400000, guid: 4035ea38a433a94439879c947dcb6821, type: 2}
+  - {fileID: 11400000, guid: 4a6618b5c57b9364cb4280b0caa19f1f, type: 2}
+  - {fileID: 11400000, guid: b63e7a2fb473e8b4ba135415399c6a29, type: 2}
+  - {fileID: 11400000, guid: d90a689b0008e1345b2b909d1cceea7d, type: 2}
+  - {fileID: 11400000, guid: c1e5ac2ce0103b5499bb165430754b05, type: 2}
+  - {fileID: 11400000, guid: 0e57448c5a95da4449cc55ed8dcd7a8d, type: 2}
+  - {fileID: 11400000, guid: ff46153e3c8db7d42a0d30bdce0a549e, type: 2}
+  - {fileID: 11400000, guid: ae0c6077200185c41b9155f24cbc4094, type: 2}
+  - {fileID: 11400000, guid: a359a823a35b3f641ab7b59074b9b3ef, type: 2}
+  - {fileID: 11400000, guid: ad605cd013139c14b9e30a988349d8d1, type: 2}
+  - {fileID: 11400000, guid: 539aa87b4c593014a897d1d2ecf1b9a9, type: 2}
+  - {fileID: 11400000, guid: 9565fefcda789f44d887f46f837e8759, type: 2}
+  - {fileID: 11400000, guid: f4bd8597967e5564690f98ab78579be0, type: 2}
+  - {fileID: 11400000, guid: e6a15893d98d122489d5aae3d83ce82c, type: 2}
+  - {fileID: 11400000, guid: 96bca7d005ad0234db4984cfc2df5229, type: 2}
+  - {fileID: 11400000, guid: 03fa612f69c8c2f428f6a276eea92ec7, type: 2}
   burstSweepDuration: 1.5
   chestSpawnInitialInterval: 20
   chestSpawnMinInterval: 20
@@ -27,7 +47,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aab9f71d8a006c24a993ffbdb14b8eb8, type: 2}
   - {fileID: 11400000, guid: 9534ea2a1b7327d47b832e471b6a6d97, type: 2}
   - {fileID: 11400000, guid: b7649a2d85948eb49a1ef800184349e5, type: 2}
-  - {fileID: 11400000, guid: 1e98175978fb2a044b162bb4fa28eca4, type: 2}
   - {fileID: 11400000, guid: 7394d3ec4a4828c4abe35d1aac144309, type: 2}
   - {fileID: 11400000, guid: bed6cefaed1ae2046865c5778b5fa3de, type: 2}
   - {fileID: 11400000, guid: 7a414bc2b8904274ca73e61da16fed6f, type: 2}
@@ -39,8 +58,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f10430dc6579ed742b470c25b0697d4d, type: 2}
   - {fileID: 11400000, guid: d37d19f6ce08de946b05fa67862c3521, type: 2}
   startingCoins: 0
-  startingModifiers:
-  - {fileID: 11400000, guid: b7649a2d85948eb49a1ef800184349e5, type: 2}
+  startingModifiers: []
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20
