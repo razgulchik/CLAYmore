@@ -13,6 +13,7 @@ namespace CLAYmore
         public LeaderboardUI       leaderboardUI;
         public SessionTimerUI        sessionTimerUI;
         public WaveAnnouncementUI    waveAnnouncementUI;
+        public WaveCountdownUI       waveCountdownUI;
 
         private void Awake()
         {
@@ -24,6 +25,7 @@ namespace CLAYmore
             if (leaderboardUI       != null) leaderboardUI.gameObject.SetActive(true);
             if (sessionTimerUI       != null) sessionTimerUI.gameObject.SetActive(true);
             if (waveAnnouncementUI   != null) waveAnnouncementUI.gameObject.SetActive(true);
+            if (waveCountdownUI      != null) waveCountdownUI.gameObject.SetActive(true);
         }
     }
 }
