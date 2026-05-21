@@ -1,15 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
 namespace CLAYmore
 {
-    /// <summary>
-    /// One card in the modifier choice panel.
-    /// Assign icon, name label, description label, and level label in the inspector.
-    /// </summary>
-    public class ModifierCardUI : MonoBehaviour
+    public class ModifierCardUI : MonoBehaviour, IPointerClickHandler
     {
         public Image            iconImage;
         public TextMeshProUGUI  nameLabel;
@@ -34,6 +31,12 @@ namespace CLAYmore
             button.interactable = canAfford;
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onChosen(modifier));
+        }
+
+        public void OnPointerClick(PointerEventData _)
+        {
+            if (button != null && button.interactable)
+                button.onClick.Invoke();
         }
     }
 }

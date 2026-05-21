@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d8c8277ace3ab804c9d7ed2f7746e05c
+guid: ed0ef582d6673ad4bb0a76924eb5344e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5485372057811827380
-    second: fire_blaze_01_0
+      213: -182117189514180517
+    second: card_mod_01_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fire_blaze_01_0
+      name: card_mod_01_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 16
+        width: 43
+        height: 70
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c45c5491d2b00e3b0800000000000000
-      internalID: -5485372057811827380
+      spriteID: b58c38b816df87df0800000000000000
+      internalID: -182117189514180517
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      fire_blaze_01_0: -5485372057811827380
+      card_mod_01_0: -182117189514180517
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
