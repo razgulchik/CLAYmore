@@ -16,6 +16,6 @@ MonoBehaviour:
   description: On landing, hit all cells in radius 1.
   icon: {fileID: 21300000, guid: a8f099171b75e0d4f8c374bbe980951d, type: 3}
   maxLevel: 10
-  spawnWeight: 5
-  price: 45
+  spawnWeight: 1
+  price: 0
   priceMultiplier: 1.5
