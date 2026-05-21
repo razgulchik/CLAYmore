@@ -12651,10 +12651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c598ec71457749840a84dfc33c989409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startupPotConfigs:
-  - {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
-  - {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
-  - {fileID: 11400000, guid: 5bbbd7fd231223944bf83b54c462a766, type: 2}
+  startupPotConfigs: []
   potConfigs:
   - {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
   - {fileID: 11400000, guid: 212938ce5d4291344a195b99b2917c31, type: 2}
