@@ -24,6 +24,8 @@ namespace CLAYmore
         private readonly System.Collections.Generic.Dictionary<Vector2Int, Vector3> _ballLightnings = new();
         private World        _world;
         private DamageSystem _damageSystem;
+        private bool         _shockwavePending;
+        private Vector2Int   _pendingShockwaveDir;
 
         public AbilitySystem(IslandGenerator island)
         {
@@ -140,17 +142,6 @@ namespace CLAYmore
                 }
             }
 
-            // ── Shockwave ─────────────────────────────────────────────────────
-            if (stats.HasShockwave)
-            {
-                stats.ShockwaveStepCount++;
-                if (stats.ShockwaveStepCount >= stats.ShockwaveStepsRequired)
-                {
-                    stats.ShockwaveStepCount = 0;
-                    TriggerShockwave(evt);
-                }
-            }
-
             // ── Ball lightning — player steps onto cell ───────────────────────
             _world.Events.Publish(new CellStrikeEvent { Cell = evt.NewIndex });
         }
@@ -173,17 +164,12 @@ namespace CLAYmore
             _world.Events.Publish(new LightningStrikeEvent { Target = target, WorldPosition = worldPos });
         }
 
-        private void TriggerShockwave(PlayerTileChangedEvent evt)
+        private void TriggerShockwave(Vector2Int fromCell, Vector2Int dir)
         {
-            Vector2Int move = evt.NewIndex - evt.OldIndex;
-            Vector2Int dir  = new Vector2Int(
-                move.x != 0 ? (int)Mathf.Sign(move.x) : 0,
-                move.y != 0 ? (int)Mathf.Sign(move.y) : 0);
-
             if (dir == Vector2Int.zero) return;
 
             var waveCells    = new System.Collections.Generic.List<Vector3Int>();
-            Vector3Int probe = new Vector3Int(evt.NewIndex.x, evt.NewIndex.y, 0);
+            Vector3Int probe = new Vector3Int(fromCell.x, fromCell.y, 0);
 
             while (!_island.IsBlockedByEdge(_island.GetCellCenter(probe), dir))
             {
@@ -301,7 +287,12 @@ namespace CLAYmore
                 TriggerBallLightningExplosion(evt.Cell, worldPos);
         }
 
-        private void OnPlayerLanded(PlayerLandedEvent evt) { }
+        private void OnPlayerLanded(PlayerLandedEvent evt)
+        {
+            if (!_shockwavePending) return;
+            _shockwavePending = false;
+            TriggerShockwave(evt.Cell, _pendingShockwaveDir);
+        }
 
         private void OnPlayerMoveResult(PlayerMoveResultEvent evt)
         {
@@ -310,6 +301,17 @@ namespace CLAYmore
             Entity player = GetPlayerEntity();
             if (player == null) return;
             var stats = player.Get<PlayerStatsComponent>();
+
+            if (stats.HasShockwave)
+            {
+                stats.ShockwaveStepCount++;
+                if (stats.ShockwaveStepCount >= stats.ShockwaveStepsRequired)
+                {
+                    stats.ShockwaveStepCount = 0;
+                    _shockwavePending        = true;
+                    _pendingShockwaveDir     = evt.Direction;
+                }
+            }
 
             if (!stats.HasWhirlwind && !stats.HasFireBlaze) return;
 
