@@ -125,12 +125,14 @@ namespace CLAYmore
             foreach (var key in _walkableCells)
             {
                 if (_tiles.TryGetValue(key, out TileData tile)
-                    && tile.State == CellState.Empty
-                    && !tile.HasPlayer)
+                    && tile.State == CellState.Empty)
                     result.Add(tilemap.GetCellCenterWorld(new Vector3Int(key.x, key.y, 0)));
             }
             return result;
         }
+
+        /// <summary>Total number of walkable cells on the island (regardless of occupancy).</summary>
+        public int TotalCellsCount => _walkableCells.Count;
 
         /// <summary>Current cost to expand the island by one tile in any direction, after player discounts.</summary>
         public int ExpansionCost => GetDiscountedExpansionCost();

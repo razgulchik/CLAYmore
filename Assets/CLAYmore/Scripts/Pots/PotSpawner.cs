@@ -198,7 +198,7 @@ namespace CLAYmore
         {
             List<Vector3> freeCells = _islandGenerator.GetFreeWalkableCellCenters();
 
-            int n = Mathf.RoundToInt(freeCells.Count * wave.coveragePercent);
+            int n = Mathf.RoundToInt(_islandGenerator.TotalCellsCount * wave.coveragePercent);
             n = Mathf.Min(n, freeCells.Count);
 
             if (n <= 0) yield break;
