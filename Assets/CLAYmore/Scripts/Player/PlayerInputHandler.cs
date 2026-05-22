@@ -1,6 +1,8 @@
 using Claymore;
 using CLAYmore.ECS;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -34,10 +36,12 @@ namespace CLAYmore
             _inputActions.UI.Restart.performed  += HandleRestart;
             _inputActions.UI.Journal.performed  += HandleJournal;
             _inputActions.UI.Quit.performed     += HandleQuit;
+            _inputActions.UI.Pause.performed    += HandlePause;
 
             World.Current?.Events.Subscribe<ChestActivatedEvent>(OnChestActivated);
             World.Current?.Events.Subscribe<ModifierChosenEvent>(OnModifierChosen);
             World.Current?.Events.Subscribe<ModifierSkippedEvent>(OnModifierSkipped);
+            World.Current?.Events.Subscribe<TextInputActiveEvent>(OnTextInputActive);
         }
 
         private void OnDisable()
@@ -49,11 +53,13 @@ namespace CLAYmore
             _inputActions.UI.Restart.performed  -= HandleRestart;
             _inputActions.UI.Journal.performed  -= HandleJournal;
             _inputActions.UI.Quit.performed     -= HandleQuit;
+            _inputActions.UI.Pause.performed    -= HandlePause;
             _inputActions.UI.Disable();
 
             World.Current?.Events.Unsubscribe<ChestActivatedEvent>(OnChestActivated);
             World.Current?.Events.Unsubscribe<ModifierChosenEvent>(OnModifierChosen);
             World.Current?.Events.Unsubscribe<ModifierSkippedEvent>(OnModifierSkipped);
+            World.Current?.Events.Unsubscribe<TextInputActiveEvent>(OnTextInputActive);
 
             if (_inUIMode)
             {
@@ -106,6 +112,19 @@ namespace CLAYmore
         private void HandleQuit(InputAction.CallbackContext context)
         {
             Application.Quit();
+        }
+
+        private void HandlePause(InputAction.CallbackContext _)
+        {
+            PauseManager.Instance.ToggleUserPause();
+        }
+
+        private void OnTextInputActive(TextInputActiveEvent e)
+        {
+            if (e.IsActive)
+                _inputActions.UI.Disable();
+            else
+                _inputActions.UI.Enable();
         }
 
         private void HandleMoveStarted(InputAction.CallbackContext context)

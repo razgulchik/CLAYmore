@@ -7,12 +7,28 @@ namespace CLAYmore
     {
         public static readonly PauseManager Instance = new();
 
-        private int _count;
+        private int  _count;
+        private bool _userPaused;
 
         public void Reset()
         {
-            _count = 0;
+            _count      = 0;
+            _userPaused = false;
             Time.timeScale = 1f;
+        }
+
+        public void ToggleUserPause()
+        {
+            if (_userPaused)
+            {
+                _userPaused = false;
+                Pop();
+            }
+            else
+            {
+                _userPaused = true;
+                Push();
+            }
         }
 
         public void Push()

@@ -693,6 +693,15 @@ namespace Claymore
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3f7c2b1-d4e5-4f6a-8b9c-0d1e2f3a4b5c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1128,7 +1137,7 @@ namespace Claymore
                 {
                     ""name"": """",
                     ""id"": ""beec3ecd-d5d8-4826-878d-e695a9ba88e9"",
-                    ""path"": ""<Keyboard>/i"",
+                    ""path"": ""<Keyboard>/j"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -1155,6 +1164,17 @@ namespace Claymore
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b4e8d3c2-e5f6-4a7b-9c0d-1e2f3a4b5c6d"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1251,6 +1271,7 @@ namespace Claymore
             m_UI_Journal = m_UI.FindAction("Journal", throwIfNotFound: true);
             m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
             m_UI_Quit = m_UI.FindAction("Quit", throwIfNotFound: true);
+            m_UI_Pause = m_UI.FindAction("Pause", throwIfNotFound: true);
         }
 
         ~@InputSystem_Actions()
@@ -1530,6 +1551,7 @@ namespace Claymore
         private readonly InputAction m_UI_Journal;
         private readonly InputAction m_UI_Back;
         private readonly InputAction m_UI_Quit;
+        private readonly InputAction m_UI_Pause;
         /// <summary>
         /// Provides access to input actions defined in input action map "UI".
         /// </summary>
@@ -1598,6 +1620,10 @@ namespace Claymore
             /// </summary>
             public InputAction @Quit => m_Wrapper.m_UI_Quit;
             /// <summary>
+            /// Provides access to the underlying input action "UI/Pause".
+            /// </summary>
+            public InputAction @Pause => m_Wrapper.m_UI_Pause;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -1665,6 +1691,9 @@ namespace Claymore
                 @Quit.started += instance.OnQuit;
                 @Quit.performed += instance.OnQuit;
                 @Quit.canceled += instance.OnQuit;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
 
             /// <summary>
@@ -1718,6 +1747,9 @@ namespace Claymore
                 @Quit.started -= instance.OnQuit;
                 @Quit.performed -= instance.OnQuit;
                 @Quit.canceled -= instance.OnQuit;
+                @Pause.started -= instance.OnPause;
+                @Pause.performed -= instance.OnPause;
+                @Pause.canceled -= instance.OnPause;
             }
 
             /// <summary>
@@ -1992,6 +2024,13 @@ namespace Claymore
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnQuit(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPause(InputAction.CallbackContext context);
         }
     }
 }

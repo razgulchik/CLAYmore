@@ -71,6 +71,7 @@ namespace CLAYmore
 
         public void Show()
         {
+            PauseManager.Instance.Push();
             panel.SetActive(true);
             ClearRows();
             StartCoroutine(WaitAndDisplay());
@@ -78,6 +79,7 @@ namespace CLAYmore
 
         public void Hide()
         {
+            PauseManager.Instance.Pop();
             StopAllCoroutines();
             panel.SetActive(false);
             if (renamePanel != null) renamePanel.SetActive(false);
@@ -92,11 +94,13 @@ namespace CLAYmore
                 nameInput.text = PlayerPrefs.GetString("player_name", "");
             if (nameStatusLabel != null) nameStatusLabel.text = "";
             renamePanel.SetActive(true);
+            World.Current?.Events.Publish(new TextInputActiveEvent { IsActive = true });
         }
 
         public void OnCancelRenameClicked()
         {
             if (renamePanel != null) renamePanel.SetActive(false);
+            World.Current?.Events.Publish(new TextInputActiveEvent { IsActive = false });
         }
 
         public async void OnConfirmNameClicked()
@@ -121,6 +125,7 @@ namespace CLAYmore
             PlayerPrefs.SetInt("name_changed", 1);
             if (confirmNameButton != null) confirmNameButton.interactable = true;
             if (renamePanel != null) renamePanel.SetActive(false);
+            World.Current?.Events.Publish(new TextInputActiveEvent { IsActive = false });
         }
 
         private bool CanRename() => debugAllowRename || PlayerPrefs.GetInt("name_changed", 0) == 0;
