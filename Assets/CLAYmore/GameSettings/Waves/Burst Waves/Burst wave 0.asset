@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33706aa759ffdbe408d2929e5f8689e4, type: 3}
   m_Name: Burst wave 0
   m_EditorClassIdentifier: 
+  useSimultaneousSpawn: 1
   waveDuration: 10
   spawnInterval: 4
   minSpawnInterval: 0.9
@@ -23,6 +24,7 @@ MonoBehaviour:
   - config: {fileID: 11400000, guid: e4306fe89c7eff5438146fdb6404a2ac, type: 2}
     weight: 10
   rockSpawnChance: 0
-  useSimultaneousSpawn: 1
   coveragePercent: 0.2
   clearancePauseDuration: 1
+  minSpawnCount: 0
+  maxSpawnCount: 0

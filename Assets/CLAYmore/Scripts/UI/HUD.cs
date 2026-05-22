@@ -7,6 +7,7 @@ namespace CLAYmore
         [Header("Containers")]
         public HeartContainer      heartContainer;
         public CoinContainer       coinContainer;
+        public ExpanderContainer   expanderContainer;
         public ModifierChoiceUI    modifierChoiceUI;
         public IslandEdgeIndicator islandEdgeIndicator;
         public JournalUI           journalUI;
@@ -19,6 +20,7 @@ namespace CLAYmore
         {
             if (heartContainer      != null) heartContainer.gameObject.SetActive(true);
             if (coinContainer       != null) coinContainer.gameObject.SetActive(true);
+            if (expanderContainer   != null) expanderContainer.gameObject.SetActive(true);
             if (modifierChoiceUI    != null) modifierChoiceUI.gameObject.SetActive(true);
             if (islandEdgeIndicator != null) islandEdgeIndicator.gameObject.SetActive(true);
             if (journalUI           != null) journalUI.gameObject.SetActive(true);

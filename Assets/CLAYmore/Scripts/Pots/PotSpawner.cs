@@ -43,6 +43,7 @@ namespace CLAYmore
         private bool        _isGameOver;
 
         private WaveConfig  _currentWave;
+        private int         _waveSpawnCount;
         private float       _fallDurationMultiplier = 1f;
         private PotConfig[] _potOnlyConfigs;
         private PotConfig[] _rockOnlyConfigs;
@@ -117,6 +118,7 @@ namespace CLAYmore
 
         private void OnWaveChanged(WaveChangedEvent evt)
         {
+            _waveSpawnCount         = 0;
             _currentWave            = evt.Config;
             _fallDurationMultiplier = evt.Config.fallDurationMultiplier;
             targetedSpawnEveryMin   = evt.Config.targetedSpawnEveryMin;
@@ -144,6 +146,15 @@ namespace CLAYmore
                 Debug.Log($"[PotSpawner] Wave {evt.WaveIndex}: interval={evt.Config.spawnInterval:F2}s, " +
                           $"fall×{evt.Config.fallDurationMultiplier:F2}, " +
                           $"rockChance={evt.Config.rockSpawnChance:P0}");
+
+                if (evt.Config.minSpawnCount > 0)
+                {
+                    int preSpawn = evt.Config.maxSpawnCount > 0
+                        ? Mathf.Min(evt.Config.minSpawnCount, evt.Config.maxSpawnCount)
+                        : evt.Config.minSpawnCount;
+                    for (int i = 0; i < preSpawn; i++)
+                        SpawnPot();
+                }
             }
         }
 
@@ -199,6 +210,8 @@ namespace CLAYmore
             List<Vector3> freeCells = _islandGenerator.GetFreeWalkableCellCenters();
 
             int n = Mathf.RoundToInt(_islandGenerator.TotalCellsCount * wave.coveragePercent);
+            if (wave.minSpawnCount > 0) n = Mathf.Max(n, wave.minSpawnCount);
+            if (wave.maxSpawnCount > 0) n = Mathf.Min(n, wave.maxSpawnCount);
             n = Mathf.Min(n, freeCells.Count);
 
             if (n <= 0) yield break;
@@ -337,6 +350,7 @@ namespace CLAYmore
         {
             if (_potPool == null || potConfigs == null || potConfigs.Length == 0) return;
             if (_islandGenerator == null || _playerMovement == null) return;
+            if (_currentWave != null && _currentWave.maxSpawnCount > 0 && _waveSpawnCount >= _currentWave.maxSpawnCount) return;
 
             _spawnCount++;
             bool isTargeted = _spawnCount == _nextTargetedAt;
@@ -359,6 +373,7 @@ namespace CLAYmore
                 GameObject hearthGO = _hearthPool.Get(hearthLandPos);
                 if (hearthGO.TryGetComponent<HearthPickup>(out HearthPickup pickup))
                     pickup.Initialize(hearthLandPos, _islandGenerator, _hearthPool);
+                _waveSpawnCount++;
                 return;
             }
 
@@ -412,6 +427,7 @@ namespace CLAYmore
                            _economy,
                            _islandGenerator, _potPool, _shadowPool, _coinPool, _shardsPool,
                            _fallDurationMultiplier);
+            _waveSpawnCount++;
         }
     }
 }

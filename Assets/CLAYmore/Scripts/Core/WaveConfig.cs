@@ -17,6 +17,8 @@ namespace CLAYmore
     [CreateAssetMenu(fileName = "WaveConfig", menuName = "CLAYmore/Wave Config")]
     public class WaveConfig : ScriptableObject
     {
+        [Tooltip("Spawn all wave pots at once in a left-to-right sweep instead of gradually")]
+        public bool useSimultaneousSpawn = false;
         [Tooltip("Duration of this wave in seconds. 0 = no time limit (use for the last wave).")]
         public float waveDuration = 30f;
 
@@ -47,11 +49,15 @@ namespace CLAYmore
         [Range(0f, 1f)] public float rockSpawnChance = 0f;
 
         [Header("Simultaneous Spawn")]
-        [Tooltip("Spawn all wave pots at once in a left-to-right sweep instead of gradually")]
-        public bool useSimultaneousSpawn = false;
         [Tooltip("Fraction of free island cells to cover with pots (0-1)")]
         [Range(0f, 1f)] public float coveragePercent = 0.3f;
         [Tooltip("Pause (seconds) before next wave when player clears all non-rock pots")]
         [Min(0f)] public float clearancePauseDuration = 3f;
+
+        [Header("Spawn Count Limits")]
+        [Tooltip("Minimum pots spawned this wave. Burst: floor on coverage count. Gradual: pre-spawned immediately at wave start. 0 = disabled.")]
+        [Min(0)] public int minSpawnCount = 0;
+        [Tooltip("Maximum pots spawned this wave. Burst: ceiling on coverage count. Gradual: hard stop after N pots. 0 = disabled.")]
+        [Min(0)] public int maxSpawnCount = 0;
     }
 }
