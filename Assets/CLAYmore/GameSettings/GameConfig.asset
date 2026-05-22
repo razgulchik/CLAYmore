@@ -61,7 +61,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9b0df5708f53b22429cbf662f6845b98, type: 2}
   - {fileID: 11400000, guid: 03fa612f69c8c2f428f6a276eea92ec7, type: 2}
   burstSweepDuration: 1.5
-  chestFirstThreshold: 2
+  chestFirstThreshold: 5
   chestThresholdMultiplier: 1
   chestThresholdAdditive: 5
   expandersOnSkip: 5

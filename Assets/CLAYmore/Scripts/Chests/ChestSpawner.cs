@@ -40,6 +40,7 @@ namespace CLAYmore
             World.Current?.Events.Subscribe<CoinsAddedEvent>(OnCoinsAdded);
             World.Current?.Events.Subscribe<GameOverEvent>(OnGameOver);
 
+            World.Current?.Events.Publish(new ChestProgressEvent { CoinsCollected = 0, Threshold = _currentThreshold });
             Debug.Log($"[Chest] До первого сундука: {_currentThreshold} монет");
         }
 
@@ -62,10 +63,12 @@ namespace CLAYmore
                 _coinsCollected -= _currentThreshold;
                 _currentThreshold = Mathf.RoundToInt(_currentThreshold * _multiplier) + _additive;
                 SpawnChest();
+                World.Current?.Events.Publish(new ChestProgressEvent { CoinsCollected = _coinsCollected, Threshold = _currentThreshold });
                 Debug.Log($"[Chest] Сундук! До следующего: {_currentThreshold - _coinsCollected} / {_currentThreshold}");
             }
             else
             {
+                World.Current?.Events.Publish(new ChestProgressEvent { CoinsCollected = _coinsCollected, Threshold = _currentThreshold });
                 Debug.Log($"[Chest] До сундука: {_currentThreshold - _coinsCollected} / {_currentThreshold}");
             }
         }

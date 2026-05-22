@@ -12,6 +12,9 @@ namespace CLAYmore
     /// </summary>
     public class WaveAnnouncementUI : MonoBehaviour
     {
+        [Tooltip("Uncheck to suppress all wave announcements")]
+        public bool announceWaves = true;
+
         public TextMeshProUGUI label;
 
         [Header("Scale In")]
@@ -49,7 +52,7 @@ namespace CLAYmore
 
         private void OnWaveChanged(WaveChangedEvent evt)
         {
-            if (label == null) return;
+            if (!announceWaves || label == null) return;
 
             label.text = $"Wave {evt.WaveIndex + 1}";
 
