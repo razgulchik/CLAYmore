@@ -15,8 +15,10 @@ MonoBehaviour:
   displayName: Fire Trail
   description: 
   icon: {fileID: 21300000, guid: 380aa0d32fca6ef4fb06f5efb7795996, type: 3}
-  maxLevel: 3
+  maxLevel: 5
   spawnWeight: 1
   price: 0
   priceMultiplier: 1.5
-  damagePerLevel: 1
+  damage: 1
+  baseLifetime: 10
+  lifetimePerLevel: 2

@@ -50,6 +50,7 @@ namespace CLAYmore
 
         public void Tick(float deltaTime)
         {
+            if (deltaTime <= 0f) return;
             Entity player = GetPlayerEntity();
             if (player == null) return;
 
@@ -129,8 +130,8 @@ namespace CLAYmore
                     _burningCells.Add(new BurningCell
                     {
                         Cell           = evt.OldIndex,
-                        Damage         = stats.FireTrailDamage,
-                        TimeRemaining  = 10f,
+                        Damage        = stats.FireTrailDamage,
+                        TimeRemaining = stats.FireTrailLifetime,
                         DamageCooldown = 1f,
                     });
 
@@ -138,6 +139,7 @@ namespace CLAYmore
                     {
                         WorldPosition = _island.GetCellCenter(new Vector3Int(evt.OldIndex.x, evt.OldIndex.y, 0)),
                         Cell          = evt.OldIndex,
+                        Lifetime      = stats.FireTrailLifetime,
                     });
                 }
             }

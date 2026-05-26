@@ -6,5 +6,6 @@ namespace CLAYmore.ECS
     {
         public Vector3    WorldPosition;
         public Vector2Int Cell;
+        public float      Lifetime;
     }
 }

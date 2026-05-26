@@ -7,7 +7,6 @@ namespace CLAYmore
     public class FireTrailVFXController : MonoBehaviour
     {
         [SerializeField] private PrefabPool firePool;
-        [SerializeField] private float      burnDuration = 10f;
 
         private void OnEnable()
             => World.Current?.Events.Subscribe<FireTrailEvent>(OnFireTrail);
@@ -19,12 +18,12 @@ namespace CLAYmore
         {
             if (firePool == null) return;
             GameObject vfx = firePool.Get(evt.WorldPosition);
-            StartCoroutine(ReturnAfterBurn(vfx));
+            StartCoroutine(ReturnAfterBurn(vfx, evt.Lifetime));
         }
 
-        private IEnumerator ReturnAfterBurn(GameObject vfx)
+        private IEnumerator ReturnAfterBurn(GameObject vfx, float duration)
         {
-            yield return new WaitForSeconds(burnDuration);
+            yield return new WaitForSeconds(duration);
             firePool.Return(vfx);
         }
     }
