@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ccdcb3c87bb0764fa173215f44e72db, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  playerMaxHp: 1
+  playerMaxHp: 5
   moveTime: 0.4
   bounceReturnTime: 0.2
   inputBufferWindow: 0.25
@@ -82,8 +82,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f10430dc6579ed742b470c25b0697d4d, type: 2}
   - {fileID: 11400000, guid: d37d19f6ce08de946b05fa67862c3521, type: 2}
   startingCoins: 0
-  startingModifiers:
-  - {fileID: 11400000, guid: f10430dc6579ed742b470c25b0697d4d, type: 2}
+  startingModifiers: []
   pointsPerSecond: 5
   pointsPerPot: 10
   pointsPerModifier: 20

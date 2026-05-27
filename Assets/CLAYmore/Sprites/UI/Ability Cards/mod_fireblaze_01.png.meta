@@ -1,10 +1,7 @@
 fileFormatVersion: 2
 guid: 35e59c5e8bf454d45bade505ef8bb28e
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 7161521309129849401
-    second: mod_fireblaze_01_0
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mod_fireblaze_01_0
+      name: mod_dash_01_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +138,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 93a3312ffa5d26360800000000000000
-      internalID: 7161521309129849401
+      spriteID: d2f650e6bcf84dcb0800000000000000
+      internalID: -4840085595629457619
       vertices: []
       indices: 
       edges: []
@@ -161,7 +158,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      mod_fireblaze_01_0: 7161521309129849401
+      mod_dash_01_0: -4840085595629457619
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

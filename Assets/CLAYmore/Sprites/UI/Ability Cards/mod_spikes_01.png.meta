@@ -1,10 +1,7 @@
 fileFormatVersion: 2
 guid: 83f37b3836b2fce4cb6b0bc6411582dc
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 2303337422122377850
-    second: mod_spikes_01_0
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mod_spikes_01_0
+      name: mod_dash_01_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +138,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a72e77b8e2917ff10800000000000000
-      internalID: 2303337422122377850
+      spriteID: d2f650e6bcf84dcb0800000000000000
+      internalID: -4840085595629457619
       vertices: []
       indices: 
       edges: []
@@ -161,7 +158,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      mod_spikes_01_0: 2303337422122377850
+      mod_dash_01_0: -4840085595629457619
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

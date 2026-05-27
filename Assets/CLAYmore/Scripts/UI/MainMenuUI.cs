@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace CLAYmore
 {
@@ -9,15 +8,9 @@ namespace CLAYmore
     /// </summary>
     public class MainMenuUI : MonoBehaviour
     {
-        [Tooltip("Exact name of the game scene to load")]
-        public string gameSceneName = "SampleScene";
-
         public CreditsUI creditsUI;
 
-        public void OnPlayClicked()
-        {
-            SceneManager.LoadScene(gameSceneName);
-        }
+        public void OnPlayClicked() => SceneLoader.LoadGame();
 
         public void OnCreditsClicked()
         {

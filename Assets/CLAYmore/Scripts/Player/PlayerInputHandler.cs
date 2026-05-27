@@ -4,22 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 namespace CLAYmore
 {
     public class PlayerInputHandler : MonoBehaviour
     {
         private InputSystem_Actions _inputActions;
-        private bool _restartPending;
         private bool _inUIMode;
         private Vector2Int _lastMoveDirection;
-
-        private void Update()
-        {
-            if (_restartPending)
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
 
         private void Awake()
         {
@@ -99,10 +91,7 @@ namespace CLAYmore
 
         // ── Input handlers ────────────────────────────────────────────────────
 
-        private void HandleRestart(InputAction.CallbackContext context)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+        private void HandleRestart(InputAction.CallbackContext context) => SceneLoader.Restart();
 
         private void HandleJournal(InputAction.CallbackContext context)
         {

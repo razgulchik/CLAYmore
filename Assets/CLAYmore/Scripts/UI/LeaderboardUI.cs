@@ -34,6 +34,10 @@ namespace CLAYmore
         public GameObject victoryTitle;
         public GameObject defeatTitle;
 
+        [Header("Buttons")]
+        public Button restartButton;
+        public Button mainMenuButton;
+
         [Header("Rename Panel")]
         [SerializeField] private bool debugAllowRename;
         public GameObject      renamePanel;
@@ -48,7 +52,9 @@ namespace CLAYmore
         private void Awake()
         {
             panel.SetActive(false);
-            if (renamePanel != null) renamePanel.SetActive(false);
+            if (renamePanel    != null) renamePanel.SetActive(false);
+            if (restartButton  != null) restartButton.onClick.AddListener(SceneLoader.Restart);
+            if (mainMenuButton != null) mainMenuButton.onClick.AddListener(SceneLoader.LoadMainMenu);
         }
 
         private void OnEnable()

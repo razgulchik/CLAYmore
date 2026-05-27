@@ -13,13 +13,10 @@ namespace CLAYmore
         [Header("UI References")]
         public GameObject panel;
         public ModifierCardUI[] cards;
-        public Button skipButton;
+        public GameObject skipButton;
         public TextMeshProUGUI skipCoinsLabel;
 
         [Header("Arrow Indicators")]
-        public Image arrowLeft;
-        public Image arrowUp;
-        public Image arrowRight;
         public Image arrowDown;
 
         [Header("Category Backgrounds")]
@@ -35,14 +32,11 @@ namespace CLAYmore
         private Coroutine _holdCoroutine;
         private bool      _isOpen;
 
-        private Vector2 _arrowLeftOrigin;
-        private Vector2 _arrowUpOrigin;
-        private Vector2 _arrowRightOrigin;
         private Vector2 _arrowDownOrigin;
 
-        private ModifierConfig[]      _modifierPool;
-        private int                   _expandersOnSkip;
-        private List<ModifierConfig>  _offered = new();
+        private ModifierConfig[]         _modifierPool;
+        private int                      _expandersOnSkip;
+        private List<ModifierConfig>     _offered = new();
         private PlayerModifiersComponent _modifiers;
 
         public void Init(ModifierConfig[] modifierPool, int expandersOnSkip)
@@ -54,10 +48,7 @@ namespace CLAYmore
         private void Awake()
         {
             panel.SetActive(false);
-            if (arrowLeft  != null) _arrowLeftOrigin  = arrowLeft.rectTransform.anchoredPosition;
-            if (arrowUp    != null) _arrowUpOrigin    = arrowUp.rectTransform.anchoredPosition;
-            if (arrowRight != null) _arrowRightOrigin = arrowRight.rectTransform.anchoredPosition;
-            if (arrowDown  != null) _arrowDownOrigin  = arrowDown.rectTransform.anchoredPosition;
+            if (arrowDown != null) _arrowDownOrigin = arrowDown.rectTransform.anchoredPosition;
         }
 
         private void OnEnable()
@@ -81,36 +72,26 @@ namespace CLAYmore
             StopPending();
 
             var dir = evt.Direction;
-            System.Action action = null;
-            Image         arrow  = null;
 
             if (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
             {
-                action = () => cards[0].Select();
-                arrow  = arrowLeft;
+                cards[0].StartHold(() => cards[0].Select());
             }
             else if (dir == new Vector2Int(0, 1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
             {
-                action = () => cards[1].Select();
-                arrow  = arrowUp;
+                cards[1].StartHold(() => cards[1].Select());
             }
             else if (dir == new Vector2Int(1, 0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
             {
-                action = () => cards[2].Select();
-                arrow  = arrowRight;
+                cards[2].StartHold(() => cards[2].Select());
             }
             else if (dir == new Vector2Int(0, -1))
             {
-                action = () => skipButton.onClick.Invoke();
-                arrow  = arrowDown;
+                _holdCoroutine = StartCoroutine(HoldAndSkip());
+                if (arrowDown != null)
+                    arrowDown.transform.DOScale(PulseMax, Mathf.PI / PulseSpeed)
+                        .SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetUpdate(true);
             }
-
-            if (action == null) return;
-
-            _holdCoroutine = StartCoroutine(HoldAndSelect(action));
-            if (arrow != null)
-                arrow.transform.DOScale(PulseMax, Mathf.PI / PulseSpeed)
-                    .SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetUpdate(true);
         }
 
         private void OnMoveHeld(PlayerMoveHeldEvent evt)
@@ -120,47 +101,36 @@ namespace CLAYmore
                 StopPending();
         }
 
-        private IEnumerator HoldAndSelect(System.Action action)
+        private IEnumerator HoldAndSkip()
         {
             float elapsed = 0f;
             while (elapsed < HoldDelay)
             {
                 elapsed += Time.unscaledDeltaTime;
-                SetMaskFill(elapsed / HoldDelay);
+                if (holdFillImage != null) holdFillImage.fillAmount = Mathf.Clamp01(elapsed / HoldDelay);
                 yield return null;
             }
             _holdCoroutine = null;
-            SetMaskFill(0f);
-            StopPulse();
-            action();
+            if (holdFillImage != null) holdFillImage.fillAmount = 0f;
+            StopSkipPulse();
+            OnSkip(_expandersOnSkip);
         }
 
-        private void SetMaskFill(float t)
+        private void StopSkipPulse()
         {
-            if (holdFillImage == null) return;
-            holdFillImage.fillAmount = Mathf.Clamp01(t);
-        }
-
-        private void StopPulse()
-        {
-            Image[] arrows = { arrowLeft, arrowUp, arrowRight, arrowDown };
-            foreach (var a in arrows)
-            {
-                if (a == null) continue;
-                DOTween.Kill(a.transform);
-                a.transform.localScale = Vector3.one;
-            }
+            if (arrowDown == null) return;
+            DOTween.Kill(arrowDown.transform);
+            arrowDown.transform.localScale = Vector3.one;
         }
 
         private void StopPending()
         {
             if (_holdCoroutine != null) { StopCoroutine(_holdCoroutine); _holdCoroutine = null; }
-            SetMaskFill(0f);
-            StopPulse();
-            if (arrowLeft  != null) { DOTween.Kill(arrowLeft.rectTransform);  arrowLeft.rectTransform.anchoredPosition  = _arrowLeftOrigin; }
-            if (arrowUp    != null) { DOTween.Kill(arrowUp.rectTransform);    arrowUp.rectTransform.anchoredPosition    = _arrowUpOrigin; }
-            if (arrowRight != null) { DOTween.Kill(arrowRight.rectTransform); arrowRight.rectTransform.anchoredPosition = _arrowRightOrigin; }
-            if (arrowDown  != null) { DOTween.Kill(arrowDown.rectTransform);  arrowDown.rectTransform.anchoredPosition  = _arrowDownOrigin; }
+            if (holdFillImage != null) holdFillImage.fillAmount = 0f;
+            StopSkipPulse();
+            if (arrowDown != null) { DOTween.Kill(arrowDown.rectTransform); arrowDown.rectTransform.anchoredPosition = _arrowDownOrigin; }
+            foreach (var card in cards)
+                if (card != null) card.StopHold();
         }
 
         // ── Private ───────────────────────────────────────────────────────────
@@ -174,7 +144,6 @@ namespace CLAYmore
 
             if (_offered.Count == 0)
             {
-                // Nothing to offer — give expanders and skip automatically
                 World.Current?.Events.Publish(new ModifierSkippedEvent
                 {
                     ExpandersGiven = _expandersOnSkip,
@@ -182,10 +151,8 @@ namespace CLAYmore
                 return;
             }
 
-            // Pause game
             PauseManager.Instance.Push();
 
-            // Populate cards
             for (int i = 0; i < cards.Length; i++)
             {
                 if (i < _offered.Count)
@@ -201,11 +168,8 @@ namespace CLAYmore
                 }
             }
 
-            // Skip button
             if (skipCoinsLabel != null)
                 skipCoinsLabel.text = _expandersOnSkip > 0 ? $"+{_expandersOnSkip}" : "Skip";
-            skipButton.onClick.RemoveAllListeners();
-            skipButton.onClick.AddListener(() => OnSkip(_expandersOnSkip));
 
             panel.SetActive(true);
             _isOpen = true;
@@ -221,6 +185,8 @@ namespace CLAYmore
             });
             Close();
         }
+
+        public void OnSkipClicked() => OnSkip(_expandersOnSkip);
 
         private void OnSkip(int expanders)
         {
@@ -269,7 +235,7 @@ namespace CLAYmore
 
         private List<ModifierConfig> PickRandom(List<ModifierConfig> pool, int count)
         {
-            var result  = new List<ModifierConfig>();
+            var result    = new List<ModifierConfig>();
             var remaining = new List<ModifierConfig>(pool);
 
             for (int i = 0; i < count && remaining.Count > 0; i++)

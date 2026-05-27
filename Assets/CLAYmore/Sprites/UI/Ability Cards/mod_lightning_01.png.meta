@@ -1,10 +1,7 @@
 fileFormatVersion: 2
 guid: e423d2efea06ac24293cf9a1ae5486dc
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: -8544222539157416377
-    second: mod_lightning_01_0
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mod_lightning_01_0
+      name: mod_dash_01_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +138,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 746d2afaed2dc6980800000000000000
-      internalID: -8544222539157416377
+      spriteID: d2f650e6bcf84dcb0800000000000000
+      internalID: -4840085595629457619
       vertices: []
       indices: 
       edges: []
@@ -161,7 +158,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      mod_lightning_01_0: -8544222539157416377
+      mod_dash_01_0: -4840085595629457619
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

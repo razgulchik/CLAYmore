@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Dash
   description: Press the button to move without stopping
   icon: {fileID: 21300000, guid: 82ad829130abde4419bd976587fe19f4, type: 3}
+  category: 3
   maxLevel: 1
   spawnWeight: 5
   price: 0
