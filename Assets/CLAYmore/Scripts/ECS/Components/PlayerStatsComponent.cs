@@ -31,8 +31,9 @@ namespace CLAYmore.ECS
         public int   ShockwaveDamage        = 1;
         public int   ShockwaveStepCount     = 0;
         public int   ShockwaveStepsRequired = 3;
-        public bool  HasFireTrail        = false;
-        public int   FireTrailDamage     = 1;
+        public bool  HasFireTrail         = false;
+        public int   FireTrailDamage      = 1;
+        public float FireTrailLifetime    = 10f;
         public bool  HasBallLightning    = false;
         public int   BallLightningDamage = 1;
         public int   BallLightningRadius = 1;

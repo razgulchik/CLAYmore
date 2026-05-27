@@ -130,6 +130,14 @@ namespace CLAYmore
 
         private bool CanRename() => debugAllowRename || PlayerPrefs.GetInt("name_changed", 0) == 0;
 
+        [ContextMenu("Clear PlayerPrefs")]
+        private void ClearPlayerPrefs()
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            Debug.Log("[LeaderboardUI] PlayerPrefs cleared.");
+        }
+
         private static bool IsValidName(string name)
         {
             if (string.IsNullOrEmpty(name) || name.Length > 12) return false;
