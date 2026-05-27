@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ccdcb3c87bb0764fa173215f44e72db, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  playerMaxHp: 5
+  playerMaxHp: 1
   moveTime: 0.4
   bounceReturnTime: 0.2
   inputBufferWindow: 0.25

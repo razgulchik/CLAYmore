@@ -31,7 +31,8 @@ namespace CLAYmore
         [SerializeField] private int pageSize = 10;
 
         [Header("Result Title")]
-        [SerializeField] private TextMeshProUGUI resultTitleLabel;
+        public GameObject victoryTitle;
+        public GameObject defeatTitle;
 
         [Header("Rename Panel")]
         [SerializeField] private bool debugAllowRename;
@@ -62,8 +63,8 @@ namespace CLAYmore
 
         private void OnGameOver(GameOverEvent e)
         {
-            if (resultTitleLabel != null)
-                resultTitleLabel.text = e.IsVictory ? "You Win!" : "Game Over";
+            if (victoryTitle != null) victoryTitle.SetActive(e.IsVictory);
+            if (defeatTitle  != null) defeatTitle.SetActive(!e.IsVictory);
             Show();
         }
 

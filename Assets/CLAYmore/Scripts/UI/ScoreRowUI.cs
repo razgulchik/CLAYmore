@@ -18,7 +18,7 @@ namespace CLAYmore
 
         public void Setup(int rank, string playerName, int score)
         {
-            if (rankLabel   != null) rankLabel.text   = $"#{rank}";
+            if (rankLabel   != null) rankLabel.text   = $"{rank}.";
             if (playerLabel != null) playerLabel.text = playerName;
             if (scoreLabel  != null) scoreLabel.text  = score.ToString();
         }

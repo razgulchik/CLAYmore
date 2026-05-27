@@ -22,6 +22,9 @@ namespace CLAYmore
         public Image arrowRight;
         public Image arrowDown;
 
+        [Header("Category Backgrounds")]
+        public ModifierCategoryBackground[] categoryBackgrounds;
+
         [Header("Hold Fill")]
         public Image holdFillImage;
 
@@ -78,27 +81,23 @@ namespace CLAYmore
             StopPending();
 
             var dir = evt.Direction;
-            System.Action action    = null;
-            Image         arrow     = null;
-            bool          canAfford = true;
+            System.Action action = null;
+            Image         arrow  = null;
 
             if (dir == new Vector2Int(-1, 0) && cards.Length > 0 && cards[0].gameObject.activeSelf)
             {
-                action = () => cards[0].button.onClick.Invoke();
+                action = () => cards[0].Select();
                 arrow  = arrowLeft;
-                canAfford = cards[0].button.interactable;
             }
             else if (dir == new Vector2Int(0, 1) && cards.Length > 1 && cards[1].gameObject.activeSelf)
             {
-                action = () => cards[1].button.onClick.Invoke();
+                action = () => cards[1].Select();
                 arrow  = arrowUp;
-                canAfford = cards[1].button.interactable;
             }
             else if (dir == new Vector2Int(1, 0) && cards.Length > 2 && cards[2].gameObject.activeSelf)
             {
-                action = () => cards[2].button.onClick.Invoke();
+                action = () => cards[2].Select();
                 arrow  = arrowRight;
-                canAfford = cards[2].button.interactable;
             }
             else if (dir == new Vector2Int(0, -1))
             {
@@ -107,21 +106,6 @@ namespace CLAYmore
             }
 
             if (action == null) return;
-
-            if (!canAfford)
-            {
-                if (arrow != null)
-                {
-                    var origin = arrow == arrowLeft  ? _arrowLeftOrigin  :
-                                 arrow == arrowUp    ? _arrowUpOrigin    :
-                                 arrow == arrowRight ? _arrowRightOrigin :
-                                                       _arrowDownOrigin;
-                    arrow.rectTransform.DOShakeAnchorPos(0.5f, strength: 10f, vibrato: 20, randomness: 90f)
-                        .SetUpdate(true)
-                        .OnComplete(() => arrow.rectTransform.anchoredPosition = origin);
-                }
-                return;
-            }
 
             _holdCoroutine = StartCoroutine(HoldAndSelect(action));
             if (arrow != null)
@@ -202,8 +186,6 @@ namespace CLAYmore
             PauseManager.Instance.Push();
 
             // Populate cards
-            int currentCoins = World.Current?.GetSystem<EconomySystem>()?.GetCoinCount() ?? 0;
-            float discount = GetPlayerPriceDiscount();
             for (int i = 0; i < cards.Length; i++)
             {
                 if (i < _offered.Count)
@@ -211,8 +193,7 @@ namespace CLAYmore
                     var mod = _offered[i];
                     _modifiers.Levels.TryGetValue(mod.name, out int currentLevel);
                     cards[i].gameObject.SetActive(true);
-                    int nextPrice = Mathf.FloorToInt(mod.GetPrice(currentLevel + 1) * (1f - discount));
-                    cards[i].Setup(mod, currentLevel + 1, nextPrice, currentCoins >= nextPrice, OnCardChosen);
+                    cards[i].Setup(mod, currentLevel + 1, OnCardChosen, GetBackground(mod.category));
                 }
                 else
                 {
@@ -232,11 +213,7 @@ namespace CLAYmore
 
         private void OnCardChosen(ModifierConfig modifier)
         {
-            var economy = World.Current?.GetSystem<EconomySystem>();
             _modifiers.Levels.TryGetValue(modifier.name, out int currentLevel);
-            int price = Mathf.FloorToInt(modifier.GetPrice(currentLevel + 1) * (1f - GetPlayerPriceDiscount()));
-            if (price > 0 && (economy == null || !economy.TrySpend(price)))
-                return;
             World.Current?.Events.Publish(new ModifierChosenEvent
             {
                 Modifier = modifier,
@@ -290,14 +267,6 @@ namespace CLAYmore
             return null;
         }
 
-        private float GetPlayerPriceDiscount()
-        {
-            if (World.Current == null) return 0f;
-            foreach (var e in World.Current.Query<CLAYmore.ECS.PlayerStatsComponent>())
-                return e.Get<CLAYmore.ECS.PlayerStatsComponent>().PriceDiscount;
-            return 0f;
-        }
-
         private List<ModifierConfig> PickRandom(List<ModifierConfig> pool, int count)
         {
             var result  = new List<ModifierConfig>();
@@ -329,6 +298,14 @@ namespace CLAYmore
             foreach (var e in World.Current.Query<CLAYmore.ECS.PlayerModifiersComponent>())
                 return e.Get<CLAYmore.ECS.PlayerModifiersComponent>();
             return new PlayerModifiersComponent();
+        }
+
+        private Sprite GetBackground(ModifierCategory category)
+        {
+            if (categoryBackgrounds == null) return null;
+            foreach (var b in categoryBackgrounds)
+                if (b.category == category) return b.sprite;
+            return null;
         }
     }
 }
