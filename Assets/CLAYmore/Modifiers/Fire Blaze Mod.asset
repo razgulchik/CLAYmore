@@ -15,8 +15,7 @@ MonoBehaviour:
   displayName: Fire Blaze
   description: 
   icon: {fileID: 21300000, guid: 35e59c5e8bf454d45bade505ef8bb28e, type: 3}
-  maxLevel: 3
+  category: 0
+  maxLevel: 5
   spawnWeight: 1
-  price: 0
-  priceMultiplier: 1.6
-  damagePerLevel: 1
+  damagePerLevel: 2

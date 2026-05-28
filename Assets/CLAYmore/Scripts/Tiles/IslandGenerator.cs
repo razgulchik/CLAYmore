@@ -353,6 +353,7 @@ namespace CLAYmore
 
             _currentExpansionCost = Mathf.RoundToInt(_currentExpansionCost * expansionCostMultiplier) + expansionCostAdditive;
             RedrawAll();
+            World.Current?.Events.Publish(new IslandExpandedEvent());
             return true;
         }
 

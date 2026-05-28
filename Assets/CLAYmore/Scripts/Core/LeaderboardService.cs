@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CLAYmore.ECS;
+using Unity.Services.Analytics;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Leaderboards;
@@ -48,6 +49,7 @@ namespace CLAYmore
                 if (!AuthenticationService.Instance.IsSignedIn)
                     await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
+                AnalyticsService.Instance.StartDataCollection();
                 _isReady = true;
                 Debug.Log($"[LeaderboardService] Signed in: {AuthenticationService.Instance.PlayerId}");
             }

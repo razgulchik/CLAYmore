@@ -16,6 +16,11 @@ namespace CLAYmore
         public Image defaultBackground;
         public Image playerBackground;
 
+        private void Awake()
+        {
+            if (renameButton != null) renameButton.gameObject.SetActive(false);
+        }
+
         public void Setup(int rank, string playerName, int score)
         {
             if (rankLabel   != null) rankLabel.text   = $"{rank}.";

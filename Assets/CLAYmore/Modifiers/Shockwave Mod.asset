@@ -15,9 +15,8 @@ MonoBehaviour:
   displayName: Shockwave
   description: 
   icon: {fileID: 21300000, guid: 83f37b3836b2fce4cb6b0bc6411582dc, type: 3}
-  maxLevel: 5
+  category: 0
+  maxLevel: 10
   spawnWeight: 1
-  price: 0
-  priceMultiplier: 1.5
   damagePerLevel: 1
   stepsToActivate: 3

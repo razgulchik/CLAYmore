@@ -1,4 +1,5 @@
 using CLAYmore.ECS;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace CLAYmore
@@ -51,11 +52,15 @@ namespace CLAYmore
         private int   _sessionPots;
         private int   _sessionModifiers;
         private int   _sessionCoins;
+        private int   _sessionExpanderSkips;
+        private int   _sessionIslandExpansions;
 
-        public float SessionTimePlayed => _sessionTime;
-        public int   SessionPots       => _sessionPots;
-        public int   SessionModifiers  => _sessionModifiers;
-        public int   SessionCoins      => _sessionCoins;
+        public float SessionTimePlayed       => _sessionTime;
+        public int   SessionPots             => _sessionPots;
+        public int   SessionModifiers        => _sessionModifiers;
+        public int   SessionCoins            => _sessionCoins;
+        public int   SessionExpanderSkips    => _sessionExpanderSkips;
+        public int   SessionIslandExpansions => _sessionIslandExpansions;
 
         // ── Lifecycle ─────────────────────────────────────────────────────────
 
@@ -76,6 +81,8 @@ namespace CLAYmore
                 bus.Subscribe<GameOverEvent>(OnGameOver);
                 bus.Subscribe<CoinsAddedEvent>(OnCoinsAdded);
                 bus.Subscribe<GameRestartedEvent>(OnGameRestarted);
+                bus.Subscribe<ModifierSkippedEvent>(OnModifierSkipped);
+                bus.Subscribe<IslandExpandedEvent>(OnIslandExpanded);
             }
         }
 
@@ -91,6 +98,8 @@ namespace CLAYmore
                 bus.Unsubscribe<GameOverEvent>(OnGameOver);
                 bus.Unsubscribe<CoinsAddedEvent>(OnCoinsAdded);
                 bus.Unsubscribe<GameRestartedEvent>(OnGameRestarted);
+                bus.Unsubscribe<ModifierSkippedEvent>(OnModifierSkipped);
+                bus.Unsubscribe<IslandExpandedEvent>(OnIslandExpanded);
             }
 
             Save();
@@ -149,6 +158,24 @@ namespace CLAYmore
             LogStats("GAME OVER");
             LogScore();
             World.Current?.Events.Publish(new SessionScoredEvent { Score = LastScore });
+
+            try
+            {
+                AnalyticsService.Instance.RecordEvent(new CustomEvent("session_ended")
+                {
+                    { "score",           LastScore             },
+                    { "expander_skips",    _sessionExpanderSkips    },
+                    { "island_expansions", _sessionIslandExpansions },
+                    { "pots_destroyed",  _sessionPots          },
+                    { "modifiers_taken", _sessionModifiers     },
+                    { "is_victory",      e.IsVictory           },
+                });
+                AnalyticsService.Instance.Flush();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[Analytics] Failed to send event: {ex.Message}");
+            }
         }
 
         private void OnGameRestarted(GameRestartedEvent e)
@@ -159,8 +186,19 @@ namespace CLAYmore
 
         private void OnCoinsAdded(CoinsAddedEvent e)
         {
-            CoinsEarned    += e.Amount;
-            _sessionCoins  += e.Amount;
+            CoinsEarned   += e.Amount;
+            _sessionCoins += e.Amount;
+        }
+
+        private void OnModifierSkipped(ModifierSkippedEvent e)
+        {
+            if (e.ExpandersGiven > 0)
+                _sessionExpanderSkips++;
+        }
+
+        private void OnIslandExpanded(IslandExpandedEvent e)
+        {
+            _sessionIslandExpansions++;
         }
 
         // ── Scoring ───────────────────────────────────────────────────────────
@@ -176,10 +214,12 @@ namespace CLAYmore
 
         private void ResetSession()
         {
-            _sessionTime      = 0f;
-            _sessionPots      = 0;
-            _sessionModifiers = 0;
-            _sessionCoins     = 0;
+            _sessionTime             = 0f;
+            _sessionPots             = 0;
+            _sessionModifiers        = 0;
+            _sessionCoins            = 0;
+            _sessionExpanderSkips    = 0;
+            _sessionIslandExpansions = 0;
         }
 
         // ── Logging ───────────────────────────────────────────────────────────
@@ -194,7 +234,9 @@ namespace CLAYmore
                 $"  Горшков разбито:   {PotsDestroyed}\n" +
                 $"  Шагов сделано:     {TilesWalked}\n" +
                 $"  Монет заработано:  {CoinsEarned}\n" +
-                $"  Модификаторов:     {ModifiersChosen}"
+                $"  Модификаторов:     {ModifiersChosen}\n" +
+                $"  Скипов (экспандер):{_sessionExpanderSkips}\n" +
+                $"  Расширений острова:{_sessionIslandExpansions}"
             );
         }
 
