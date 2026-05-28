@@ -64,7 +64,7 @@ MonoBehaviour:
   chestFirstThreshold: 5
   chestThresholdMultiplier: 1
   chestThresholdAdditive: 5
-  expandersOnSkip: 5
+  expandersOnSkip: 3
   expansionCostMultiplier: 1
   expansionCostAdditive: 1
   modifierPool:

@@ -69,7 +69,7 @@ namespace CLAYmore
             else
             {
                 World.Current?.Events.Publish(new ChestProgressEvent { CoinsCollected = _coinsCollected, Threshold = _currentThreshold });
-                Debug.Log($"[Chest] До сундука: {_currentThreshold - _coinsCollected} / {_currentThreshold}");
+                //Debug.Log($"[Chest] До сундука: {_currentThreshold - _coinsCollected} / {_currentThreshold}");
             }
         }
 

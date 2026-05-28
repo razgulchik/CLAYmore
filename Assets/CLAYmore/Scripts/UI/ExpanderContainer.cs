@@ -18,6 +18,6 @@ namespace CLAYmore
             World.Current?.Events.Unsubscribe<ExpanderBalanceChangedEvent>(OnExpanderBalanceChanged);
         }
 
-        private void OnExpanderBalanceChanged(ExpanderBalanceChangedEvent e) => expandersText.SetText(e.NewBalance.ToString("D2"));
+        private void OnExpanderBalanceChanged(ExpanderBalanceChangedEvent e) => expandersText.SetText(e.NewBalance.ToString("D3"));
     }
 }

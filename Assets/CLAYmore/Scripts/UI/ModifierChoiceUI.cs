@@ -169,7 +169,7 @@ namespace CLAYmore
             }
 
             if (skipCoinsLabel != null)
-                skipCoinsLabel.text = _expandersOnSkip > 0 ? $"+{_expandersOnSkip}" : "Skip";
+                skipCoinsLabel.text = _expandersOnSkip > 0 ? $"+{_expandersOnSkip} Expanders" : "Skip";
 
             panel.SetActive(true);
             _isOpen = true;

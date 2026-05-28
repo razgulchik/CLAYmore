@@ -17,9 +17,11 @@ namespace CLAYmore
         public WaveAnnouncementUI    waveAnnouncementUI;
         public WaveCountdownUI       waveCountdownUI;
         public PauseButtonContainer pauseButtonContainer;
+        public AbilityContainerUI   abilityContainerUI;
 
         private void Awake()
         {
+            if (abilityContainerUI   != null) abilityContainerUI.gameObject.SetActive(true);
             if (pauseButtonContainer != null) pauseButtonContainer.gameObject.SetActive(true);
             if (heartContainer      != null) heartContainer.gameObject.SetActive(true);
             if (coinContainer       != null) coinContainer.gameObject.SetActive(true);
