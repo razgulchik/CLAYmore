@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 namespace CLAYmore
 {
-    /// <summary>
-    /// One row in the leaderboard panel.
-    /// Assign rankLabel, playerLabel, scoreLabel in the Inspector (on BestScore Row prefab).
-    /// </summary>
     public class ScoreRowUI : MonoBehaviour
     {
         public TextMeshProUGUI rankLabel;
@@ -16,18 +12,23 @@ namespace CLAYmore
         public TextMeshProUGUI scoreLabel;
         public Button          renameButton;
 
+        [Header("Backgrounds")]
+        public Image defaultBackground;
+        public Image playerBackground;
+
         public void Setup(int rank, string playerName, int score)
         {
             if (rankLabel   != null) rankLabel.text   = $"{rank}.";
             if (playerLabel != null) playerLabel.text = playerName;
             if (scoreLabel  != null) scoreLabel.text  = score.ToString();
+
+            SetPlayerRow(false);
         }
 
-        public void Highlight(Color color)
+        public void SetPlayerRow(bool isPlayer)
         {
-            if (rankLabel   != null) rankLabel.color   = color;
-            if (playerLabel != null) playerLabel.color = color;
-            if (scoreLabel  != null) scoreLabel.color  = color;
+            if (defaultBackground != null) defaultBackground.gameObject.SetActive(!isPlayer);
+            if (playerBackground  != null) playerBackground.gameObject.SetActive(isPlayer);
         }
 
         public void ShowRenameButton(UnityAction callback)

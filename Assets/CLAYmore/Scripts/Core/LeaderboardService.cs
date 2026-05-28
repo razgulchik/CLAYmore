@@ -14,11 +14,19 @@ namespace CLAYmore
     /// Submits the player's session score to Unity Leaderboards on Game Over,
     /// then pre-fetches the top scores so LeaderboardUI can display them instantly.
     /// </summary>
+    public enum LeaderboardMode { BestScore, LatestScore }
+
     public class LeaderboardService : MonoBehaviour
     {
-        [Tooltip("Must match the Leaderboard ID created in the Unity Dashboard")]
-        public string leaderboardId = "best_score";
-        public int    fetchLimit    = 100;
+        private const string BestScoreId   = "best_score";
+        private const string LatestScoreId = "_latest_score";
+
+        public LeaderboardMode leaderboardMode = LeaderboardMode.BestScore;
+        public int             fetchLimit      = 100;
+
+        private string ActiveLeaderboardId => leaderboardMode == LeaderboardMode.BestScore
+            ? BestScoreId
+            : LatestScoreId;
 
         /// <summary>Cached top scores after the last submit. Null until first fetch completes.</summary>
         public List<LeaderboardEntry> CachedScores { get; private set; }
@@ -82,7 +90,7 @@ namespace CLAYmore
             // Submit first so our score is included in the fetch
             try
             {
-                var entry = await LeaderboardsService.Instance.AddPlayerScoreAsync(leaderboardId, score);
+                var entry = await LeaderboardsService.Instance.AddPlayerScoreAsync(ActiveLeaderboardId, score);
                 Debug.Log(
                     $"[LeaderboardService] Score {score} submitted.\n" +
                     $"  Rank:       #{entry.Rank + 1}\n" +
@@ -99,7 +107,7 @@ namespace CLAYmore
             try
             {
                 var result = await LeaderboardsService.Instance.GetScoresAsync(
-                    leaderboardId, new GetScoresOptions { Limit = fetchLimit });
+                    ActiveLeaderboardId, new GetScoresOptions { Limit = fetchLimit });
                 CachedScores = result.Results;
                 Debug.Log($"[LeaderboardService] Fetched {CachedScores.Count} scores.");
             }

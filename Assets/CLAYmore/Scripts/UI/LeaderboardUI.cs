@@ -209,7 +209,16 @@ namespace CLAYmore
                 ? AuthenticationService.Instance.PlayerId
                 : null;
 
-            ShowPage(0);
+            ShowPage(FindPlayerPage());
+        }
+
+        private int FindPlayerPage()
+        {
+            if (_entries == null || _currentPlayerId == null) return 0;
+            for (int i = 0; i < _entries.Count; i++)
+                if (_entries[i].PlayerId == _currentPlayerId)
+                    return i / pageSize;
+            return 0;
         }
 
         private void ShowPage(int page)
@@ -229,7 +238,7 @@ namespace CLAYmore
                 row.Setup(entry.Rank + 1, entry.PlayerName, (int)entry.Score);
                 if (_currentPlayerId != null && entry.PlayerId == _currentPlayerId)
                 {
-                    row.Highlight(Color.yellow);
+                    row.SetPlayerRow(true);
                     if (CanRename())
                         row.ShowRenameButton(OnRenameClicked);
                 }

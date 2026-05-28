@@ -16,9 +16,7 @@ namespace CLAYmore
             stats.HasLightning      = true;
             stats.LightningDamage   = damage;
             stats.LightningInterval = Mathf.Max(1f, baseInterval - (newLevel - 1) * cooldownReductionPerLevel);
-            // Keep existing timer so there's no immediate reset on upgrade
-            if (stats.LightningTimer <= 0f)
-                stats.LightningTimer = stats.LightningInterval;
+            stats.LightningTimer    = 0f;
         }
 
         public override string GetDescription(int level)

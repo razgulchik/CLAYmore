@@ -18,7 +18,5 @@ MonoBehaviour:
   category: 3
   maxLevel: 5
   spawnWeight: 2
-  price: 0
-  priceMultiplier: 2
-  baseCooldown: 10
-  cooldownReductionPerLevel: 1
+  baseCooldown: 20
+  cooldownReductionPerLevel: 2
